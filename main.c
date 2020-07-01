@@ -1,3 +1,13 @@
-int main(void) {
-  return 0; // w main() zero to sukces, 1 to bˆ¥d
+#include <ace/generic/main.h>
+
+
+void genericCreate(void){
+
+}
+void genericProcess(void){
+    gameExit();
+
+}
+void genericDestroy(void){
+  
 }
