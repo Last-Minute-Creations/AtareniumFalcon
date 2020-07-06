@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.5)
 project(atarenium LANGUAGES C)
 
 # ACE
-add_subdirectory("D:\\GitHubFalcon\\AtareniumFalcon\\ACE" ace)
+add_subdirectory(ACE ace)
 
 add_executable(falkon.elf main.c) # Compiler emits .elf file, we need hunk for Amiga
 
