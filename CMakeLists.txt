@@ -6,6 +6,8 @@ add_subdirectory(ACE ace)
 
 add_executable(falkon.elf main.c) # Compiler emits .elf file, we need hunk for Amiga
 
+target_compile_options(falkon.elf PRIVATE -Wall -Wextra)
+
 target_link_libraries(falkon.elf ace)
 
 add_custom_command( # So call elf2hunk

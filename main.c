@@ -11,16 +11,48 @@ static tVPort *s_pVp;
 static tSimpleBufferManager *s_pVpManager;
 
 // coordsy do rysowania falkona i kontrolowania zeby sie nie wypierdolil za ekran
-int FALKONX = 0;
-int FALKONY = 0;
-int KRAWEDZX = 0;
-int KRAWEDZY = 0;
-int KIERUNEK = 0;
+int falkonx = 0;
+int falkony = 0;
+int krawedzx = 0;
+int krawedzy = 0;
+int kierunek = 0;
 
 
 
-void CZYRAMKA(void) {
+void czyramka(void) {
     // tu bedzie funkcja sprawdzajaca czy sie chcemy wypierdolic za ekran
+    switch (kierunek){
+      case 1:
+      krawedzx = krawedzx + 1;
+        if(krawedzx == 10){
+          krawedzx = 9;
+          falkonx = 8;
+        }
+        break;
+      case 2:
+      krawedzx = krawedzx - 1;
+        if(krawedzx == -1){
+          krawedzx = 0;
+          falkonx = 1;
+        }
+        break;
+      case 3:
+      krawedzy = krawedzy - 1;
+        if(krawedzy == -1){
+          krawedzy = 0;
+          falkony = 1;
+        }
+        break;
+      case 4:
+      krawedzy = krawedzy + 1;
+        if(krawedzy == 8){
+          krawedzy =7;
+          falkony = 6;
+        }  
+
+
+
+    }
 }
 
 
@@ -57,39 +89,43 @@ systemUnuse(); // system w trakcie loop nie jest nam potrzebny
 viewLoad(s_pView);
 
 // narysujmy prostok¥t
-blitRect(s_pVpManager->pBack, FALKONX, FALKONY, 32, 32, 1);
+blitRect(s_pVpManager->pBack, falkonx, falkony, 32, 32, 1);
 
 }
 
 void genericProcess(void) {
   // Here goes code done each game frame
  
+
+
  //--------------------------------------------------------------- gdzie˜ w loop:
 joyProcess();
 if(joyUse(JOY1_FIRE)) {
   gameExit();
 }
 if(joyUse(JOY1_RIGHT)) {
-    KIERUNEK = 1;
-    FALKONX = FALKONX + 32;
- blitRect(s_pVpManager->pBack, FALKONX, FALKONY, 32, 32, 1);   
+    kierunek = 1;
+    czyramka();
+    falkonx = falkonx + 1;
+ blitRect(s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, 1);   
 }
 if(joyUse(JOY1_LEFT)) {
-    KIERUNEK = 2;
-    FALKONX = FALKONX - 32;
- blitRect(s_pVpManager->pBack, FALKONX, FALKONY, 32, 32, 1);   
+    kierunek = 2;
+    czyramka();
+    falkonx = falkonx - 1;
+ blitRect(s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, 1);   
 }
 if(joyUse(JOY1_UP)) {
-    KIERUNEK = 3;
-
-    FALKONY = FALKONY - 32;
- blitRect(s_pVpManager->pBack, FALKONX, FALKONY, 32, 32, 1);   
+    kierunek = 3;
+    czyramka();
+    falkony = falkony - 1;
+ blitRect(s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, 1);   
 }
 if(joyUse(JOY1_DOWN)) {
-    KIERUNEK = 4;
-
-    FALKONY = FALKONY + 32;
- blitRect(s_pVpManager->pBack, FALKONX, FALKONY, 32, 32, 1);   
+    kierunek = 4;
+    czyramka();
+    falkony = falkony + 1;
+ blitRect(s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, 1);   
 }
 
 
