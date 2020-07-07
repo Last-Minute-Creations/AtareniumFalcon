@@ -11,15 +11,15 @@ static tVPort *s_pVp;
 static tSimpleBufferManager *s_pVpManager;
 
 // coordsy do rysowania falkona i kontrolowania zeby sie nie wypierdolil za ekran
-int falkonx = 0;
-int falkony = 0;
-int krawedzx = 0;
-int krawedzy = 0;
-int kierunek = 0;
+BYTE falkonx = 0;
+BYTE falkony = 0;
+BYTE krawedzx = 0;
+BYTE krawedzy = 0;
+BYTE kierunek = 0;
 
 
 
-void czyramka(void) {
+void czyRamka(void) {
     // tu bedzie funkcja sprawdzajaca czy sie chcemy wypierdolic za ekran
     switch (kierunek){
       case 1:
@@ -45,14 +45,40 @@ void czyramka(void) {
         break;
       case 4:
       krawedzy = krawedzy + 1;
-        if(krawedzy == 8){
-          krawedzy =7;
-          falkony = 6;
-        }  
+        if(krawedzy == 7){
+          krawedzy = 6;
+          falkony = 5;
+        } 
+        break; 
 
 
 
     }
+}
+
+void falconMove(void){
+   switch (kierunek){
+      case 1:
+      blitRect(s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, 0);
+      falkonx = falkonx + 1;
+      blitRect(s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, 1); 
+        break;
+      case 2:
+      blitRect(s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, 0);
+      falkonx = falkonx - 1;
+      blitRect(s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, 1);   
+        break;
+      case 3:
+      blitRect(s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, 0);
+      falkony = falkony - 1;
+      blitRect(s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, 1);
+        break;
+      case 4:
+      blitRect(s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, 0);
+      falkony = falkony + 1;
+      blitRect(s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, 1);
+        break;
+   }
 }
 
 
@@ -105,27 +131,23 @@ if(joyUse(JOY1_FIRE)) {
 }
 if(joyUse(JOY1_RIGHT)) {
     kierunek = 1;
-    czyramka();
-    falkonx = falkonx + 1;
- blitRect(s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, 1);   
-}
+    czyRamka();
+    falconMove();
+}  
 if(joyUse(JOY1_LEFT)) {
     kierunek = 2;
-    czyramka();
-    falkonx = falkonx - 1;
- blitRect(s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, 1);   
+    czyRamka();
+    falconMove();
 }
 if(joyUse(JOY1_UP)) {
     kierunek = 3;
-    czyramka();
-    falkony = falkony - 1;
- blitRect(s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, 1);   
+    czyRamka();
+    falconMove();   
 }
 if(joyUse(JOY1_DOWN)) {
     kierunek = 4;
-    czyramka();
-    falkony = falkony + 1;
- blitRect(s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, 1);   
+    czyRamka();
+    falconMove();   
 }
 
 
