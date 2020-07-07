@@ -10,12 +10,29 @@ static tView *s_pView;
 static tVPort *s_pVp;
 static tSimpleBufferManager *s_pVpManager;
 
+// tablica do stawiania tajli na plansze
+#define MAP_WIDTH 10
+#define MAP_HEIGHT 7
+
+BYTE kamyki[MAP_WIDTH][MAP_HEIGHT] = {0};
+
+
+
+
+
+
+
+
+
 // coordsy do rysowania falkona i kontrolowania zeby sie nie wypierdolil za ekran
 BYTE falkonx = 0;
 BYTE falkony = 0;
 BYTE krawedzx = 0;
 BYTE krawedzy = 0;
 BYTE kierunek = 0;
+
+BYTE stoneHit = 0;
+
 
 
 
@@ -57,6 +74,11 @@ void czyRamka(void) {
 }
 
 void falconMove(void){
+    if(stoneHit == 1){
+      stoneHit = 0;
+      return;
+    }
+
    switch (kierunek){
       case 1:
       blitRect(s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, 0);
@@ -80,6 +102,42 @@ void falconMove(void){
         break;
    }
 }
+
+void isThisStone(void){
+      BYTE stoneX = 0;
+      BYTE stoneY = 0;
+
+       switch (kierunek){
+      case 1:
+      stoneX = falkonx + 1;
+        if(kamyki[stoneX][falkony] == 3){
+          stoneHit = 1;
+        }
+      break;
+      case 2:
+      stoneX = falkonx - 1;
+        if(kamyki[stoneX][falkony] == 3){
+          stoneHit = 1;
+        }
+      break;
+      case 3:
+      stoneY = falkony - 1;
+        if(kamyki[falkonx][stoneY] == 3){
+          stoneHit = 1;
+        }
+      break;
+      case 4:
+      stoneY = falkony + 1;
+        if(kamyki[falkonx][stoneY] == 3){
+          stoneHit = 1;
+        }
+        break;
+
+
+
+    }
+}
+
 
 
 void genericCreate(void) {
@@ -117,6 +175,11 @@ viewLoad(s_pView);
 // narysujmy prostok¥t
 blitRect(s_pVpManager->pBack, falkonx, falkony, 32, 32, 1);
 
+// drugi jako kamyk
+blitRect(s_pVpManager->pBack, 2 * 32, 4 * 32, 32, 32, 2);
+kamyki[2][4] = 3;
+
+
 }
 
 void genericProcess(void) {
@@ -130,24 +193,28 @@ if(joyUse(JOY1_FIRE)) {
   gameExit();
 }
 if(joyUse(JOY1_RIGHT)) {
-    kierunek = 1;
+    kierunek = 1; 
+    isThisStone();
     czyRamka();
-    falconMove();
+    falconMove();  
 }  
 if(joyUse(JOY1_LEFT)) {
-    kierunek = 2;
+    kierunek = 2; 
+    isThisStone();
     czyRamka();
-    falconMove();
+    falconMove(); 
 }
 if(joyUse(JOY1_UP)) {
-    kierunek = 3;
+    kierunek = 3; 
+    isThisStone();
     czyRamka();
-    falconMove();   
+    falconMove();     
 }
 if(joyUse(JOY1_DOWN)) {
-    kierunek = 4;
+    kierunek = 4; 
+    isThisStone();
     czyRamka();
-    falconMove();   
+    falconMove();    
 }
 
 
