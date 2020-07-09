@@ -10,19 +10,7 @@ static tView *s_pView;
 static tVPort *s_pVp;
 static tSimpleBufferManager *s_pVpManager;
 
-// tablica do stawiania tajli na plansze
-#define MAP_WIDTH 10
-#define MAP_HEIGHT 7
-
-BYTE kamyki[MAP_WIDTH][MAP_HEIGHT] = {0};
-
-
-
-
-
-
-
-
+BYTE kamyki[6][6];
 
 // coordsy do rysowania falkona i kontrolowania zeby sie nie wypierdolil za ekran
 BYTE falkonx = 0;
@@ -32,6 +20,9 @@ BYTE krawedzy = 0;
 BYTE kierunek = 0;
 
 BYTE stoneHit = 0;
+BYTE coal = 10;
+BYTE capacitors = 0;
+
 
 
 
@@ -73,36 +64,6 @@ void czyRamka(void) {
     }
 }
 
-void falconMove(void){
-    if(stoneHit == 1){
-      stoneHit = 0;
-      return;
-    }
-
-   switch (kierunek){
-      case 1:
-      blitRect(s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, 0);
-      falkonx = falkonx + 1;
-      blitRect(s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, 1); 
-        break;
-      case 2:
-      blitRect(s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, 0);
-      falkonx = falkonx - 1;
-      blitRect(s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, 1);   
-        break;
-      case 3:
-      blitRect(s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, 0);
-      falkony = falkony - 1;
-      blitRect(s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, 1);
-        break;
-      case 4:
-      blitRect(s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, 0);
-      falkony = falkony + 1;
-      blitRect(s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, 1);
-        break;
-   }
-}
-
 void isThisStone(void){
       BYTE stoneX = 0;
       BYTE stoneY = 0;
@@ -138,6 +99,61 @@ void isThisStone(void){
     }
 }
 
+void coalAndCollect(void) {
+  BYTE pickSthX = 0;
+  BYTE pickSthY = 0;
+  
+  
+  pickSthX = falkonx;
+  pickSthY = falkony;
+  
+  if(kamyki[pickSthX][pickSthY] == 4){
+    coal = coal + 2;
+  } 
+
+
+  coal = coal - 1;
+}
+
+void falconMove(void){
+    if(stoneHit == 1){
+      stoneHit = 0;
+      return;
+    }
+
+   switch (kierunek){
+      case 1:
+      blitRect(s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, 0);
+      falkonx = falkonx + 1;
+      blitRect(s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, 1); 
+        break;
+      case 2:
+      blitRect(s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, 0);
+      falkonx = falkonx - 1;
+      blitRect(s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, 1);   
+        break;
+      case 3:
+      blitRect(s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, 0);
+      falkony = falkony - 1;
+      blitRect(s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, 1);
+        break;
+      case 4:
+      blitRect(s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, 0);
+      falkony = falkony + 1;
+      blitRect(s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, 1);
+        break;
+   }
+}
+
+
+
+
+
+void noCoalLeft(void) {
+  if(coal == 0){
+    gameExit();
+  }
+}
 
 
 void genericCreate(void) {
@@ -178,7 +194,11 @@ blitRect(s_pVpManager->pBack, falkonx, falkony, 32, 32, 1);
 // drugi jako kamyk
 blitRect(s_pVpManager->pBack, 2 * 32, 4 * 32, 32, 32, 2);
 kamyki[2][4] = 3;
+blitRect(s_pVpManager->pBack, 3 * 32, 2 * 32, 32, 32, 2);
+kamyki[3][2] = 3;
 
+blitRect(s_pVpManager->pBack, 5 * 32, 5 * 32, 32, 32, 3);
+kamyki[5][5] = 4;
 
 }
 
@@ -196,28 +216,32 @@ if(joyUse(JOY1_RIGHT)) {
     kierunek = 1; 
     isThisStone();
     czyRamka();
-    falconMove();  
+    falconMove(); 
+    coalAndCollect(); 
 }  
 if(joyUse(JOY1_LEFT)) {
     kierunek = 2; 
     isThisStone();
     czyRamka();
     falconMove(); 
+    coalAndCollect();
 }
 if(joyUse(JOY1_UP)) {
     kierunek = 3; 
     isThisStone();
     czyRamka();
-    falconMove();     
+    falconMove(); 
+    coalAndCollect();    
 }
 if(joyUse(JOY1_DOWN)) {
     kierunek = 4; 
     isThisStone();
     czyRamka();
-    falconMove();    
+    falconMove(); 
+    coalAndCollect();   
 }
 
-
+noCoalLeft();
 
 
 viewProcessManagers(s_pView); // obliczenia niezb©dne do poprawnego dziaˆania viewport¢w
