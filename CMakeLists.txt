@@ -11,24 +11,25 @@ target_compile_options(falkon.elf PRIVATE -Wall -Wextra)
 target_link_libraries(falkon.elf ace)
 
 add_custom_command( # So call elf2hunk
-    TARGET falkon.elf POST_BUILD
-    COMMAND ${ELF2HUNK} falkon.elf falkon.exe)
+	TARGET falkon.elf POST_BUILD
+	COMMAND ${ELF2HUNK} falkon.elf falkon.exe
+)
 
-    set(RES_DIR ${CMAKE_CURRENT_LIST_DIR}/res) # st¥d bierzemy pliki do konwersji
-    set(DATA_DIR ${CMAKE_CURRENT_BINARY_DIR}/data) # tu maj¥ l¥dowa†
-    file(MAKE_DIRECTORY ${DATA_DIR}) #zaˆ¢¾my data
-    
-    set(PLT_PATH ${DATA_DIR}/falkon.plt) #tak si© b©dzie nazywa† docelowa paleta
-    convertPalette(falkon.elf ${RES_DIR}/falkon.pal ${PLT_PATH}) # z res/falkon.pal do build/data/falkon.plt
+set(RES_DIR ${CMAKE_CURRENT_LIST_DIR}/res) # stï¿½d bierzemy pliki do konwersji
+set(DATA_DIR ${CMAKE_CURRENT_BINARY_DIR}/data) # tu majï¿½ lï¿½dowaï¿½
+file(MAKE_DIRECTORY ${DATA_DIR}) #zaï¿½ï¿½ï¿½my data
 
-    convertBitmaps(
-    TARGET falkon.elf PALETTE ${PLT_PATH}
-    INTERLEAVED SOURCES ${RES_DIR}/tlo1.png
-    DESTINATIONS ${DATA_DIR}/tlo1.bm
+set(PLT_PATH ${DATA_DIR}/falkon.plt) #tak siï¿½ bï¿½dzie nazywaï¿½ docelowa paleta
+convertPalette(falkon.elf ${RES_DIR}/falkon.pal ${PLT_PATH}) # z res/falkon.pal do build/data/falkon.plt
+
+convertBitmaps(
+	TARGET falkon.elf PALETTE ${PLT_PATH}
+	INTERLEAVED SOURCES ${RES_DIR}/tlo1.png
+	DESTINATIONS ${DATA_DIR}/tlo1.bm
 )
 
 convertBitmaps(
-    TARGET falkon.elf PALETTE ${PLT_PATH}
-    INTERLEAVED SOURCES ${RES_DIR}/tileset.png
-    DESTINATIONS ${DATA_DIR}/tileset.bm
+	TARGET falkon.elf PALETTE ${PLT_PATH}
+	INTERLEAVED SOURCES ${RES_DIR}/tileset.png
+	DESTINATIONS ${DATA_DIR}/tileset.bm
 )

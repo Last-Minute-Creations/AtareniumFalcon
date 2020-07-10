@@ -1,12 +1,13 @@
 #include <ace/generic/main.h>
 #include <ace/managers/viewport/simplebuffer.h>
 #include <ace/managers/joy.h>
+#include <ace/managers/key.h>
 #include <ace/managers/system.h>
 #include <ace/managers/game.h>
 #include <ace/utils/palette.h>
 
-//------------------------------------------------------- gdzie˜ przed funkcjami
-// zmienne trzymaj¥ce adresy do viewa, viewporta, simple buffer managera
+//------------------------------------------------------- gdzieï¿½ przed funkcjami
+// zmienne trzymajï¿½ce adresy do viewa, viewporta, simple buffer managera
 static tView *s_pView;
 static tVPort *s_pVp;
 static tSimpleBufferManager *s_pVpManager;
@@ -25,9 +26,6 @@ BYTE kierunek = 0;
 BYTE stoneHit = 0;
 BYTE coal = 10;
 BYTE capacitors = 0;
-
-
-
 
 
 void czyRamka(void) {
@@ -59,8 +57,8 @@ void czyRamka(void) {
         if(krawedzy == 7){
           krawedzy = 6;
           falkony = 5;
-        } 
-        break; 
+        }
+        break;
 
 
 
@@ -68,7 +66,7 @@ void czyRamka(void) {
 }
 
 void isThisStone(void){
-      // funkcja sprawdzajaca przed wykonaniem ruchu czy chcemy wleciec w kamien 
+      // funkcja sprawdzajaca przed wykonaniem ruchu czy chcemy wleciec w kamien
 
       BYTE stoneX = 0;
       BYTE stoneY = 0;
@@ -109,38 +107,38 @@ void coalAndCollect(void) {
 
   BYTE pickSthX = 0;
   BYTE pickSthY = 0;
-  
-  
+
+
   pickSthX = falkonx;
   pickSthY = falkony;
-  
+
   if(kamyki[pickSthX][pickSthY] == 4){
     coal = coal + 2;
-  } 
+  }
   if(kamyki[pickSthX][pickSthY] == 5){
     coal = coal + 3;
-  } 
+  }
   if(kamyki[pickSthX][pickSthY] == 6){
     coal = coal + 4;
-  } 
+  }
   if(kamyki[pickSthX][pickSthY] == 7){
     coal = coal + 5;
-  } 
+  }
   if(kamyki[pickSthX][pickSthY] == 8){
     capacitors = capacitors + 2;
-  } 
+  }
   if(kamyki[pickSthX][pickSthY] == 9){
     capacitors = capacitors + 2;
-  } 
+  }
   if(kamyki[pickSthX][pickSthY] == 10){
     gameExit();
-  } 
+  }
 
   coal = coal - 1;
 }
 
 void falconMove(void){
-    
+
 
         // jesli byl kamien to brak ruchu
     if(stoneHit == 1){
@@ -153,12 +151,12 @@ void falconMove(void){
       case 1:
       blitRect(s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, 0);
       falkonx = falkonx + 1;
-      blitRect(s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, 1); 
+      blitRect(s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, 1);
         break;
       case 2:
       blitRect(s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, 0);
       falkonx = falkonx - 1;
-      blitRect(s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, 1);   
+      blitRect(s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, 1);
         break;
       case 3:
       blitRect(s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, 0);
@@ -188,11 +186,11 @@ void noCoalLeft(void) {
 
 void genericCreate(void) {
   // Here goes your startup code
-  //-------------------------------------------------------------- gdzie˜ w create
+  //-------------------------------------------------------------- gdzieï¿½ w create
 s_pView = viewCreate(0,
-    TAG_VIEW_COPLIST_MODE, COPPER_MODE_BLOCK, // spos¢b u¾ywania coppera - ten jest najprostszy bo nic z nim nie musisz wi©cej robi†
-    TAG_VIEW_GLOBAL_CLUT, 1, // globalna paleta dla wszystkich viewport¢w
-    TAG_END // wi©cej argument¢w nie ma
+    TAG_VIEW_COPLIST_MODE, COPPER_MODE_BLOCK, // sposï¿½b uï¿½ywania coppera - ten jest najprostszy bo nic z nim nie musisz wiï¿½cej robiï¿½
+    TAG_VIEW_GLOBAL_CLUT, 1, // globalna paleta dla wszystkich viewportï¿½w
+    TAG_END // wiï¿½cej argumentï¿½w nie ma
 );
 
 s_pVp = vPortCreate(0,
@@ -203,26 +201,26 @@ s_pVp = vPortCreate(0,
 // Paleta z falkona
 paletteLoad("data/falkon.plt", s_pVp->pPalette, 32);
 
-s_pTiles = bitmapCreateFromFile("data/tileset.bm", 0); // z pliku tileset.bm, nie lokuj bitmapy w pami©ci FAST
+s_pTiles = bitmapCreateFromFile("data/tileset.bm", 0); // z pliku tileset.bm, nie lokuj bitmapy w pamiï¿½ci FAST
 
-// proste wy˜wietlanie bitmapy na viewporcie
+// proste wyï¿½wietlanie bitmapy na viewporcie
 s_pVpManager = simpleBufferCreate(0,
     TAG_SIMPLEBUFFER_VPORT, s_pVp, // parent viewport
-    TAG_SIMPLEBUFFER_BITMAP_FLAGS, BMF_CLEAR | BMF_INTERLEAVED, // wst©pne czyszczenie bitmapy, przyspieszenie rysowania grafiki
+    TAG_SIMPLEBUFFER_BITMAP_FLAGS, BMF_CLEAR | BMF_INTERLEAVED, // wstï¿½pne czyszczenie bitmapy, przyspieszenie rysowania grafiki
     TAG_SIMPLEBUFFER_IS_DBLBUF, 0, // nie potrzebujemy double buffering
     TAG_END
 );
 
 // po zrobieniu simpleBufferCreate()
-bitmapLoadFromFile(s_pVpManager->pBack, "data/tlo1.bm", 0, 0); // wczytaj zawarto˜† bg1.bm bezpo˜rednio do bitmapy bufora ekranu, zaczynaj¥c od pozycji 0,0
+bitmapLoadFromFile(s_pVpManager->pBack, "data/tlo1.bm", 0, 0); // wczytaj zawartoï¿½ï¿½ bg1.bm bezpoï¿½rednio do bitmapy bufora ekranu, zaczynajï¿½c od pozycji 0,0
 
-joyOpen(); // b©dziemy u¾ywa† d¾oja w grze
+joyOpen(); // bï¿½dziemy uï¿½ywaï¿½ dï¿½oja w grze
 // na koniec create:
 systemUnuse(); // system w trakcie loop nie jest nam potrzebny
 viewLoad(s_pView);
 
 
-// narysujmy prostok¥t
+// narysujmy prostokï¿½t
 blitRect(s_pVpManager->pBack, falkonx, falkony, 32, 32, 1);
 
 // stawiam recznie kamyki i znajdzki, uzupelniam tablice do oznaczenia rodzaju tajla
@@ -253,11 +251,11 @@ kamyki[9][6] = 10;
 
 void genericProcess(void) {
   // Here goes code done each game frame
- 
 
 
- //--------------------------------------------------------------- gdzie˜ w loop:
-joyProcess();
+
+ //--------------------------------------------------------------- gdzieï¿½ w loop:
+	joyProcess();
 if(joyUse(JOY1_FIRE)) {
   gameExit();
 }
@@ -293,19 +291,17 @@ if(joyUse(JOY1_DOWN)) {
 noCoalLeft();
 
 
-viewProcessManagers(s_pView); // obliczenia niezb©dne do poprawnego dziaˆania viewport¢w
-copProcessBlocks(); // obliczenia niezb©dne do poprawnego dziaˆania coppera
-vPortWaitForEnd(s_pVp); // r¢wnowa¾ne amosowemu wait vbl
+	viewProcessManagers(s_pView); // obliczenia niezbï¿½dne do poprawnego dziaï¿½ania viewportï¿½w
+	copProcessBlocks(); // obliczenia niezbï¿½dne do poprawnego dziaï¿½ania coppera
+	vPortWaitForEnd(s_pVp); // rï¿½wnowaï¿½ne amosowemu wait vbl
 }
 
 void genericDestroy(void) {
   // Here goes your cleanup code
-  //------------------------------------------------------------ gdzie˜ w destroy:
-// na pocz¥tku destroy:
-systemUse(); // wˆ¥cz grzecznie system
+	systemUse(); // wï¿½ï¿½cz grzecznie system
 
-bitmapDestroy(s_pTiles);
+	bitmapDestroy(s_pTiles);
 
-viewDestroy(s_pView); // zwolnij z pami©ci view, wszystkie doˆ¥czone do niego viewporty i wszystkie doˆ¥czone do nich mened¾ery
-joyClose();
+	viewDestroy(s_pView); // zwolnij z pamiï¿½ci view, wszystkie doï¿½ï¿½czone do niego viewporty i wszystkie doï¿½ï¿½czone do nich menedï¿½ery
+	joyClose();
 }
