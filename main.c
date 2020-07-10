@@ -13,7 +13,7 @@ static tSimpleBufferManager *s_pVpManager;
 static tBitMap *s_pTiles;
 
 
-BYTE kamyki[6][6];
+BYTE kamyki[9][6];
 
 // coordsy do rysowania falkona i kontrolowania zeby sie nie wypierdolil za ekran
 BYTE falkonx = 0;
@@ -117,7 +117,24 @@ void coalAndCollect(void) {
   if(kamyki[pickSthX][pickSthY] == 4){
     coal = coal + 2;
   } 
-
+  if(kamyki[pickSthX][pickSthY] == 5){
+    coal = coal + 3;
+  } 
+  if(kamyki[pickSthX][pickSthY] == 6){
+    coal = coal + 4;
+  } 
+  if(kamyki[pickSthX][pickSthY] == 7){
+    coal = coal + 5;
+  } 
+  if(kamyki[pickSthX][pickSthY] == 8){
+    capacitors = capacitors + 2;
+  } 
+  if(kamyki[pickSthX][pickSthY] == 9){
+    capacitors = capacitors + 2;
+  } 
+  if(kamyki[pickSthX][pickSthY] == 10){
+    gameExit();
+  } 
 
   coal = coal - 1;
 }
@@ -209,13 +226,28 @@ viewLoad(s_pView);
 blitRect(s_pVpManager->pBack, falkonx, falkony, 32, 32, 1);
 
 // stawiam recznie kamyki i znajdzki, uzupelniam tablice do oznaczenia rodzaju tajla
-blitRect(s_pVpManager->pBack, 2 * 32, 4 * 32, 32, 32, 2);
-kamyki[2][4] = 3;
-blitRect(s_pVpManager->pBack, 3 * 32, 2 * 32, 32, 32, 2);
-kamyki[3][2] = 3;
+blitRect(s_pVpManager->pBack, 1 * 32, 0 * 32, 32, 32, 4);
+kamyki[1][0] = 4;
+blitRect(s_pVpManager->pBack, 6 * 32, 1 * 32, 32, 32, 5);
+kamyki[6][1] = 5;
+blitRect(s_pVpManager->pBack, 1 * 32, 2 * 32, 32, 32, 5);
+kamyki[1][2] = 5;
+blitRect(s_pVpManager->pBack, 7 * 32, 2 * 32, 32, 32, 4);
+kamyki[7][2] = 4;
+blitRect(s_pVpManager->pBack, 1 * 32, 3 * 32, 32, 32, 11);
+kamyki[1][3] = 11;
+blitRect(s_pVpManager->pBack, 8 * 32, 3 * 32, 32, 32, 5);
+kamyki[8][3] = 5;
+blitRect(s_pVpManager->pBack, 2 * 32, 4 * 32, 32, 32, 6);
+kamyki[2][4] = 6;
+blitRect(s_pVpManager->pBack, 5 * 32, 5 * 32, 32, 32, 6);
+kamyki[5][5] = 6;
+blitRect(s_pVpManager->pBack, 8 * 32, 6 * 32, 32, 32, 4);
+kamyki[8][6] = 4;
+blitRect(s_pVpManager->pBack, 9 * 32, 6 * 32, 32, 32, 10);
+kamyki[9][6] = 10;
 
-blitRect(s_pVpManager->pBack, 5 * 32, 5 * 32, 32, 32, 3);
-kamyki[5][5] = 4;
+
 
 }
 
