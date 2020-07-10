@@ -20,3 +20,15 @@ add_custom_command( # So call elf2hunk
     
     set(PLT_PATH ${DATA_DIR}/falkon.plt) #tak si© b©dzie nazywa† docelowa paleta
     convertPalette(falkon.elf ${RES_DIR}/falkon.pal ${PLT_PATH}) # z res/falkon.pal do build/data/falkon.plt
+
+    convertBitmaps(
+    TARGET falkon.elf PALETTE ${PLT_PATH}
+    INTERLEAVED SOURCES ${RES_DIR}/tlo1.png
+    DESTINATIONS ${DATA_DIR}/tlo1.bm
+)
+
+convertBitmaps(
+    TARGET falkon.elf PALETTE ${PLT_PATH}
+    INTERLEAVED SOURCES ${RES_DIR}/tileset.png
+    DESTINATIONS ${DATA_DIR}/tileset.bm
+)

@@ -10,6 +10,8 @@
 static tView *s_pView;
 static tVPort *s_pVp;
 static tSimpleBufferManager *s_pVpManager;
+static tBitMap *s_pTiles;
+
 
 BYTE kamyki[6][6];
 
@@ -184,6 +186,8 @@ s_pVp = vPortCreate(0,
 // Paleta z falkona
 paletteLoad("data/falkon.plt", s_pVp->pPalette, 32);
 
+s_pTiles = bitmapCreateFromFile("data/tileset.bm", 0); // z pliku tileset.bm, nie lokuj bitmapy w pami©ci FAST
+
 // proste wy˜wietlanie bitmapy na viewporcie
 s_pVpManager = simpleBufferCreate(0,
     TAG_SIMPLEBUFFER_VPORT, s_pVp, // parent viewport
@@ -191,10 +195,15 @@ s_pVpManager = simpleBufferCreate(0,
     TAG_SIMPLEBUFFER_IS_DBLBUF, 0, // nie potrzebujemy double buffering
     TAG_END
 );
+
+// po zrobieniu simpleBufferCreate()
+bitmapLoadFromFile(s_pVpManager->pBack, "data/tlo1.bm", 0, 0); // wczytaj zawarto˜† bg1.bm bezpo˜rednio do bitmapy bufora ekranu, zaczynaj¥c od pozycji 0,0
+
 joyOpen(); // b©dziemy u¾ywa† d¾oja w grze
 // na koniec create:
 systemUnuse(); // system w trakcie loop nie jest nam potrzebny
 viewLoad(s_pView);
+
 
 // narysujmy prostok¥t
 blitRect(s_pVpManager->pBack, falkonx, falkony, 32, 32, 1);
@@ -262,6 +271,8 @@ void genericDestroy(void) {
   //------------------------------------------------------------ gdzie˜ w destroy:
 // na pocz¥tku destroy:
 systemUse(); // wˆ¥cz grzecznie system
+
+bitmapDestroy(s_pTiles);
 
 viewDestroy(s_pView); // zwolnij z pami©ci view, wszystkie doˆ¥czone do niego viewporty i wszystkie doˆ¥czone do nich mened¾ery
 joyClose();
