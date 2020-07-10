@@ -3,6 +3,7 @@
 #include <ace/managers/joy.h>
 #include <ace/managers/system.h>
 #include <ace/managers/game.h>
+#include <ace/utils/palette.h>
 
 //------------------------------------------------------- gdzie˜ przed funkcjami
 // zmienne trzymaj¥ce adresy do viewa, viewporta, simple buffer managera
@@ -28,7 +29,7 @@ BYTE capacitors = 0;
 
 
 void czyRamka(void) {
-    // tu bedzie funkcja sprawdzajaca czy sie chcemy wypierdolic za ekran
+    // tu jest funkcja sprawdzajaca czy sie chcemy wypierdolic za ekran i nie pozwalajaca na to
     switch (kierunek){
       case 1:
       krawedzx = krawedzx + 1;
@@ -65,6 +66,8 @@ void czyRamka(void) {
 }
 
 void isThisStone(void){
+      // funkcja sprawdzajaca przed wykonaniem ruchu czy chcemy wleciec w kamien 
+
       BYTE stoneX = 0;
       BYTE stoneY = 0;
 
@@ -100,6 +103,8 @@ void isThisStone(void){
 }
 
 void coalAndCollect(void) {
+  //funkcja do zbierania zasobu jesli jest na danym tajlu
+
   BYTE pickSthX = 0;
   BYTE pickSthY = 0;
   
@@ -116,10 +121,14 @@ void coalAndCollect(void) {
 }
 
 void falconMove(void){
+    
+
+        // jesli byl kamien to brak ruchu
     if(stoneHit == 1){
       stoneHit = 0;
       return;
     }
+        // ruch falkonem na razie skokowo
 
    switch (kierunek){
       case 1:
@@ -150,6 +159,8 @@ void falconMove(void){
 
 
 void noCoalLeft(void) {
+  // sprawdzenie warunku na game over
+
   if(coal == 0){
     gameExit();
   }
@@ -170,11 +181,8 @@ s_pVp = vPortCreate(0,
     TAG_VPORT_BPP, 5, // bits per pixel: 4bpp = 16col, 5pp = 32col, etc.
     TAG_END
 );
-// Jaka˜ paleta na pocz¥tek
-s_pVp->pPalette[0] = 0x0000; // 0x0RGB, hex (0..F)
-s_pVp->pPalette[1] = 0x0888;
-s_pVp->pPalette[2] = 0x0800;
-s_pVp->pPalette[3] = 0x0008;
+// Paleta z falkona
+paletteLoad("data/falkon.plt", s_pVp->pPalette, 32);
 
 // proste wy˜wietlanie bitmapy na viewporcie
 s_pVpManager = simpleBufferCreate(0,
@@ -191,7 +199,7 @@ viewLoad(s_pView);
 // narysujmy prostok¥t
 blitRect(s_pVpManager->pBack, falkonx, falkony, 32, 32, 1);
 
-// drugi jako kamyk
+// stawiam recznie kamyki i znajdzki, uzupelniam tablice do oznaczenia rodzaju tajla
 blitRect(s_pVpManager->pBack, 2 * 32, 4 * 32, 32, 32, 2);
 kamyki[2][4] = 3;
 blitRect(s_pVpManager->pBack, 3 * 32, 2 * 32, 32, 32, 2);

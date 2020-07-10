@@ -14,3 +14,9 @@ add_custom_command( # So call elf2hunk
     TARGET falkon.elf POST_BUILD
     COMMAND ${ELF2HUNK} falkon.elf falkon.exe)
 
+    set(RES_DIR ${CMAKE_CURRENT_LIST_DIR}/res) # st¥d bierzemy pliki do konwersji
+    set(DATA_DIR ${CMAKE_CURRENT_BINARY_DIR}/data) # tu maj¥ l¥dowa†
+    file(MAKE_DIRECTORY ${DATA_DIR}) #zaˆ¢¾my data
+    
+    set(PLT_PATH ${DATA_DIR}/falkon.plt) #tak si© b©dzie nazywa† docelowa paleta
+    convertPalette(falkon.elf ${RES_DIR}/falkon.pal ${PLT_PATH}) # z res/falkon.pal do build/data/falkon.plt
