@@ -215,6 +215,7 @@ s_pVpManager = simpleBufferCreate(0,
 bitmapLoadFromFile(s_pVpManager->pBack, "data/tlo1.bm", 0, 0); // wczytaj zawarto�� bg1.bm bezpo�rednio do bitmapy bufora ekranu, zaczynaj�c od pozycji 0,0
 
 joyOpen(); // b�dziemy u�ywa� d�oja w grze
+keyCreate();
 // na koniec create:
 systemUnuse(); // system w trakcie loop nie jest nam potrzebny
 viewLoad(s_pView);
@@ -256,40 +257,33 @@ void genericProcess(void) {
 
  //--------------------------------------------------------------- gdzie� w loop:
 	joyProcess();
-if(joyUse(JOY1_FIRE)) {
-  gameExit();
-}
-if(joyUse(JOY1_RIGHT)) {
-    kierunek = 1; 
-    isThisStone();
-    czyRamka();
-    falconMove(); 
-    coalAndCollect(); 
-}  
-if(joyUse(JOY1_LEFT)) {
-    kierunek = 2; 
-    isThisStone();
-    czyRamka();
-    falconMove(); 
-    coalAndCollect();
-}
-if(joyUse(JOY1_UP)) {
-    kierunek = 3; 
-    isThisStone();
-    czyRamka();
-    falconMove(); 
-    coalAndCollect();    
-}
-if(joyUse(JOY1_DOWN)) {
-    kierunek = 4; 
-    isThisStone();
-    czyRamka();
-    falconMove(); 
-    coalAndCollect();   
-}
+	keyProcess();
+	if(joyUse(JOY1_FIRE) || keyUse(KEY_ESCAPE)) {
+		gameExit();
+	}
 
-noCoalLeft();
+	kierunek = 0;
+	if(joyUse(JOY1_RIGHT) || keyUse(KEY_D)) {
+		kierunek = 1;
+	}
+	else if(joyUse(JOY1_LEFT) || keyUse(KEY_A)) {
+		kierunek = 2;
+	}
+	else if(joyUse(JOY1_UP) || keyUse(KEY_W)) {
+		kierunek = 3;
+	}
+	else if(joyUse(JOY1_DOWN) || keyUse(KEY_S)) {
+		kierunek = 4;
+	}
 
+	if(kierunek != 0) {
+		isThisStone();
+		czyRamka();
+		falconMove();
+		coalAndCollect();
+	}
+
+	// noCoalLeft();
 
 	viewProcessManagers(s_pView); // obliczenia niezb�dne do poprawnego dzia�ania viewport�w
 	copProcessBlocks(); // obliczenia niezb�dne do poprawnego dzia�ania coppera
@@ -304,4 +298,5 @@ void genericDestroy(void) {
 
 	viewDestroy(s_pView); // zwolnij z pami�ci view, wszystkie do��czone do niego viewporty i wszystkie do��czone do nich mened�ery
 	joyClose();
+	keyDestroy();
 }
