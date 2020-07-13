@@ -14,7 +14,7 @@ static tSimpleBufferManager *s_pVpManager;
 static tBitMap *s_pTiles;
 
 
-BYTE kamyki[9][6];
+BYTE kamyki[10][7];
 
 // coordsy do rysowania falkona i kontrolowania zeby sie nie wypierdolil za ekran
 BYTE falkonx = 0;
@@ -245,6 +245,9 @@ blitRect(s_pVpManager->pBack, 8 * 32, 6 * 32, 32, 32, 4);
 kamyki[8][6] = 4;
 blitRect(s_pVpManager->pBack, 9 * 32, 6 * 32, 32, 32, 10);
 kamyki[9][6] = 10;
+
+// probuje postawic kafla
+blitCopy(s_pTiles, 0, 0, s_pVpManager->pBack, 0, 0, 32, 32, MINTERM_COOKIE, 0xFF);
 
 
 
