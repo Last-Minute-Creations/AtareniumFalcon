@@ -12,6 +12,10 @@ static tView *s_pView;
 static tVPort *s_pVp;
 static tSimpleBufferManager *s_pVpManager;
 static tBitMap *s_pTiles;
+static tBitMap *s_pTilesMask;
+static tBitMap *s_pBg;
+
+
 
 
 BYTE kamyki[10][7];
@@ -149,24 +153,24 @@ void falconMove(void){
 
    switch (kierunek){
       case 1:
-      blitRect(s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, 0);
+      blitCopy(s_pBg, falkonx * 32, falkony * 32, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32,MINTERM_COOKIE, 0xFF);
       falkonx = falkonx + 1;
-      blitRect(s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, 1);
+      blitCopyMask(s_pTiles, 128, 32, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
         break;
       case 2:
-      blitRect(s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, 0);
+      blitCopy(s_pBg, falkonx * 32, falkony * 32, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32,MINTERM_COOKIE, 0xFF);
       falkonx = falkonx - 1;
-      blitRect(s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, 1);
+      blitCopyMask(s_pTiles, 128, 32, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
         break;
       case 3:
-      blitRect(s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, 0);
+      blitCopy(s_pBg, falkonx * 32, falkony * 32, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32,MINTERM_COOKIE, 0xFF);
       falkony = falkony - 1;
-      blitRect(s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, 1);
+      blitCopyMask(s_pTiles, 128, 32, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
         break;
       case 4:
-      blitRect(s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, 0);
+      blitCopy(s_pBg, falkonx * 32, falkony * 32, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32,MINTERM_COOKIE, 0xFF);
       falkony = falkony + 1;
-      blitRect(s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, 1);
+      blitCopyMask(s_pTiles, 128, 32, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
         break;
    }
 }
@@ -202,6 +206,9 @@ s_pVp = vPortCreate(0,
 paletteLoad("data/falkon.plt", s_pVp->pPalette, 32);
 
 s_pTiles = bitmapCreateFromFile("data/tileset.bm", 0); // z pliku tileset.bm, nie lokuj bitmapy w pami�ci FAST
+s_pTilesMask = bitmapCreateFromFile("data/tileset.bm", 0); // z pliku tileset.bm, nie lokuj bitmapy w pami�ci FAST
+s_pBg = bitmapCreateFromFile("data/tlo1.bm", 0); // fragmenty tla do podstawiania po ruchu
+
 
 // proste wy�wietlanie bitmapy na viewporcie
 s_pVpManager = simpleBufferCreate(0,
@@ -221,33 +228,36 @@ systemUnuse(); // system w trakcie loop nie jest nam potrzebny
 viewLoad(s_pView);
 
 
-// narysujmy prostok�t
-blitRect(s_pVpManager->pBack, falkonx, falkony, 32, 32, 1);
+// narysujmy falkona
+blitCopyMask(s_pTiles, 128, 32, s_pVpManager->pBack, falkonx, falkony, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+//blitRect(s_pVpManager->pBack, falkonx, falkony, 32, 32, 1);
 
 // stawiam recznie kamyki i znajdzki, uzupelniam tablice do oznaczenia rodzaju tajla
-blitRect(s_pVpManager->pBack, 1 * 32, 0 * 32, 32, 32, 4);
+// level 1
+
+blitCopyMask(s_pTiles, 96, 0, s_pVpManager->pBack, 1 * 32, 0 * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
 kamyki[1][0] = 4;
-blitRect(s_pVpManager->pBack, 6 * 32, 1 * 32, 32, 32, 5);
+blitCopyMask(s_pTiles, 128, 0, s_pVpManager->pBack, 6 * 32, 1 * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
 kamyki[6][1] = 5;
-blitRect(s_pVpManager->pBack, 1 * 32, 2 * 32, 32, 32, 5);
+blitCopyMask(s_pTiles, 128, 0, s_pVpManager->pBack, 1 * 32, 2 * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
 kamyki[1][2] = 5;
-blitRect(s_pVpManager->pBack, 7 * 32, 2 * 32, 32, 32, 4);
+blitCopyMask(s_pTiles, 96, 0, s_pVpManager->pBack, 7 * 32, 2 * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
 kamyki[7][2] = 4;
-blitRect(s_pVpManager->pBack, 1 * 32, 3 * 32, 32, 32, 11);
+blitCopyMask(s_pTiles, 96, 32, s_pVpManager->pBack, 1 * 32, 3 * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
 kamyki[1][3] = 11;
-blitRect(s_pVpManager->pBack, 8 * 32, 3 * 32, 32, 32, 5);
+blitCopyMask(s_pTiles, 128, 0, s_pVpManager->pBack, 8 * 32, 3 * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
 kamyki[8][3] = 5;
-blitRect(s_pVpManager->pBack, 2 * 32, 4 * 32, 32, 32, 6);
+blitCopyMask(s_pTiles, 160, 0, s_pVpManager->pBack, 2 * 32, 4 * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
 kamyki[2][4] = 6;
-blitRect(s_pVpManager->pBack, 5 * 32, 5 * 32, 32, 32, 6);
+blitCopyMask(s_pTiles, 160, 0, s_pVpManager->pBack, 5 * 32, 5 * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
 kamyki[5][5] = 6;
-blitRect(s_pVpManager->pBack, 8 * 32, 6 * 32, 32, 32, 4);
+blitCopyMask(s_pTiles, 96, 0, s_pVpManager->pBack, 8 * 32, 6 * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
 kamyki[8][6] = 4;
-blitRect(s_pVpManager->pBack, 9 * 32, 6 * 32, 32, 32, 10);
+blitCopyMask(s_pTiles, 64, 32, s_pVpManager->pBack, 9 * 32, 6 * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
 kamyki[9][6] = 10;
 
-// probuje postawic kafla
-blitCopy(s_pTiles, 0, 0, s_pVpManager->pBack, 0, 0, 32, 32, MINTERM_COOKIE, 0xFF);
+
+
 
 
 
@@ -298,6 +308,7 @@ void genericDestroy(void) {
 	systemUse(); // w��cz grzecznie system
 
 	bitmapDestroy(s_pTiles);
+  bitmapDestroy(s_pTilesMask);
 
 	viewDestroy(s_pView); // zwolnij z pami�ci view, wszystkie do��czone do niego viewporty i wszystkie do��czone do nich mened�ery
 	joyClose();
