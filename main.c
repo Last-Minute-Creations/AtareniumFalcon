@@ -5,6 +5,7 @@
 #include <ace/managers/system.h>
 #include <ace/managers/game.h>
 #include <ace/utils/palette.h>
+#include <ace/utils/font.h>
 
 //------------------------------------------------------- gdzie� przed funkcjami
 // zmienne trzymaj�ce adresy do viewa, viewporta, simple buffer managera
@@ -14,6 +15,10 @@ static tSimpleBufferManager *s_pVpManager;
 static tBitMap *s_pTiles;
 static tBitMap *s_pTilesMask;
 static tBitMap *s_pBg;
+static tBitMap *s_pHUD;
+
+static tFont *s_pFont;
+static tTextBitMap *s_pBmText;
 
 #define MAP_TILE_HEIGHT 7
 #define MAP_TILE_WIDTH 10
@@ -82,9 +87,20 @@ for(UBYTE y = 0; y < MAP_TILE_HEIGHT; ++y) {
 }
 }
 
+void clearTiles(void) {
+for(UBYTE y = 0; y < MAP_TILE_HEIGHT; ++y) {
+  for(UBYTE x = 0; x < MAP_TILE_WIDTH; ++x) {
+    kamyki[x][y] = 0;  
+    } 
+  } 
+} 
+
+
 void nextLevel(void) {
+  clearTiles();
   blitCopy(s_pBg, 0, 0, s_pVpManager->pBack, 0, 0, 320, 128,MINTERM_COOKIE, 0xFF);
   blitCopy(s_pBg, 0, 0, s_pVpManager->pBack, 0, 128, 320, 128,MINTERM_COOKIE, 0xFF);
+  blitCopy(s_pHUD, 0, 224, s_pVpManager->pBack, 0, 224, 320,32,MINTERM_COOKIE, 0xFF);
   switch(level){
     case 2:
     falkonx = 0;
@@ -105,6 +121,52 @@ void nextLevel(void) {
     kamyki[9][6] = 10;
     
     drawTiles();
+      break;
+    case 3:
+    falkonx = 0;
+    falkony = 0;
+    krawedzx = 0;
+    krawedzy = 0;
+    kierunek = 0;
+    
+    kamyki[0][0] = 12;
+    kamyki[1][1] = 4;
+    kamyki[3][1] = 4;
+    kamyki[6][1] = 9;
+    kamyki[7][1] = 7;
+    kamyki[6][2] = 4; 
+    kamyki[8][5] = 6; 
+    kamyki[1][3] = 4;  
+    kamyki[4][3] = 5; 
+    kamyki[5][3] = 11; 
+    kamyki[7][5] = 2; 
+    kamyki[9][6] = 10;
+
+    drawTiles();
+      break;
+    case 4:
+    falkonx = 0;
+    falkony = 0;
+    krawedzx = 0;
+    krawedzy = 0;
+    kierunek = 0;
+
+    kamyki[0][0] = 12;
+    kamyki[1][1] = 3;
+    kamyki[0][1] = 4;
+    kamyki[1][0] = 5;
+    kamyki[1][2] = 11;
+    kamyki[2][2] = 7;
+    kamyki[3][4] = 3;
+    kamyki[3][5] = 3;
+    kamyki[3][6] = 7;
+    kamyki[5][6] = 3;
+    kamyki[6][6] = 4;
+    kamyki[6][4] = 6;
+    kamyki[9][6] = 10;
+    
+    drawTiles();
+      break;
   }
 }
 
@@ -214,7 +276,7 @@ void coalAndCollect(void) {
     ++level;
     nextLevel();
   }
-
+  
   coal = coal - 1;
 }
 
@@ -285,6 +347,10 @@ paletteLoad("data/falkon.plt", s_pVp->pPalette, 32);
 s_pTiles = bitmapCreateFromFile("data/tileset.bm", 0); // z pliku tileset.bm, nie lokuj bitmapy w pami�ci FAST
 s_pTilesMask = bitmapCreateFromFile("data/tileset.bm", 0); // z pliku tileset.bm, nie lokuj bitmapy w pami�ci FAST
 s_pBg = bitmapCreateFromFile("data/tlo1.bm", 0); // fragmenty tla do podstawiania po ruchu
+s_pHUD = bitmapCreateFromFile("data/HUD.bm", 0);
+
+s_pFont = fontCreate("data/uni54.fnt");
+s_pBmText = fontCreateTextBitMap(200, s_pFont->uwHeight); // bitmapa robocza długa na 200px, wysoka na jedną linię tekstu
 
 
 // proste wy�wietlanie bitmapy na viewporcie
@@ -297,11 +363,16 @@ s_pVpManager = simpleBufferCreate(0,
 
 // po zrobieniu simpleBufferCreate()
 bitmapLoadFromFile(s_pVpManager->pBack, "data/tlo1.bm", 0, 0); // wczytaj zawarto�� bg1.bm bezpo�rednio do bitmapy bufora ekranu, zaczynaj�c od pozycji 0,0
-
+blitCopy(s_pHUD, 0, 224, s_pVpManager->pBack, 0, 224, 320,32,MINTERM_COOKIE, 0xFF);
 joyOpen(); // b�dziemy u�ywa� d�oja w grze
 keyCreate();
 // na koniec create:
 systemUnuse(); // system w trakcie loop nie jest nam potrzebny
+
+fontFillTextBitMap(s_pFont, s_pBmText, "dupa");
+fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText,  100, 100, 5, FONT_COOKIE);
+
+
 viewLoad(s_pView);
 
 
@@ -328,7 +399,6 @@ kamyki[9][6] = 10;
 
 
 drawTiles();
-
 }
 
 void genericProcess(void) {
@@ -377,6 +447,9 @@ void genericDestroy(void) {
 
 	bitmapDestroy(s_pTiles);
   bitmapDestroy(s_pTilesMask);
+
+  fontDestroy(s_pFont);
+  fontDestroyTextBitMap(s_pBmText);
 
 	viewDestroy(s_pView); // zwolnij z pami�ci view, wszystkie do��czone do niego viewporty i wszystkie do��czone do nich mened�ery
 	joyClose();

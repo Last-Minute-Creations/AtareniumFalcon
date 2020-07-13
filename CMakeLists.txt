@@ -30,8 +30,20 @@ convertBitmaps(
 
 convertBitmaps(
 	TARGET falkon.elf PALETTE ${PLT_PATH}
+	INTERLEAVED SOURCES ${RES_DIR}/HUD.png
+	DESTINATIONS ${DATA_DIR}/HUD.bm
+)
+
+convertBitmaps(
+	TARGET falkon.elf PALETTE ${PLT_PATH}
 	MASK_COLOR "#000000"
 	INTERLEAVED SOURCES ${RES_DIR}/tileset.png
 	DESTINATIONS ${DATA_DIR}/tileset.bm
 	MASKS ${DATA_DIR}/tileset_mask.bm
+)
+
+
+file(
+    COPY ${RES_DIR}/uni54.fnt
+    DESTINATION ${DATA_DIR}
 )
