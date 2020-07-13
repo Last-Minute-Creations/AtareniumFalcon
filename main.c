@@ -15,6 +15,9 @@ static tBitMap *s_pTiles;
 static tBitMap *s_pTilesMask;
 static tBitMap *s_pBg;
 
+#define MAP_TILE_HEIGHT 7
+#define MAP_TILE_WIDTH 10
+
 
 
 
@@ -232,30 +235,61 @@ viewLoad(s_pView);
 blitCopyMask(s_pTiles, 128, 32, s_pVpManager->pBack, falkonx, falkony, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
 //blitRect(s_pVpManager->pBack, falkonx, falkony, 32, 32, 1);
 
-// stawiam recznie kamyki i znajdzki, uzupelniam tablice do oznaczenia rodzaju tajla
+// tablica trzyma wlasciwosci tile'a, petla stawia tajle na miejscach wyznaczanych przez tablice
 // level 1
 
-blitCopyMask(s_pTiles, 96, 0, s_pVpManager->pBack, 1 * 32, 0 * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
 kamyki[1][0] = 4;
-blitCopyMask(s_pTiles, 128, 0, s_pVpManager->pBack, 6 * 32, 1 * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
 kamyki[6][1] = 5;
-blitCopyMask(s_pTiles, 128, 0, s_pVpManager->pBack, 1 * 32, 2 * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
 kamyki[1][2] = 5;
-blitCopyMask(s_pTiles, 96, 0, s_pVpManager->pBack, 7 * 32, 2 * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
 kamyki[7][2] = 4;
-blitCopyMask(s_pTiles, 96, 32, s_pVpManager->pBack, 1 * 32, 3 * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
 kamyki[1][3] = 11;
-blitCopyMask(s_pTiles, 128, 0, s_pVpManager->pBack, 8 * 32, 3 * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
 kamyki[8][3] = 5;
-blitCopyMask(s_pTiles, 160, 0, s_pVpManager->pBack, 2 * 32, 4 * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
 kamyki[2][4] = 6;
-blitCopyMask(s_pTiles, 160, 0, s_pVpManager->pBack, 5 * 32, 5 * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
 kamyki[5][5] = 6;
-blitCopyMask(s_pTiles, 96, 0, s_pVpManager->pBack, 8 * 32, 6 * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
 kamyki[8][6] = 4;
-blitCopyMask(s_pTiles, 64, 32, s_pVpManager->pBack, 9 * 32, 6 * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
 kamyki[9][6] = 10;
 
+for(UBYTE y = 0; y < MAP_TILE_HEIGHT; ++y) {
+  for(UBYTE x = 0; x < MAP_TILE_WIDTH; ++x) {
+    // i już masz zmienne x,y które się ruszają
+    switch (kamyki[x][y])    {
+    case 1:
+    blitCopyMask(s_pTiles, 0, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+      break;
+    case 2:
+    blitCopyMask(s_pTiles, 32, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+      break;
+    case 3:
+    blitCopyMask(s_pTiles, 64, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+      break;          
+    case 4:
+      blitCopyMask(s_pTiles, 96, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+      break;
+    case 5:
+      blitCopyMask(s_pTiles, 128, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+      break;
+    case 6:
+      blitCopyMask(s_pTiles, 160, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+      break;
+    case 7:
+      blitCopyMask(s_pTiles, 192, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+      break; 
+    case 8:
+      blitCopyMask(s_pTiles, 0, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+      break; 
+    case 9:
+      blitCopyMask(s_pTiles, 32, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+      break; 
+    case 10:
+      blitCopyMask(s_pTiles, 64, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+      break;
+    case 11:
+      blitCopyMask(s_pTiles, 96, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+      break;      
+   
+    }
+  }
+}
 
 
 
