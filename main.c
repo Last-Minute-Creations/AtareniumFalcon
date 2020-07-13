@@ -33,7 +33,80 @@ BYTE kierunek = 0;
 BYTE stoneHit = 0;
 BYTE coal = 10;
 BYTE capacitors = 0;
+BYTE level = 1;
 
+
+void drawTiles(void) {
+for(UBYTE y = 0; y < MAP_TILE_HEIGHT; ++y) {
+  for(UBYTE x = 0; x < MAP_TILE_WIDTH; ++x) {
+    // i już masz zmienne x,y które się ruszają
+    switch (kamyki[x][y])    {
+    case 1:
+    blitCopyMask(s_pTiles, 0, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+      break;
+    case 2:
+    blitCopyMask(s_pTiles, 32, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+      break;
+    case 3:
+    blitCopyMask(s_pTiles, 64, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+      break;          
+    case 4:
+      blitCopyMask(s_pTiles, 96, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+      break;
+    case 5:
+      blitCopyMask(s_pTiles, 128, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+      break;
+    case 6:
+      blitCopyMask(s_pTiles, 160, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+      break;
+    case 7:
+      blitCopyMask(s_pTiles, 192, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+      break; 
+    case 8:
+      blitCopyMask(s_pTiles, 0, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+      break; 
+    case 9:
+      blitCopyMask(s_pTiles, 32, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+      break; 
+    case 10:
+      blitCopyMask(s_pTiles, 64, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+      break;
+    case 11:
+      blitCopyMask(s_pTiles, 96, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+      break;      
+    case 12:
+      blitCopyMask(s_pTiles, 128, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+      break;
+    }
+  }
+}
+}
+
+void nextLevel(void) {
+  blitCopy(s_pBg, 0, 0, s_pVpManager->pBack, 0, 0, 320, 128,MINTERM_COOKIE, 0xFF);
+  blitCopy(s_pBg, 0, 0, s_pVpManager->pBack, 0, 128, 320, 128,MINTERM_COOKIE, 0xFF);
+  switch(level){
+    case 2:
+    falkonx = 0;
+    falkony = 0;
+    krawedzx = 0;
+    krawedzy = 0;
+    kierunek = 0;
+
+    kamyki[0][0] = 12;
+    kamyki[0][2] = 3; 
+    kamyki[1][0] = 7; 
+    kamyki[2][3] = 8;
+    kamyki[1][1] = 6;
+    kamyki[8][3] = 5;
+    kamyki[4][4] = 5;
+    kamyki[6][5] = 11;
+    kamyki[7][5] = 7;
+    kamyki[9][6] = 10;
+    
+    drawTiles();
+  }
+}
 
 void czyRamka(void) {
     // tu jest funkcja sprawdzajaca czy sie chcemy wypierdolic za ekran i nie pozwalajaca na to
@@ -138,7 +211,8 @@ void coalAndCollect(void) {
     capacitors = capacitors + 2;
   }
   if(kamyki[pickSthX][pickSthY] == 10){
-    gameExit();
+    ++level;
+    nextLevel();
   }
 
   coal = coal - 1;
@@ -249,51 +323,11 @@ kamyki[5][5] = 6;
 kamyki[8][6] = 4;
 kamyki[9][6] = 10;
 
-for(UBYTE y = 0; y < MAP_TILE_HEIGHT; ++y) {
-  for(UBYTE x = 0; x < MAP_TILE_WIDTH; ++x) {
-    // i już masz zmienne x,y które się ruszają
-    switch (kamyki[x][y])    {
-    case 1:
-    blitCopyMask(s_pTiles, 0, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
-      break;
-    case 2:
-    blitCopyMask(s_pTiles, 32, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
-      break;
-    case 3:
-    blitCopyMask(s_pTiles, 64, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
-      break;          
-    case 4:
-      blitCopyMask(s_pTiles, 96, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
-      break;
-    case 5:
-      blitCopyMask(s_pTiles, 128, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
-      break;
-    case 6:
-      blitCopyMask(s_pTiles, 160, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
-      break;
-    case 7:
-      blitCopyMask(s_pTiles, 192, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
-      break; 
-    case 8:
-      blitCopyMask(s_pTiles, 0, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
-      break; 
-    case 9:
-      blitCopyMask(s_pTiles, 32, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
-      break; 
-    case 10:
-      blitCopyMask(s_pTiles, 64, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
-      break;
-    case 11:
-      blitCopyMask(s_pTiles, 96, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
-      break;      
-   
-    }
-  }
-}
 
 
 
 
+drawTiles();
 
 }
 
