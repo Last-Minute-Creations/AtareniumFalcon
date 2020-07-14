@@ -167,6 +167,189 @@ void nextLevel(void) {
     
     drawTiles();
       break;
+    
+    case 5:
+    falkonx = 0;
+    falkony = 0;
+    krawedzx = 0;
+    krawedzy = 0;
+    kierunek = 0;
+
+    kamyki[0][0] = 12;
+    kamyki[1][0] = 3;
+    kamyki[4][0] = 4;
+    kamyki[7][0] = 3;
+    kamyki[9][0] = 9;
+    kamyki[0][1] = 6;
+    kamyki[1][1] = 3;
+    kamyki[2][1] = 5;
+    kamyki[3][1] = 3;
+    kamyki[4][1] = 8;
+    kamyki[6][1] = 5;
+    kamyki[7][1] = 3;
+    kamyki[9][1] = 3;
+    kamyki[3][2] = 3;
+    kamyki[4][2] = 3;
+    kamyki[5][2] = 3;
+    kamyki[7][2] = 3;
+    kamyki[9][2] = 7;
+    kamyki[1][3] = 3;
+    kamyki[2][3] = 5;  
+    kamyki[4][3] = 6;
+    kamyki[6][3] = 4;
+    kamyki[9][3] = 6;
+    kamyki[1][4] = 3;
+    kamyki[2][4] = 3;
+    kamyki[4][4] = 11; 
+    kamyki[5][4] = 3;
+    kamyki[8][4] = 4;
+    kamyki[0][5] = 7;
+    kamyki[2][5] = 3;
+    kamyki[3][5] = 3;
+    kamyki[4][5] = 3;
+    kamyki[5][5] = 3;
+    kamyki[6][5] = 3;
+    kamyki[7][5] = 3;
+    kamyki[0][5] = 8;
+    kamyki[3][5] = 6;
+    kamyki[4][5] = 7;
+    kamyki[6][6] = 7;
+    kamyki[8][6] = 3;
+    kamyki[9][6] = 10;
+
+    drawTiles();
+      break;
+
+    case 6:
+    falkonx = 5;
+    falkony = 4;
+    krawedzx = 5;
+    krawedzy = 4;
+    kierunek = 0;
+
+    kamyki[0][0] = 9;
+    kamyki[1][0] = 3;
+    kamyki[2][0] = 8;
+    kamyki[3][0] = 3;
+    kamyki[4][0] = 3;
+    kamyki[7][0] = 4;
+    kamyki[9][0] = 8;
+    kamyki[1][1] = 3;
+    kamyki[2][1] = 8;
+    kamyki[3][1] = 3;
+    kamyki[4][1] = 9;
+    kamyki[5][1] = 3;
+    kamyki[6][1] = 3;
+    kamyki[7][1] = 7;
+    kamyki[8][1] = 3;
+    kamyki[9][1] = 3;
+    kamyki[0][2] = 6;
+    kamyki[2][2] = 5;
+    kamyki[6][2] = 7;
+    kamyki[9][2] = 6;
+    kamyki[1][3] = 3;
+    kamyki[3][3] = 3;
+    kamyki[4][3] = 3;
+    kamyki[5][3] = 3;
+    kamyki[6][3] = 3;
+    kamyki[7][3] = 3;
+    kamyki[8][3] = 4;
+    kamyki[9][3] = 3;
+    kamyki[0][4] = 4;
+    kamyki[1][4] = 3; 
+    kamyki[3][4] = 10;
+    kamyki[4][4] = 3;
+    kamyki[5][4] = 12;
+    kamyki[6][4] = 3;
+    kamyki[9][4] = 9;
+    kamyki[2][5] = 3;
+    kamyki[3][5] = 3;
+    kamyki[4][5] = 3;
+    kamyki[5][5] = 7;
+    kamyki[6][5] = 3;
+    kamyki[7][5] = 3;
+    kamyki[8][5] = 8;
+    kamyki[9][5] = 3;
+    kamyki[0][6] = 3;
+    kamyki[1][6] = 5; 
+    kamyki[4][6] = 8; 
+    kamyki[8][6] = 4; 
+    kamyki[9][6] = 3;
+
+    drawTiles();
+      break;
+
+    case 7: // ta ma byc ostatnia 
+    falkonx = 0;
+    falkony = 3;
+    krawedzx = 0;
+    krawedzy = 3;
+    kierunek = 0;
+
+    kamyki[0][0] = 3;
+    kamyki[1][0] = 3;
+    kamyki[2][0] = 3;
+    kamyki[3][0] = 3;
+    kamyki[4][0] = 3;
+    kamyki[5][0] = 3;
+    kamyki[6][0] = 3;
+    kamyki[7][0] = 3;
+    kamyki[8][0] = 3;
+    kamyki[9][0] = 3;
+    kamyki[0][1] = 3;
+    kamyki[2][1] = 7;
+    kamyki[3][1] = 6;
+    kamyki[4][1] = 9; 
+    kamyki[5][1] = 7;
+    kamyki[6][1] = 7; 
+    kamyki[7][1] = 7; 
+    kamyki[8][1] = 6;
+    kamyki[9][1] = 3;
+    kamyki[0][2] = 3;
+    kamyki[2][2] = 5; 
+    kamyki[6][2] = 7; 
+    kamyki[9][2] = 3;
+    kamyki[0][3] = 12;
+    kamyki[1][3] = 11;
+    kamyki[2][3] = 7;
+    kamyki[3][3] = 7; 
+    kamyki[4][3] = 7; 
+    kamyki[5][3] = 6;
+    kamyki[6][3] = 7;
+    kamyki[7][3] = 6;
+    kamyki[8][3] = 4; 
+    kamyki[9][3] = 3;
+    kamyki[0][4] = 3;
+    kamyki[1][4] = 7;
+    kamyki[3][4] = 7;
+    kamyki[4][4] = 6;
+    kamyki[5][4] = 7;
+    kamyki[6][4] = 5;
+    kamyki[9][4] = 3;
+    kamyki[0][5] = 3;
+    kamyki[2][5] = 7;
+    kamyki[3][5] = 9;
+    kamyki[4][5] = 6; 
+    kamyki[5][5] = 7;
+    kamyki[6][5] = 7;
+    kamyki[7][5] = 6;
+    kamyki[8][5] = 10;
+    kamyki[9][5] = 3;
+
+    kamyki[0][6] = 3;
+    kamyki[1][6] = 3; 
+    kamyki[2][6] = 3;
+    kamyki[3][6] = 3;
+    kamyki[4][6] = 3; 
+    kamyki[5][6] = 3;
+    kamyki[6][6] = 3;
+    kamyki[7][6] = 3; 
+    kamyki[8][6] = 3;
+    kamyki[9][6] = 3;
+
+    drawTiles();
+      break;
+    
   }
 }
 
