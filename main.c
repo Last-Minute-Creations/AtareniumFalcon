@@ -7,6 +7,7 @@
 #include <ace/utils/palette.h>
 #include <ace/utils/font.h>
 #include <stdio.h>
+#include <ace/managers/rand.h>
 
 //------------------------------------------------------- gdzie� przed funkcjami
 // zmienne trzymaj�ce adresy do viewa, viewporta, simple buffer managera
@@ -26,6 +27,8 @@ static tTextBitMap *s_pBmText;
 
 char szMsg[50]; // do wyswietlania wegla na HUD
 char szMsg2[50]; // do wyswietlania kondkow na HUD
+
+BYTE ubDupa = 0;
 
 
 BYTE kamyki[10][7];
@@ -55,7 +58,8 @@ for(UBYTE y = 0; y < MAP_TILE_HEIGHT; ++y) {
     blitCopyMask(s_pTiles, 32, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
       break;
     case 3:
-    blitCopyMask(s_pTiles, 64, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+    ubDupa = ubRandMinMax(0,2);
+    blitCopyMask(s_pTiles, ubDupa * 32, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
       break;          
     case 4:
       blitCopyMask(s_pTiles, 96, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
@@ -578,6 +582,9 @@ joyOpen(); // b�dziemy u�ywa� d�oja w grze
 keyCreate();
 // na koniec create:
 systemUnuse(); // system w trakcie loop nie jest nam potrzebny
+
+randInit(1337);
+
 
 printOnHUD();
 
