@@ -6,6 +6,7 @@
 #include <ace/managers/game.h>
 #include <ace/utils/palette.h>
 #include <ace/utils/font.h>
+#include <stdio.h>
 
 //------------------------------------------------------- gdzie� przed funkcjami
 // zmienne trzymaj�ce adresy do viewa, viewporta, simple buffer managera
@@ -23,7 +24,8 @@ static tTextBitMap *s_pBmText;
 #define MAP_TILE_HEIGHT 7
 #define MAP_TILE_WIDTH 10
 
-
+char szMsg[50]; // do wyswietlania wegla na HUD
+char szMsg2[50]; // do wyswietlania kondkow na HUD
 
 
 BYTE kamyki[10][7];
@@ -95,12 +97,22 @@ for(UBYTE y = 0; y < MAP_TILE_HEIGHT; ++y) {
   } 
 } 
 
+void printOnHUD(void) {
+  sprintf(szMsg, "%d", coal);
+  fontFillTextBitMap(s_pFont, s_pBmText, szMsg);
+  fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText,  48, 229, 5, FONT_COOKIE);
+
+  sprintf(szMsg2, "%d", capacitors);
+  fontFillTextBitMap(s_pFont, s_pBmText, szMsg2);
+  fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText,  112, 229, 5, FONT_COOKIE);
+}
 
 void nextLevel(void) {
   clearTiles();
   blitCopy(s_pBg, 0, 0, s_pVpManager->pBack, 0, 0, 320, 128,MINTERM_COOKIE, 0xFF);
   blitCopy(s_pBg, 0, 0, s_pVpManager->pBack, 0, 128, 320, 128,MINTERM_COOKIE, 0xFF);
   blitCopy(s_pHUD, 0, 224, s_pVpManager->pBack, 0, 224, 320,32,MINTERM_COOKIE, 0xFF);
+  printOnHUD();
   switch(level){
     case 2:
     falkonx = 0;
@@ -451,9 +463,17 @@ void coalAndCollect(void) {
   }
   if(kamyki[pickSthX][pickSthY] == 8){
     capacitors = capacitors + 2;
+    blitCopy(s_pHUD, 96, 224, s_pVpManager->pBack, 96, 224, 32, 32,MINTERM_COOKIE, 0xFF);
+    sprintf(szMsg2, "%d", capacitors);
+    fontFillTextBitMap(s_pFont, s_pBmText, szMsg2);
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText,  112, 229, 5, FONT_COOKIE);
   }
   if(kamyki[pickSthX][pickSthY] == 9){
-    capacitors = capacitors + 2;
+    capacitors = capacitors + 4;
+    blitCopy(s_pHUD, 96, 224, s_pVpManager->pBack, 96, 224, 32, 32,MINTERM_COOKIE, 0xFF);
+    sprintf(szMsg2, "%d", capacitors);
+    fontFillTextBitMap(s_pFont, s_pBmText, szMsg2);
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText,  112, 229, 5, FONT_COOKIE);
   }
   if(kamyki[pickSthX][pickSthY] == 10){
     ++level;
@@ -461,6 +481,10 @@ void coalAndCollect(void) {
   }
   
   coal = coal - 1;
+  blitCopy(s_pHUD, 32, 224, s_pVpManager->pBack, 32, 224, 32, 32,MINTERM_COOKIE, 0xFF);
+  sprintf(szMsg, "%d", coal);
+  fontFillTextBitMap(s_pFont, s_pBmText, szMsg);
+  fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText,  48, 229, 5, FONT_COOKIE);
 }
 
 void falconMove(void){
@@ -510,6 +534,9 @@ void noCoalLeft(void) {
 }
 
 
+
+
+
 void genericCreate(void) {
   // Here goes your startup code
   //-------------------------------------------------------------- gdzie� w create
@@ -552,8 +579,8 @@ keyCreate();
 // na koniec create:
 systemUnuse(); // system w trakcie loop nie jest nam potrzebny
 
-fontFillTextBitMap(s_pFont, s_pBmText, "dupa");
-fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText,  100, 100, 5, FONT_COOKIE);
+printOnHUD();
+
 
 
 viewLoad(s_pView);
