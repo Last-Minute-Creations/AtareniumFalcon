@@ -28,7 +28,7 @@ static tTextBitMap *s_pBmText;
 char szMsg[50]; // do wyswietlania wegla na HUD
 char szMsg2[50]; // do wyswietlania kondkow na HUD
 
-BYTE ubDupa = 0;
+BYTE ubStoneImg = 0;
 
 
 BYTE kamyki[10][7];
@@ -41,6 +41,7 @@ BYTE krawedzy = 0;
 BYTE kierunek = 0;
 
 BYTE stoneHit = 0;
+BYTE frameHit = 0;
 BYTE coal = 10;
 BYTE capacitors = 0;
 BYTE level = 1;
@@ -51,15 +52,11 @@ for(UBYTE y = 0; y < MAP_TILE_HEIGHT; ++y) {
   for(UBYTE x = 0; x < MAP_TILE_WIDTH; ++x) {
     // i już masz zmienne x,y które się ruszają
     switch (kamyki[x][y])    {
-    case 1:
-    blitCopyMask(s_pTiles, 0, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
-      break;
-    case 2:
     blitCopyMask(s_pTiles, 32, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
       break;
     case 3:
-    ubDupa = ubRandMinMax(0,2);
-    blitCopyMask(s_pTiles, ubDupa * 32, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+    ubStoneImg = ubRandMinMax(0,2);
+    blitCopyMask(s_pTiles, ubStoneImg * 32, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
       break;          
     case 4:
       blitCopyMask(s_pTiles, 96, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
@@ -377,6 +374,7 @@ void czyRamka(void) {
         if(krawedzx == 10){
           krawedzx = 9;
           falkonx = 8;
+          frameHit = 1;
         }
         break;
       case 2:
@@ -384,6 +382,7 @@ void czyRamka(void) {
         if(krawedzx == -1){
           krawedzx = 0;
           falkonx = 1;
+          frameHit = 1;
         }
         break;
       case 3:
@@ -391,6 +390,7 @@ void czyRamka(void) {
         if(krawedzy == -1){
           krawedzy = 0;
           falkony = 1;
+          frameHit = 1;
         }
         break;
       case 4:
@@ -398,6 +398,7 @@ void czyRamka(void) {
         if(krawedzy == 7){
           krawedzy = 6;
           falkony = 5;
+          frameHit = 1;
         }
         break;
 
@@ -484,6 +485,7 @@ void coalAndCollect(void) {
     nextLevel();
   }
   
+  kamyki[pickSthX][pickSthY] = 0;
   coal = coal - 1;
   blitCopy(s_pHUD, 32, 224, s_pVpManager->pBack, 32, 224, 32, 32,MINTERM_COOKIE, 0xFF);
   sprintf(szMsg, "%d", coal);
@@ -499,29 +501,75 @@ void falconMove(void){
       stoneHit = 0;
       return;
     }
+
+    if(frameHit == 1){
+      frameHit = 0;
+      return;
+    }
         // ruch falkonem na razie skokowo
 
    switch (kierunek){
+      BYTE i = 0;
+      
       case 1:
-      blitCopy(s_pBg, falkonx * 32, falkony * 32, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32,MINTERM_COOKIE, 0xFF);
-      falkonx = falkonx + 1;
-      blitCopyMask(s_pTiles, 128, 32, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+      for (i = 0 ; i < 32; ++i)
+      {
+      UWORD uwPosX = falkonx * 32 + i; 
+      UWORD uwPosY = falkony * 32;
+      // draw bg on current pos
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,MINTERM_COOKIE, 0xFF);
+      ++uwPosX;
+      // draw falkon a tiny bit to the right
+      blitCopyMask(s_pTiles, 128, 32, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+      vPortWaitForEnd(s_pVp);
+      }
+      falkonx = falkonx + 1;  
         break;
       case 2:
-      blitCopy(s_pBg, falkonx * 32, falkony * 32, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32,MINTERM_COOKIE, 0xFF);
+
+      for (i = 0 ; i < 32; ++i)
+      {
+      UWORD uwPosX = falkonx * 32 - i; 
+      UWORD uwPosY = falkony * 32;
+      // draw bg on current pos
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,MINTERM_COOKIE, 0xFF);
+      --uwPosX;
+      // draw falkon a tiny bit to the left
+      blitCopyMask(s_pTiles, 128, 32, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+      vPortWaitForEnd(s_pVp);
+      }
       falkonx = falkonx - 1;
-      blitCopyMask(s_pTiles, 128, 32, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
         break;
       case 3:
-      blitCopy(s_pBg, falkonx * 32, falkony * 32, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32,MINTERM_COOKIE, 0xFF);
+      
+      for (i = 0 ; i < 32; ++i)
+      {
+      UWORD uwPosX = falkonx * 32; 
+      UWORD uwPosY = falkony * 32 - i;
+      // draw bg on current pos
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,MINTERM_COOKIE, 0xFF);
+      --uwPosY;
+      // draw falkon a tiny bit up
+      blitCopyMask(s_pTiles, 128, 32, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+      vPortWaitForEnd(s_pVp);
+      }
       falkony = falkony - 1;
-      blitCopyMask(s_pTiles, 128, 32, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
-        break;
+      break;
       case 4:
-      blitCopy(s_pBg, falkonx * 32, falkony * 32, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32,MINTERM_COOKIE, 0xFF);
+      
+      for (i = 0 ; i < 32; ++i)
+      {
+      UWORD uwPosX = falkonx * 32; 
+      UWORD uwPosY = falkony * 32 + i;
+      // draw bg on current pos
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,MINTERM_COOKIE, 0xFF);
+      ++uwPosY;
+      // draw falkon a tiny bit dons
+      blitCopyMask(s_pTiles, 128, 32, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+      vPortWaitForEnd(s_pVp);
+      }
       falkony = falkony + 1;
-      blitCopyMask(s_pTiles, 128, 32, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
-        break;
+      break;
    }
 }
 
