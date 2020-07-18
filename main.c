@@ -373,7 +373,7 @@ void czyRamka(void) {
       krawedzx = krawedzx + 1;
         if(krawedzx == 10){
           krawedzx = 9;
-          falkonx = 8;
+          falkonx = 9;
           frameHit = 1;
         }
         break;
@@ -381,7 +381,7 @@ void czyRamka(void) {
       krawedzx = krawedzx - 1;
         if(krawedzx == -1){
           krawedzx = 0;
-          falkonx = 1;
+          falkonx = 0;
           frameHit = 1;
         }
         break;
@@ -389,7 +389,7 @@ void czyRamka(void) {
       krawedzy = krawedzy - 1;
         if(krawedzy == -1){
           krawedzy = 0;
-          falkony = 1;
+          falkony = 0;
           frameHit = 1;
         }
         break;
@@ -397,7 +397,7 @@ void czyRamka(void) {
       krawedzy = krawedzy + 1;
         if(krawedzy == 7){
           krawedzy = 6;
-          falkony = 5;
+          falkony = 6;
           frameHit = 1;
         }
         break;
