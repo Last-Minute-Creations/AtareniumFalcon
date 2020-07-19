@@ -44,6 +44,7 @@ BYTE falkony = 0;
 BYTE krawedzx = 0;
 BYTE krawedzy = 0;
 BYTE kierunek = 0;
+BYTE falkonFace = 1; // kierunek dziobem
 
 BYTE stoneHit = 0;
 BYTE frameHit = 0;
@@ -517,6 +518,7 @@ void falconMove(void){
       BYTE i = 0;
       
       case 1:
+      falkonFace = 0;
       for (i = 0 ; i < 32; ++i)
       {
       UWORD uwPosX = falkonx * 32 + i; 
@@ -531,7 +533,7 @@ void falconMove(void){
       falkonx = falkonx + 1;  
         break;
       case 2:
-
+      falkonFace = 32;
       for (i = 0 ; i < 32; ++i)
       {
       UWORD uwPosX = falkonx * 32 - i; 
@@ -540,7 +542,7 @@ void falconMove(void){
       blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,MINTERM_COOKIE, 0xFF);
       --uwPosX;
       // draw falkon a tiny bit to the left
-      blitCopyMask(s_pTiles, 128, 32, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+      blitCopyMask(s_pTiles, 160, 32, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
       vPortWaitForEnd(s_pVp);
       }
       falkonx = falkonx - 1;
@@ -555,7 +557,7 @@ void falconMove(void){
       blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,MINTERM_COOKIE, 0xFF);
       --uwPosY;
       // draw falkon a tiny bit up
-      blitCopyMask(s_pTiles, 128, 32, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+      blitCopyMask(s_pTiles, 128 + falkonFace, 32, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
       vPortWaitForEnd(s_pVp);
       }
       falkony = falkony - 1;
@@ -570,7 +572,7 @@ void falconMove(void){
       blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,MINTERM_COOKIE, 0xFF);
       ++uwPosY;
       // draw falkon a tiny bit dons
-      blitCopyMask(s_pTiles, 128, 32, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+      blitCopyMask(s_pTiles, 128 + falkonFace, 32, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
       vPortWaitForEnd(s_pVp);
       }
       falkony = falkony + 1;
