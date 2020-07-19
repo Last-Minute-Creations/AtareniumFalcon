@@ -676,7 +676,7 @@ void stateGameLoop(void) {
  //--------------------------------------------------------------- gdzie� w loop:
 	joyProcess();
 	keyProcess();
-	if(joyUse(JOY1_FIRE) || keyUse(KEY_ESCAPE)) {
+	if(keyUse(KEY_ESCAPE)) {
 		gameExit();
 	}
 

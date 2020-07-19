@@ -14,6 +14,9 @@ static tVPort *s_pVp;
 static tSimpleBufferManager *s_pVpManager;
 static tBitMap *s_pTitle;
 
+extern tState g_sStateGame;
+extern tStateManager *g_pStateMachineGame; 
+
 
 void stateMenuCreate(void){
  
@@ -52,7 +55,22 @@ viewLoad(s_pView);
 
 }
 
-void stateMenuLoop(void){}
+void stateMenuLoop(void){
+    joyProcess();
+	keyProcess();
+	if(keyUse(KEY_ESCAPE)) {
+		gameExit();
+	}
+    if(joyUse(JOY1_FIRE) || keyUse(KEY_RETURN)) {
+		stateChange(g_pStateMachineGame, &g_sStateGame);
+    return;
+	}
+
+    viewProcessManagers(s_pView); 
+	copProcessBlocks(); 
+	vPortWaitForEnd(s_pVp); 
+
+}
 
 void stateMenuDestroy(void){
     viewDestroy(s_pView); 
