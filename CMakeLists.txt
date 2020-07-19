@@ -4,7 +4,7 @@ project(atarenium LANGUAGES C)
 # ACE
 add_subdirectory(ACE ace)
 
-add_executable(falkon.elf main.c game.c) # Compiler emits .elf file, we need hunk for Amiga
+add_executable(falkon.elf main.c game.c menu.c) # Compiler emits .elf file, we need hunk for Amiga
 
 target_compile_options(falkon.elf PRIVATE -Wall -Wextra)
 
@@ -21,6 +21,12 @@ file(MAKE_DIRECTORY ${DATA_DIR}) #za���my data
 
 set(PLT_PATH ${DATA_DIR}/falkon.plt) #tak si� b�dzie nazywa� docelowa paleta
 convertPalette(falkon.elf ${RES_DIR}/falkon.pal ${PLT_PATH}) # z res/falkon.pal do build/data/falkon.plt
+
+convertBitmaps(
+	TARGET falkon.elf PALETTE ${PLT_PATH}
+	INTERLEAVED SOURCES ${RES_DIR}/title.png
+	DESTINATIONS ${DATA_DIR}/title.bm
+)
 
 convertBitmaps(
 	TARGET falkon.elf PALETTE ${PLT_PATH}
