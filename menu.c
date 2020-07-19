@@ -66,6 +66,7 @@ void stateMenuLoop(void){
 }
 
 void stateMenuDestroy(void){
+	systemUse();
 	viewDestroy(s_pView);
 	joyClose();
 	keyDestroy();

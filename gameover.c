@@ -67,6 +67,7 @@ void stateGameOverLoop(void){
 }
 
 void stateGameOverDestroy(void){
+	systemUse();
 	joyClose();
 	keyDestroy();
 	viewDestroy(s_pView);
