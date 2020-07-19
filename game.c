@@ -24,6 +24,9 @@ static tBitMap *s_pHUD;
 static tFont *s_pFont;
 static tTextBitMap *s_pBmText;
 
+extern tState g_sStateGameOver;
+extern tStateManager *g_pStateMachineGame;
+
 #define MAP_TILE_HEIGHT 7
 #define MAP_TILE_WIDTH 10
 
@@ -583,7 +586,8 @@ void noCoalLeft(void) {
   // sprawdzenie warunku na game over
 
   if(coal == 0){
-    gameExit();
+    stateChange(g_pStateMachineGame, &g_sStateGameOver);
+    return;
   }
 }
 
@@ -701,7 +705,7 @@ void stateGameLoop(void) {
 		coalAndCollect();
 	}
 
-	// noCoalLeft();
+	noCoalLeft();
 
 	viewProcessManagers(s_pView); // obliczenia niezb�dne do poprawnego dzia�ania viewport�w
 	copProcessBlocks(); // obliczenia niezb�dne do poprawnego dzia�ania coppera

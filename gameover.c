@@ -4,20 +4,19 @@
 #include <ace/managers/system.h>
 #include <ace/managers/game.h>
 #include <ace/utils/palette.h>
-#include <ace/utils/font.h>
 #include <stdio.h>
 #include <ace/managers/state.h>
 
 static tView *s_pView;
 static tVPort *s_pVp;
 static tSimpleBufferManager *s_pVpManager;
-static tBitMap *s_pTitle;
+static tBitMap *s_pGameOver;
 
-extern tState g_sStateGame;
+extern tState g_sStateMenu;
 extern tStateManager *g_pStateMachineGame; 
 
 
-void stateMenuCreate(void){
+void stateGameOverCreate(void){
  
 s_pView = viewCreate(0,
     TAG_VIEW_COPLIST_MODE, COPPER_MODE_BLOCK, 
@@ -34,7 +33,7 @@ s_pVp = vPortCreate(0,
 paletteLoad("data/falkon.plt", s_pVp->pPalette, 32);
 
 
-s_pTitle = bitmapCreateFromFile("data/title.bm", 0);
+s_pGameOver = bitmapCreateFromFile("data/gej_ower.bm", 0);
 
 s_pVpManager = simpleBufferCreate(0,
     TAG_SIMPLEBUFFER_VPORT, s_pVp, 
@@ -44,45 +43,42 @@ s_pVpManager = simpleBufferCreate(0,
 );
 
 
-bitmapLoadFromFile(s_pVpManager->pBack, "data/title.bm", 0, 0); 
-joyOpen(); 
-keyCreate();
+bitmapLoadFromFile(s_pVpManager->pBack, "data/gej_ower.bm", 0, 0); 
 
 systemUnuse(); 
-
+joyOpen(); 
+keyCreate();
 viewLoad(s_pView);
 
 }
 
-void stateMenuLoop(void){
+void stateGameOverLoop(void){
     joyProcess();
 	keyProcess();
-	if(keyUse(KEY_ESCAPE)) {
-		gameExit();
-	}
     if(joyUse(JOY1_FIRE) || keyUse(KEY_RETURN)) {
-		stateChange(g_pStateMachineGame, &g_sStateGame);
+		stateChange(g_pStateMachineGame, &g_sStateMenu);
     return;
-	}
+	
 
     viewProcessManagers(s_pView); 
 	copProcessBlocks(); 
 	vPortWaitForEnd(s_pVp); 
 
+    }
 }
 
-void stateMenuDestroy(void){
-    viewDestroy(s_pView); 
-	joyClose();
+void stateGameOverDestroy(void){
+    joyClose();
 	keyDestroy();
-    bitmapDestroy(s_pTitle);
+    viewDestroy(s_pView); 
+    bitmapDestroy(s_pGameOver);
 }
 
 
-tState g_sStateMenu = {
-  .cbCreate = stateMenuCreate,
-  .cbLoop = stateMenuLoop,
-  .cbDestroy = stateMenuDestroy,
+tState g_sStateGameOver = {
+  .cbCreate = stateGameOverCreate,
+  .cbLoop = stateGameOverLoop,
+  .cbDestroy = stateGameOverDestroy,
   .cbSuspend = 0,
   .cbResume = 0,
   .pPrev = 0
