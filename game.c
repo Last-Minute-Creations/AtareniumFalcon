@@ -1,4 +1,3 @@
-#include <ace/generic/main.h>
 #include <ace/managers/viewport/simplebuffer.h>
 #include <ace/managers/joy.h>
 #include <ace/managers/key.h>
@@ -63,7 +62,7 @@ for(UBYTE y = 0; y < MAP_TILE_HEIGHT; ++y) {
     case 3:
     ubStoneImg = ubRandMinMax(0,2);
     blitCopyMask(s_pTiles, ubStoneImg * 32, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
-      break;          
+      break;
     case 4:
       blitCopyMask(s_pTiles, 96, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
       break;
@@ -75,19 +74,19 @@ for(UBYTE y = 0; y < MAP_TILE_HEIGHT; ++y) {
       break;
     case 7:
       blitCopyMask(s_pTiles, 192, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
-      break; 
+      break;
     case 8:
       blitCopyMask(s_pTiles, 0, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
-      break; 
+      break;
     case 9:
       blitCopyMask(s_pTiles, 32, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
-      break; 
+      break;
     case 10:
       blitCopyMask(s_pTiles, 64, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
       break;
     case 11:
       blitCopyMask(s_pTiles, 96, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
-      break;      
+      break;
     case 12:
       blitCopyMask(s_pTiles, 128, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
       break;
@@ -99,10 +98,10 @@ for(UBYTE y = 0; y < MAP_TILE_HEIGHT; ++y) {
 void clearTiles(void) {
 for(UBYTE y = 0; y < MAP_TILE_HEIGHT; ++y) {
   for(UBYTE x = 0; x < MAP_TILE_WIDTH; ++x) {
-    kamyki[x][y] = 0;  
-    } 
-  } 
-} 
+    kamyki[x][y] = 0;
+    }
+  }
+}
 
 void printOnHUD(void) {
   sprintf(szMsg, "%d", coal);
@@ -129,8 +128,8 @@ void nextLevel(void) {
     kierunek = 0;
 
     kamyki[0][0] = 12;
-    kamyki[0][2] = 3; 
-    kamyki[1][0] = 7; 
+    kamyki[0][2] = 3;
+    kamyki[1][0] = 7;
     kamyki[2][3] = 8;
     kamyki[1][1] = 6;
     kamyki[8][3] = 5;
@@ -138,7 +137,7 @@ void nextLevel(void) {
     kamyki[6][5] = 11;
     kamyki[7][5] = 7;
     kamyki[9][6] = 10;
-    
+
     drawTiles();
       break;
     case 3:
@@ -147,18 +146,18 @@ void nextLevel(void) {
     krawedzx = 0;
     krawedzy = 0;
     kierunek = 0;
-    
+
     kamyki[0][0] = 12;
     kamyki[1][1] = 4;
     kamyki[3][1] = 4;
     kamyki[6][1] = 9;
     kamyki[7][1] = 7;
-    kamyki[6][2] = 4; 
-    kamyki[8][5] = 6; 
-    kamyki[1][3] = 4;  
-    kamyki[4][3] = 5; 
-    kamyki[5][3] = 11; 
-    kamyki[7][5] = 2; 
+    kamyki[6][2] = 4;
+    kamyki[8][5] = 6;
+    kamyki[1][3] = 4;
+    kamyki[4][3] = 5;
+    kamyki[5][3] = 11;
+    kamyki[7][5] = 2;
     kamyki[9][6] = 10;
 
     drawTiles();
@@ -183,10 +182,10 @@ void nextLevel(void) {
     kamyki[6][6] = 4;
     kamyki[6][4] = 6;
     kamyki[9][6] = 10;
-    
+
     drawTiles();
       break;
-    
+
     case 5:
     falkonx = 0;
     falkony = 0;
@@ -213,13 +212,13 @@ void nextLevel(void) {
     kamyki[7][2] = 3;
     kamyki[9][2] = 7;
     kamyki[1][3] = 3;
-    kamyki[2][3] = 5;  
+    kamyki[2][3] = 5;
     kamyki[4][3] = 6;
     kamyki[6][3] = 4;
     kamyki[9][3] = 6;
     kamyki[1][4] = 3;
     kamyki[2][4] = 3;
-    kamyki[4][4] = 11; 
+    kamyki[4][4] = 11;
     kamyki[5][4] = 3;
     kamyki[8][4] = 4;
     kamyki[0][5] = 7;
@@ -275,7 +274,7 @@ void nextLevel(void) {
     kamyki[8][3] = 4;
     kamyki[9][3] = 3;
     kamyki[0][4] = 4;
-    kamyki[1][4] = 3; 
+    kamyki[1][4] = 3;
     kamyki[3][4] = 10;
     kamyki[4][4] = 3;
     kamyki[5][4] = 12;
@@ -290,15 +289,15 @@ void nextLevel(void) {
     kamyki[8][5] = 8;
     kamyki[9][5] = 3;
     kamyki[0][6] = 3;
-    kamyki[1][6] = 5; 
-    kamyki[4][6] = 8; 
-    kamyki[8][6] = 4; 
+    kamyki[1][6] = 5;
+    kamyki[4][6] = 8;
+    kamyki[8][6] = 4;
     kamyki[9][6] = 3;
 
     drawTiles();
       break;
 
-    case 7: // ta ma byc ostatnia 
+    case 7: // ta ma byc ostatnia
     falkonx = 0;
     falkony = 3;
     krawedzx = 0;
@@ -318,25 +317,25 @@ void nextLevel(void) {
     kamyki[0][1] = 3;
     kamyki[2][1] = 7;
     kamyki[3][1] = 6;
-    kamyki[4][1] = 9; 
+    kamyki[4][1] = 9;
     kamyki[5][1] = 7;
-    kamyki[6][1] = 7; 
-    kamyki[7][1] = 7; 
+    kamyki[6][1] = 7;
+    kamyki[7][1] = 7;
     kamyki[8][1] = 6;
     kamyki[9][1] = 3;
     kamyki[0][2] = 3;
-    kamyki[2][2] = 5; 
-    kamyki[6][2] = 7; 
+    kamyki[2][2] = 5;
+    kamyki[6][2] = 7;
     kamyki[9][2] = 3;
     kamyki[0][3] = 12;
     kamyki[1][3] = 11;
     kamyki[2][3] = 7;
-    kamyki[3][3] = 7; 
-    kamyki[4][3] = 7; 
+    kamyki[3][3] = 7;
+    kamyki[4][3] = 7;
     kamyki[5][3] = 6;
     kamyki[6][3] = 7;
     kamyki[7][3] = 6;
-    kamyki[8][3] = 4; 
+    kamyki[8][3] = 4;
     kamyki[9][3] = 3;
     kamyki[0][4] = 3;
     kamyki[1][4] = 7;
@@ -348,7 +347,7 @@ void nextLevel(void) {
     kamyki[0][5] = 3;
     kamyki[2][5] = 7;
     kamyki[3][5] = 9;
-    kamyki[4][5] = 6; 
+    kamyki[4][5] = 6;
     kamyki[5][5] = 7;
     kamyki[6][5] = 7;
     kamyki[7][5] = 6;
@@ -356,19 +355,19 @@ void nextLevel(void) {
     kamyki[9][5] = 3;
 
     kamyki[0][6] = 3;
-    kamyki[1][6] = 3; 
+    kamyki[1][6] = 3;
     kamyki[2][6] = 3;
     kamyki[3][6] = 3;
-    kamyki[4][6] = 3; 
+    kamyki[4][6] = 3;
     kamyki[5][6] = 3;
     kamyki[6][6] = 3;
-    kamyki[7][6] = 3; 
+    kamyki[7][6] = 3;
     kamyki[8][6] = 3;
     kamyki[9][6] = 3;
 
     drawTiles();
       break;
-    
+
   }
 }
 
@@ -490,7 +489,7 @@ void coalAndCollect(void) {
     ++level;
     nextLevel();
   }
-  
+
   kamyki[pickSthX][pickSthY] = 0;
   coal = coal - 1;
   blitCopy(s_pHUD, 32, 224, s_pVpManager->pBack, 32, 224, 32, 32,MINTERM_COOKIE, 0xFF);
@@ -516,12 +515,12 @@ void falconMove(void){
 
    switch (kierunek){
       BYTE i = 0;
-      
+
       case 1:
       falkonFace = 0;
       for (i = 0 ; i < 32; ++i)
       {
-      UWORD uwPosX = falkonx * 32 + i; 
+      UWORD uwPosX = falkonx * 32 + i;
       UWORD uwPosY = falkony * 32;
       // draw bg on current pos
       blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,MINTERM_COOKIE, 0xFF);
@@ -530,13 +529,13 @@ void falconMove(void){
       blitCopyMask(s_pTiles, 128, 32, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
       vPortWaitForEnd(s_pVp);
       }
-      falkonx = falkonx + 1;  
+      falkonx = falkonx + 1;
         break;
       case 2:
       falkonFace = 32;
       for (i = 0 ; i < 32; ++i)
       {
-      UWORD uwPosX = falkonx * 32 - i; 
+      UWORD uwPosX = falkonx * 32 - i;
       UWORD uwPosY = falkony * 32;
       // draw bg on current pos
       blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,MINTERM_COOKIE, 0xFF);
@@ -548,10 +547,10 @@ void falconMove(void){
       falkonx = falkonx - 1;
         break;
       case 3:
-      
+
       for (i = 0 ; i < 32; ++i)
       {
-      UWORD uwPosX = falkonx * 32; 
+      UWORD uwPosX = falkonx * 32;
       UWORD uwPosY = falkony * 32 - i;
       // draw bg on current pos
       blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,MINTERM_COOKIE, 0xFF);
@@ -563,10 +562,10 @@ void falconMove(void){
       falkony = falkony - 1;
       break;
       case 4:
-      
+
       for (i = 0 ; i < 32; ++i)
       {
-      UWORD uwPosX = falkonx * 32; 
+      UWORD uwPosX = falkonx * 32;
       UWORD uwPosY = falkony * 32 + i;
       // draw bg on current pos
       blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,MINTERM_COOKIE, 0xFF);
@@ -729,7 +728,7 @@ void stateGameDestroy(void) {
 	keyDestroy();
 }
 
-// pod funkcjami bo kompilator czyta od g¢ry do doˆu i musi najpierw napotka† funkcje by wiedzie† ¾e istniej¥
+// pod funkcjami bo kompilator czyta od gï¿½ry do doï¿½u i musi najpierw napotkaï¿½ funkcje by wiedzieï¿½ ï¿½e istniejï¿½
 tState g_sStateGame = {
   .cbCreate = stateGameCreate,
   .cbLoop = stateGameLoop,
