@@ -21,8 +21,8 @@ static tFont *s_pFont;
 static tTextBitMap *s_pBmText;
 
 char szIntro[80];
-const char *line1 = "Captain Tramiel, our planet was attacked by trecherous \n";
-const char *line2 = "Great Miner and his race of Amigans. \n";
+const char *line1 = "Captain Tramiel, our planet was attacked by trecherous";
+const char *line2 = "Great Miner and his race of Amigans.";
 const char *line3 = "Almost all coal supplies for our Atari are gone.";
 const char *line4 = "Renton - Minister of Mining is reporting that natural coal";
 const char *line5 = "deposits are almost depleted and most of our miners fell";
