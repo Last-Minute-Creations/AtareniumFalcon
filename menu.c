@@ -13,6 +13,7 @@ static tVPort *s_pVp;
 static tSimpleBufferManager *s_pVpManager;
 
 extern tState g_sStateGame;
+extern tState g_sStateIntro;
 extern tStateManager *g_pStateMachineGame;
 
 
@@ -57,6 +58,11 @@ void stateMenuLoop(void){
 
 	if(joyUse(JOY1_FIRE) || keyUse(KEY_RETURN)) {
 		stateChange(g_pStateMachineGame, &g_sStateGame);
+		return;
+	}
+	
+	if(keyUse(KEY_I)) {
+		stateChange(g_pStateMachineGame, &g_sStateIntro);
 		return;
 	}
 

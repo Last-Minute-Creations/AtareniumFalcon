@@ -459,38 +459,41 @@ void coalAndCollect(void) {
   pickSthX = falkonx;
   pickSthY = falkony;
 
-  if(kamyki[pickSthX][pickSthY] == 4){
+  BYTE what = kamyki[pickSthX][pickSthY];
+  kamyki[pickSthX][pickSthY] = 0;
+
+  if(what == 4){
     coal = coal + 2;
   }
-  if(kamyki[pickSthX][pickSthY] == 5){
+  if(what == 5){
     coal = coal + 3;
   }
-  if(kamyki[pickSthX][pickSthY] == 6){
+  if(what == 6){
     coal = coal + 4;
   }
-  if(kamyki[pickSthX][pickSthY] == 7){
+  if(what == 7){
     coal = coal + 5;
   }
-  if(kamyki[pickSthX][pickSthY] == 8){
+  if(what == 8){
     capacitors = capacitors + 2;
     blitCopy(s_pHUD, 96, 224, s_pVpManager->pBack, 96, 224, 32, 32,MINTERM_COOKIE, 0xFF);
     sprintf(szMsg2, "%d", capacitors);
     fontFillTextBitMap(s_pFont, s_pBmText, szMsg2);
     fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText,  112, 229, 5, FONT_COOKIE);
   }
-  if(kamyki[pickSthX][pickSthY] == 9){
+  if(what == 9){
     capacitors = capacitors + 4;
     blitCopy(s_pHUD, 96, 224, s_pVpManager->pBack, 96, 224, 32, 32,MINTERM_COOKIE, 0xFF);
     sprintf(szMsg2, "%d", capacitors);
     fontFillTextBitMap(s_pFont, s_pBmText, szMsg2);
     fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText,  112, 229, 5, FONT_COOKIE);
   }
-  if(kamyki[pickSthX][pickSthY] == 10){
+  if(what == 10){
     ++level;
     nextLevel();
   }
 
-  kamyki[pickSthX][pickSthY] = 0;
+
   coal = coal - 1;
   blitCopy(s_pHUD, 32, 224, s_pVpManager->pBack, 32, 224, 32, 32,MINTERM_COOKIE, 0xFF);
   sprintf(szMsg, "%d", coal);
@@ -523,7 +526,9 @@ void falconMove(void){
       UWORD uwPosX = falkonx * 32 + i;
       UWORD uwPosY = falkony * 32;
       // draw bg on current pos
-      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,MINTERM_COOKIE, 0xFF);
+      //blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,MINTERM_COOKIE, 0xFF);
+      
+      blitRect(s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, 5);
       ++uwPosX;
       // draw falkon a tiny bit to the right
       blitCopyMask(s_pTiles, 128, 32, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
@@ -639,6 +644,16 @@ keyCreate();
 systemUnuse(); // system w trakcie loop nie jest nam potrzebny
 
 randInit(1337);
+
+// Draw grid
+for(UBYTE i = 0; i < 10; ++i) {
+    blitLine(s_pBg, i * 32, 0, i*32, 256, 5, 0xFFFF, 0);
+}
+for(UBYTE i = 0; i < 8; ++i) {
+    blitLine(s_pBg, 0, i * 32, 320, i * 32, 5, 0xFFFF, 0);
+}
+blitCopyAligned(s_pBg, 0, 0, s_pVpManager->pBack, 0, 0, 320, 256 / 2);
+blitCopyAligned(s_pBg, 0, 256 / 2, s_pVpManager->pBack, 0, 256 / 2, 320, 256 / 2 - 32);
 
 
 printOnHUD();
