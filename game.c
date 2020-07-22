@@ -57,8 +57,8 @@ for(UBYTE y = 0; y < MAP_TILE_HEIGHT; ++y) {
   for(UBYTE x = 0; x < MAP_TILE_WIDTH; ++x) {
     // i już masz zmienne x,y które się ruszają
     switch (kamyki[x][y])    {
-    blitCopyMask(s_pTiles, 32, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
-      break;
+    //blitCopyMask(s_pTiles, 32, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+     // break;
     case 3:
     ubStoneImg = ubRandMinMax(0,2);
     blitCopyMask(s_pTiles, ubStoneImg * 32, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
@@ -449,6 +449,19 @@ void isThisStone(void){
     }
 }
 
+void portalAnim(void){
+      UWORD uwPosX = falkonx * 32;
+      UWORD uwPosY = falkony * 32;
+    for(BYTE i = 0 ; i < 4 ; ++i){
+      blitCopyMask(s_pTiles, i * 32, 128, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+      for(BYTE k = 0 ; k < 15 ; ++k){
+        vPortWaitForEnd(s_pVp);
+      }
+    
+    }
+
+}
+
 void coalAndCollect(void) {
   //funkcja do zbierania zasobu jesli jest na danym tajlu
 
@@ -489,6 +502,7 @@ void coalAndCollect(void) {
     fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText,  112, 229, 5, FONT_COOKIE);
   }
   if(what == 10){
+    portalAnim();
     ++level;
     nextLevel();
   }
@@ -526,9 +540,9 @@ void falconMove(void){
       UWORD uwPosX = falkonx * 32 + i;
       UWORD uwPosY = falkony * 32;
       // draw bg on current pos
-      //blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,MINTERM_COOKIE, 0xFF);
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32,MINTERM_COOKIE, 0xFF);
       
-      blitRect(s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, 5);
+      //blitRect(s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, 5);
       ++uwPosX;
       // draw falkon a tiny bit to the right
       blitCopyMask(s_pTiles, 128, 32, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
