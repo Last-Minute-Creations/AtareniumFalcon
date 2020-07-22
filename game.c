@@ -515,6 +515,343 @@ void coalAndCollect(void) {
   fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText,  48, 229, 5, FONT_COOKIE);
 }
 
+void falkonFlyingRight(void){
+   UWORD uwPosX = falkonx * 32;
+          UWORD uwPosY = falkony * 32; 
+
+      for (BYTE y = 0 ; y < 4 ; ++y){
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32,MINTERM_COOKIE, 0xFF);
+      ++uwPosX;
+      blitCopyMask(s_pTiles, 0, 64, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+          for(BYTE z = 0 ; z < 5 ; ++z){
+          vPortWaitForEnd(s_pVp);
+          }
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32,MINTERM_COOKIE, 0xFF);
+      ++uwPosX;
+      blitCopyMask(s_pTiles, 32, 64, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+          for(BYTE z = 0 ; z < 5 ; ++z){
+          vPortWaitForEnd(s_pVp);
+          }
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32,MINTERM_COOKIE, 0xFF);
+      ++uwPosX;
+      blitCopyMask(s_pTiles, 64, 64, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+          for(BYTE z = 0 ; z < 5 ; ++z){
+          vPortWaitForEnd(s_pVp);
+          }
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32,MINTERM_COOKIE, 0xFF);
+      ++uwPosX;
+      blitCopyMask(s_pTiles, 96, 64, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+          for(BYTE z = 0 ; z < 5 ; ++z){
+          vPortWaitForEnd(s_pVp);
+          }
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32,MINTERM_COOKIE, 0xFF);
+      ++uwPosX;
+      blitCopyMask(s_pTiles, 128, 64, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+          for(BYTE z = 0 ; z < 5 ; ++z){
+          vPortWaitForEnd(s_pVp);
+          }
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32,MINTERM_COOKIE, 0xFF);
+      ++uwPosX;
+      blitCopyMask(s_pTiles, 96, 64, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+          for(BYTE z = 0 ; z < 5 ; ++z){
+          vPortWaitForEnd(s_pVp);
+          }
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32,MINTERM_COOKIE, 0xFF);
+      ++uwPosX;
+      blitCopyMask(s_pTiles, 64, 64, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+          for(BYTE z = 0 ; z < 5 ; ++z){
+          vPortWaitForEnd(s_pVp);
+          }    
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32,MINTERM_COOKIE, 0xFF);
+      ++uwPosX;
+      blitCopyMask(s_pTiles, 32, 64, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+          for(BYTE z = 0 ; z < 5 ; ++z){
+          vPortWaitForEnd(s_pVp);
+          }
+      }
+}
+
+void falkonFlyingRightDown(void){
+   UWORD uwPosX = falkonx * 32;
+          UWORD uwPosY = falkony * 32; 
+
+      for (BYTE y = 0 ; y < 4 ; ++y){
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32,MINTERM_COOKIE, 0xFF);
+      ++uwPosY;
+      blitCopyMask(s_pTiles, 0, 64, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+          for(BYTE z = 0 ; z < 5 ; ++z){
+          vPortWaitForEnd(s_pVp);
+          }
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32,MINTERM_COOKIE, 0xFF);
+      ++uwPosY;
+      blitCopyMask(s_pTiles, 32, 64, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+          for(BYTE z = 0 ; z < 5 ; ++z){
+          vPortWaitForEnd(s_pVp);
+          }
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32,MINTERM_COOKIE, 0xFF);
+      ++uwPosY;
+      blitCopyMask(s_pTiles, 64, 64, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+          for(BYTE z = 0 ; z < 5 ; ++z){
+          vPortWaitForEnd(s_pVp);
+          }
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32,MINTERM_COOKIE, 0xFF);
+      ++uwPosY;
+      blitCopyMask(s_pTiles, 96, 64, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+          for(BYTE z = 0 ; z < 5 ; ++z){
+          vPortWaitForEnd(s_pVp);
+          }
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32,MINTERM_COOKIE, 0xFF);
+      ++uwPosY;
+      blitCopyMask(s_pTiles, 128, 64, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+          for(BYTE z = 0 ; z < 5 ; ++z){
+          vPortWaitForEnd(s_pVp);
+          }
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32,MINTERM_COOKIE, 0xFF);
+      ++uwPosY;
+      blitCopyMask(s_pTiles, 96, 64, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+          for(BYTE z = 0 ; z < 5 ; ++z){
+          vPortWaitForEnd(s_pVp);
+          }
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32,MINTERM_COOKIE, 0xFF);
+      ++uwPosY;
+      blitCopyMask(s_pTiles, 64, 64, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+          for(BYTE z = 0 ; z < 5 ; ++z){
+          vPortWaitForEnd(s_pVp);
+          }    
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32,MINTERM_COOKIE, 0xFF);
+      ++uwPosY;
+      blitCopyMask(s_pTiles, 32, 64, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+          for(BYTE z = 0 ; z < 5 ; ++z){
+          vPortWaitForEnd(s_pVp);
+          }
+      }
+}
+
+void falkonFlyingRightUp(void){
+   UWORD uwPosX = falkonx * 32;
+          UWORD uwPosY = falkony * 32; 
+
+      for (BYTE y = 0 ; y < 4 ; ++y){
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32,MINTERM_COOKIE, 0xFF);
+      --uwPosY;
+      blitCopyMask(s_pTiles, 0, 64, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+          for(BYTE z = 0 ; z < 5 ; ++z){
+          vPortWaitForEnd(s_pVp);
+          }
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32,MINTERM_COOKIE, 0xFF);
+      --uwPosY;
+      blitCopyMask(s_pTiles, 32, 64, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+          for(BYTE z = 0 ; z < 5 ; ++z){
+          vPortWaitForEnd(s_pVp);
+          }
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32,MINTERM_COOKIE, 0xFF);
+      --uwPosY;
+      blitCopyMask(s_pTiles, 64, 64, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+          for(BYTE z = 0 ; z < 5 ; ++z){
+          vPortWaitForEnd(s_pVp);
+          }
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32,MINTERM_COOKIE, 0xFF);
+      --uwPosY;
+      blitCopyMask(s_pTiles, 96, 64, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+          for(BYTE z = 0 ; z < 5 ; ++z){
+          vPortWaitForEnd(s_pVp);
+          }
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32,MINTERM_COOKIE, 0xFF);
+      --uwPosY;
+      blitCopyMask(s_pTiles, 128, 64, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+          for(BYTE z = 0 ; z < 5 ; ++z){
+          vPortWaitForEnd(s_pVp);
+          }
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32,MINTERM_COOKIE, 0xFF);
+      --uwPosY;
+      blitCopyMask(s_pTiles, 96, 64, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+          for(BYTE z = 0 ; z < 5 ; ++z){
+          vPortWaitForEnd(s_pVp);
+          }
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32,MINTERM_COOKIE, 0xFF);
+      --uwPosY;
+      blitCopyMask(s_pTiles, 64, 64, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+          for(BYTE z = 0 ; z < 5 ; ++z){
+          vPortWaitForEnd(s_pVp);
+          }    
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32,MINTERM_COOKIE, 0xFF);
+      --uwPosY;
+      blitCopyMask(s_pTiles, 32, 64, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+          for(BYTE z = 0 ; z < 5 ; ++z){
+          vPortWaitForEnd(s_pVp);
+          }
+      }
+}
+
+void falkonFlyingLeft(void){
+   UWORD uwPosX = falkonx * 32;
+          UWORD uwPosY = falkony * 32; 
+
+      for (BYTE y = 0 ; y < 4 ; ++y){
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32,MINTERM_COOKIE, 0xFF);
+      --uwPosX;
+      blitCopyMask(s_pTiles, 128, 96, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+          for(BYTE z = 0 ; z < 5 ; ++z){
+          vPortWaitForEnd(s_pVp);
+          }
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32,MINTERM_COOKIE, 0xFF);
+      --uwPosX;
+      blitCopyMask(s_pTiles, 96, 96, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+          for(BYTE z = 0 ; z < 5 ; ++z){
+          vPortWaitForEnd(s_pVp);
+          }
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32,MINTERM_COOKIE, 0xFF);
+      --uwPosX;
+      blitCopyMask(s_pTiles, 64, 96, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+          for(BYTE z = 0 ; z < 5 ; ++z){
+          vPortWaitForEnd(s_pVp);
+          }
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32,MINTERM_COOKIE, 0xFF);
+      --uwPosX;
+      blitCopyMask(s_pTiles, 32, 96, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+          for(BYTE z = 0 ; z < 5 ; ++z){
+          vPortWaitForEnd(s_pVp);
+          }
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32,MINTERM_COOKIE, 0xFF);
+      --uwPosX;
+      blitCopyMask(s_pTiles, 0, 96, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+          for(BYTE z = 0 ; z < 5 ; ++z){
+          vPortWaitForEnd(s_pVp);
+          }
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32,MINTERM_COOKIE, 0xFF);
+      --uwPosX;
+      blitCopyMask(s_pTiles, 32, 96, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+          for(BYTE z = 0 ; z < 5 ; ++z){
+          vPortWaitForEnd(s_pVp);
+          }
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32,MINTERM_COOKIE, 0xFF);
+      --uwPosX;
+      blitCopyMask(s_pTiles, 64, 96, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+          for(BYTE z = 0 ; z < 5 ; ++z){
+          vPortWaitForEnd(s_pVp);
+          }    
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32,MINTERM_COOKIE, 0xFF);
+      --uwPosX;
+      blitCopyMask(s_pTiles, 96, 96, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+          for(BYTE z = 0 ; z < 5 ; ++z){
+          vPortWaitForEnd(s_pVp);
+          }
+      }
+}
+
+void falkonFlyingLeftDown(void){
+   UWORD uwPosX = falkonx * 32;
+          UWORD uwPosY = falkony * 32; 
+
+      for (BYTE y = 0 ; y < 4 ; ++y){
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32,MINTERM_COOKIE, 0xFF);
+      ++uwPosY;
+      blitCopyMask(s_pTiles, 128, 96, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+          for(BYTE z = 0 ; z < 5 ; ++z){
+          vPortWaitForEnd(s_pVp);
+          }
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32,MINTERM_COOKIE, 0xFF);
+      ++uwPosY;
+      blitCopyMask(s_pTiles, 96, 96, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+          for(BYTE z = 0 ; z < 5 ; ++z){
+          vPortWaitForEnd(s_pVp);
+          }
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32,MINTERM_COOKIE, 0xFF);
+      ++uwPosY;
+      blitCopyMask(s_pTiles, 64, 96, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+          for(BYTE z = 0 ; z < 5 ; ++z){
+          vPortWaitForEnd(s_pVp);
+          }
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32,MINTERM_COOKIE, 0xFF);
+      ++uwPosY;
+      blitCopyMask(s_pTiles, 32, 96, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+          for(BYTE z = 0 ; z < 5 ; ++z){
+          vPortWaitForEnd(s_pVp);
+          }
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32,MINTERM_COOKIE, 0xFF);
+      ++uwPosY;
+      blitCopyMask(s_pTiles, 0, 96, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+          for(BYTE z = 0 ; z < 5 ; ++z){
+          vPortWaitForEnd(s_pVp);
+          }
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32,MINTERM_COOKIE, 0xFF);
+      ++uwPosY;
+      blitCopyMask(s_pTiles, 32, 96, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+          for(BYTE z = 0 ; z < 5 ; ++z){
+          vPortWaitForEnd(s_pVp);
+          }
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32,MINTERM_COOKIE, 0xFF);
+      ++uwPosY;
+      blitCopyMask(s_pTiles, 64, 96, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+          for(BYTE z = 0 ; z < 5 ; ++z){
+          vPortWaitForEnd(s_pVp);
+          }    
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32,MINTERM_COOKIE, 0xFF);
+      ++uwPosY;
+      blitCopyMask(s_pTiles, 96, 96, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+          for(BYTE z = 0 ; z < 5 ; ++z){
+          vPortWaitForEnd(s_pVp);
+          }
+      }
+}
+
+void falkonFlyingLeftUp(void){
+   UWORD uwPosX = falkonx * 32;
+          UWORD uwPosY = falkony * 32; 
+
+      for (BYTE y = 0 ; y < 4 ; ++y){
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32,MINTERM_COOKIE, 0xFF);
+      --uwPosY;
+      blitCopyMask(s_pTiles, 128, 96, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+          for(BYTE z = 0 ; z < 5 ; ++z){
+          vPortWaitForEnd(s_pVp);
+          }
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32,MINTERM_COOKIE, 0xFF);
+      --uwPosY;
+      blitCopyMask(s_pTiles, 96, 96, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+          for(BYTE z = 0 ; z < 5 ; ++z){
+          vPortWaitForEnd(s_pVp);
+          }
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32,MINTERM_COOKIE, 0xFF);
+      --uwPosY;
+      blitCopyMask(s_pTiles, 64, 96, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+          for(BYTE z = 0 ; z < 5 ; ++z){
+          vPortWaitForEnd(s_pVp);
+          }
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32,MINTERM_COOKIE, 0xFF);
+      --uwPosY;
+      blitCopyMask(s_pTiles, 32, 96, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+          for(BYTE z = 0 ; z < 5 ; ++z){
+          vPortWaitForEnd(s_pVp);
+          }
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32,MINTERM_COOKIE, 0xFF);
+      --uwPosY;
+      blitCopyMask(s_pTiles, 0, 96, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+          for(BYTE z = 0 ; z < 5 ; ++z){
+          vPortWaitForEnd(s_pVp);
+          }
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32,MINTERM_COOKIE, 0xFF);
+      --uwPosY;
+      blitCopyMask(s_pTiles, 32, 96, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+          for(BYTE z = 0 ; z < 5 ; ++z){
+          vPortWaitForEnd(s_pVp);
+          }
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32,MINTERM_COOKIE, 0xFF);
+      --uwPosY;
+      blitCopyMask(s_pTiles, 64, 96, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+          for(BYTE z = 0 ; z < 5 ; ++z){
+          vPortWaitForEnd(s_pVp);
+          }    
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32,MINTERM_COOKIE, 0xFF);
+      --uwPosY;
+      blitCopyMask(s_pTiles, 96, 96, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
+          for(BYTE z = 0 ; z < 5 ; ++z){
+          vPortWaitForEnd(s_pVp);
+          }
+      }
+}
+
+
 void falconMove(void){
 
 
@@ -531,67 +868,36 @@ void falconMove(void){
         // ruch falkonem na razie skokowo
 
    switch (kierunek){
-      BYTE i = 0;
-
+    
       case 1:
       falkonFace = 0;
-      for (i = 0 ; i < 32; ++i)
-      {
-      UWORD uwPosX = falkonx * 32 + i;
-      UWORD uwPosY = falkony * 32;
-      // draw bg on current pos
-      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32,MINTERM_COOKIE, 0xFF);
-      
-      //blitRect(s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, 5);
-      ++uwPosX;
-      // draw falkon a tiny bit to the right
-      blitCopyMask(s_pTiles, 128, 32, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
-      vPortWaitForEnd(s_pVp);
-      }
+      falkonFlyingRight();
       falkonx = falkonx + 1;
         break;
+
       case 2:
       falkonFace = 32;
-      for (i = 0 ; i < 32; ++i)
-      {
-      UWORD uwPosX = falkonx * 32 - i;
-      UWORD uwPosY = falkony * 32;
-      // draw bg on current pos
-      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,MINTERM_COOKIE, 0xFF);
-      --uwPosX;
-      // draw falkon a tiny bit to the left
-      blitCopyMask(s_pTiles, 160, 32, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
-      vPortWaitForEnd(s_pVp);
-      }
+      falkonFlyingLeft();
       falkonx = falkonx - 1;
         break;
+      
       case 3:
 
-      for (i = 0 ; i < 32; ++i)
-      {
-      UWORD uwPosX = falkonx * 32;
-      UWORD uwPosY = falkony * 32 - i;
-      // draw bg on current pos
-      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,MINTERM_COOKIE, 0xFF);
-      --uwPosY;
-      // draw falkon a tiny bit up
-      blitCopyMask(s_pTiles, 128 + falkonFace, 32, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
-      vPortWaitForEnd(s_pVp);
+      if(falkonFace == 0){
+      falkonFlyingRightUp(); 
+      }
+      if(falkonFace == 32){
+        falkonFlyingLeftUp();
       }
       falkony = falkony - 1;
       break;
+      
       case 4:
-
-      for (i = 0 ; i < 32; ++i)
-      {
-      UWORD uwPosX = falkonx * 32;
-      UWORD uwPosY = falkony * 32 + i;
-      // draw bg on current pos
-      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,MINTERM_COOKIE, 0xFF);
-      ++uwPosY;
-      // draw falkon a tiny bit dons
-      blitCopyMask(s_pTiles, 128 + falkonFace, 32, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
-      vPortWaitForEnd(s_pVp);
+      if(falkonFace == 0){
+        falkonFlyingRightDown();
+      }
+      if(falkonFace == 32){
+        falkonFlyingLeftDown();
       }
       falkony = falkony + 1;
       break;
@@ -660,14 +966,14 @@ systemUnuse(); // system w trakcie loop nie jest nam potrzebny
 randInit(1337);
 
 // Draw grid
-for(UBYTE i = 0; i < 10; ++i) {
-    blitLine(s_pBg, i * 32, 0, i*32, 256, 5, 0xFFFF, 0);
-}
-for(UBYTE i = 0; i < 8; ++i) {
-    blitLine(s_pBg, 0, i * 32, 320, i * 32, 5, 0xFFFF, 0);
-}
-blitCopyAligned(s_pBg, 0, 0, s_pVpManager->pBack, 0, 0, 320, 256 / 2);
-blitCopyAligned(s_pBg, 0, 256 / 2, s_pVpManager->pBack, 0, 256 / 2, 320, 256 / 2 - 32);
+//for(UBYTE i = 0; i < 10; ++i) {
+  //  blitLine(s_pBg, i * 32, 0, i*32, 256, 5, 0xFFFF, 0);
+//}
+//for(UBYTE i = 0; i < 8; ++i) {
+  //  blitLine(s_pBg, 0, i * 32, 320, i * 32, 5, 0xFFFF, 0);
+//}
+//blitCopyAligned(s_pBg, 0, 0, s_pVpManager->pBack, 0, 0, 320, 256 / 2);
+//blitCopyAligned(s_pBg, 0, 256 / 2, s_pVpManager->pBack, 0, 256 / 2, 320, 256 / 2 - 32);
 
 
 printOnHUD();

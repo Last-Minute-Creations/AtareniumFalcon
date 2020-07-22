@@ -1,12 +1,16 @@
-? ? dziob falkona w lewo 
-? ? animacja falkona lewo/prawo/gora/dol
-? animacja w portalu
+
 ? ? HUD font
 ? ? teksty ROBBO
-
-? ? atari screen INTRO
 ? ? .mod
 ? ? dodatkowe tla
 ? ? 23 levele
-? ? levele z pliku
+
+
+? ? atari screen INTRO
 ? title screen
+
+? ? levele z pliku
+
+? ? dziob falkona w lewo 
+? animacja w portalu
+? ? animacja falkona lewo/prawo/gora/dol
