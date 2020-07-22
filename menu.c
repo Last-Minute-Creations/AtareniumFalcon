@@ -14,6 +14,7 @@ static tSimpleBufferManager *s_pVpManager;
 
 extern tState g_sStateGame;
 extern tState g_sStateIntro;
+extern tState g_sStateCredits;
 extern tStateManager *g_pStateMachineGame;
 
 
@@ -63,6 +64,10 @@ void stateMenuLoop(void){
 	
 	if(keyUse(KEY_I)) {
 		stateChange(g_pStateMachineGame, &g_sStateIntro);
+		return;
+	}
+	if(keyUse(KEY_C)) {
+		stateChange(g_pStateMachineGame, &g_sStateCredits);
 		return;
 	}
 
