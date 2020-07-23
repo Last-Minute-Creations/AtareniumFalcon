@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <ace/managers/rand.h>
 #include <ace/managers/state.h>
+#include <ace/utils/custom.h>
 
 
 //------------------------------------------------------- gdzieï¿½ przed funkcjami
@@ -1158,6 +1159,8 @@ s_pVp = vPortCreate(0,
 );
 // Paleta z falkona
 paletteLoad("data/falkon.plt", s_pVp->pPalette, 32);
+
+g_pCustom->color[0] = 0x0FFF; // zmieä kolor zero aktualnie u¾ywanej palety na 15,15,15
 
 s_pTiles = bitmapCreateFromFile("data/tileset.bm", 0); // z pliku tileset.bm, nie lokuj bitmapy w pamiï¿½ci FAST
 s_pTilesMask = bitmapCreateFromFile("data/tileset.bm", 0); // z pliku tileset.bm, nie lokuj bitmapy w pamiï¿½ci FAST
