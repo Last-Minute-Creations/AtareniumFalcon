@@ -24,6 +24,7 @@ static tBitMap *s_pHUD;
 static tFont *s_pFont;
 static tTextBitMap *s_pBmText;
 
+extern tState g_sStateMenu;
 extern tState g_sStateGameOver;
 extern tStateManager *g_pStateMachineGame;
 
@@ -44,7 +45,7 @@ BYTE falkony = 0;
 BYTE krawedzx = 0;
 BYTE krawedzy = 0;
 BYTE kierunek = 0;
-BYTE falkonFace = 1; // kierunek dziobem
+BYTE falkonFace = 0; // kierunek dziobem
 
 BYTE stoneHit = 0;
 BYTE frameHit = 0;
@@ -1240,9 +1241,7 @@ void stateGameLoop(void) {
  //--------------------------------------------------------------- gdzie� w loop:
 	joyProcess();
 	keyProcess();
-	if(keyUse(KEY_ESCAPE)) {
-		gameExit();
-	}
+	
 
 	kierunek = 0;
 	if(joyUse(JOY1_RIGHT) || keyUse(KEY_D)) {
@@ -1256,6 +1255,10 @@ void stateGameLoop(void) {
 	}
 	else if(joyUse(JOY1_DOWN) || keyUse(KEY_S)) {
 		kierunek = 4;
+	}
+  else if(keyUse(KEY_ESCAPE)) {
+		stateChange(g_pStateMachineGame, &g_sStateMenu);
+		return;
 	}
 
 	if(kierunek != 0) {
