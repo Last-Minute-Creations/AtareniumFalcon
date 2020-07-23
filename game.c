@@ -114,9 +114,31 @@ void printOnHUD(void) {
 }
 
 void nextLevel(void) {
+  switch(level){
+    case 2:
+    bitmapDestroy(s_pBg);
+    s_pBg = bitmapCreateFromFile("data/tlo2.bm", 0); 
+    break;
+    case 3:
+    bitmapDestroy(s_pBg);
+    s_pBg = bitmapCreateFromFile("data/tlo3.bm", 0); 
+    break;
+    case 4:
+    bitmapDestroy(s_pBg);
+    s_pBg = bitmapCreateFromFile("data/tlo4.bm", 0); 
+    break;
+    case 5:
+    bitmapDestroy(s_pBg);
+    s_pBg = bitmapCreateFromFile("data/tlo5.bm", 0); 
+    break;
+    case 6:
+    bitmapDestroy(s_pBg);
+    s_pBg = bitmapCreateFromFile("data/tlo6.bm", 0); 
+    break;
+  }
   clearTiles();
   blitCopy(s_pBg, 0, 0, s_pVpManager->pBack, 0, 0, 320, 128,MINTERM_COOKIE, 0xFF);
-  blitCopy(s_pBg, 0, 0, s_pVpManager->pBack, 0, 128, 320, 128,MINTERM_COOKIE, 0xFF);
+  blitCopy(s_pBg, 0, 128, s_pVpManager->pBack, 0, 128, 320, 128,MINTERM_COOKIE, 0xFF);
   blitCopy(s_pHUD, 0, 224, s_pVpManager->pBack, 0, 224, 320,32,MINTERM_COOKIE, 0xFF);
   printOnHUD();
   switch(level){
@@ -1110,6 +1132,7 @@ void noCoalLeft(void) {
   // sprawdzenie warunku na game over
 
   if(coal == 0){
+    coal = 1;
     stateChange(g_pStateMachineGame, &g_sStateGameOver);
     return;
   }

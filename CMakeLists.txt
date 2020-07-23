@@ -42,6 +42,33 @@ convertBitmaps(
 
 convertBitmaps(
 	TARGET falkon.elf PALETTE ${PLT_PATH}
+	INTERLEAVED SOURCES ${RES_DIR}/tlo2.png
+	DESTINATIONS ${DATA_DIR}/tlo2.bm
+)
+
+convertBitmaps(
+	TARGET falkon.elf PALETTE ${PLT_PATH}
+	INTERLEAVED SOURCES ${RES_DIR}/tlo3.png
+	DESTINATIONS ${DATA_DIR}/tlo3.bm
+)
+convertBitmaps(
+	TARGET falkon.elf PALETTE ${PLT_PATH}
+	INTERLEAVED SOURCES ${RES_DIR}/tlo4.png
+	DESTINATIONS ${DATA_DIR}/tlo4.bm
+)
+convertBitmaps(
+	TARGET falkon.elf PALETTE ${PLT_PATH}
+	INTERLEAVED SOURCES ${RES_DIR}/tlo5.png
+	DESTINATIONS ${DATA_DIR}/tlo5.bm
+)
+convertBitmaps(
+	TARGET falkon.elf PALETTE ${PLT_PATH}
+	INTERLEAVED SOURCES ${RES_DIR}/tlo6.png
+	DESTINATIONS ${DATA_DIR}/tlo6.bm
+)
+
+convertBitmaps(
+	TARGET falkon.elf PALETTE ${PLT_PATH}
 	INTERLEAVED SOURCES ${RES_DIR}/HUD.png
 	DESTINATIONS ${DATA_DIR}/HUD.bm
 )
