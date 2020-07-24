@@ -89,6 +89,9 @@ blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 22);
     sprintf(szRobboMsg, "You must reach the coal warehouse and reclaim it for us.");
     break;
     case 9:
+    sprintf(szRobboMsg, "We're close, I feel it in my DSP.");
+    break; 
+    case 10:
     sprintf(szRobboMsg, "Well done! Now collect the coal and GTFO !!!");
     break; 
     

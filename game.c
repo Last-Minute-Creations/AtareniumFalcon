@@ -52,7 +52,7 @@ BYTE falkonFace = 0; // kierunek dziobem
 BYTE stoneHit = 0;
 BYTE frameHit = 0;
 
-CONST BYTE startingCoal = 10;
+CONST BYTE startingCoal = 2;
 
 BYTE coal = startingCoal;
 BYTE capacitors = 0;
@@ -129,23 +129,23 @@ void printOnHUD(void) {
 
 void nextLevel(void) {
   switch(level){
-    case 2:
+    case 3:
     bitmapDestroy(s_pBg);
     s_pBg = bitmapCreateFromFile("data/tlo2.bm", 0); 
     break;
-    case 3:
+    case 6:
     bitmapDestroy(s_pBg);
     s_pBg = bitmapCreateFromFile("data/tlo3.bm", 0); 
     break;
-    case 4:
+    case 9:
     bitmapDestroy(s_pBg);
     s_pBg = bitmapCreateFromFile("data/tlo4.bm", 0); 
     break;
-    case 5:
+    case 11:
     bitmapDestroy(s_pBg);
     s_pBg = bitmapCreateFromFile("data/tlo5.bm", 0); 
     break;
-    case 6:
+    case 13:
     bitmapDestroy(s_pBg);
     s_pBg = bitmapCreateFromFile("data/tlo6.bm", 0); 
     break;
@@ -378,13 +378,116 @@ void nextLevel(void) {
     kamyki[4][5] = 4;
     kamyki[8][5] = 8;
     kamyki[1][6] = 8;
-    kamyki[7][6] = 3; 
-
+    kamyki[7][6] = 3;
+    
 
     drawTiles();
       break;
 
     case 9:
+    falkonx = 4;
+    falkony = 2;
+    krawedzx = 4;
+    krawedzy = 2;
+    kierunek = 0;  
+
+    kamyki[0][0] = 8;
+    kamyki[2][0] = 5;
+    kamyki[6][0] = 6;
+    kamyki[7][0] = 3;
+    kamyki[0][1] = 3;
+    kamyki[3][1] = 3;
+    kamyki[4][1] = 5;
+    kamyki[5][1] = 3;
+    kamyki[6][1] = 11;
+    kamyki[7][1] = 3;
+    kamyki[9][1] = 8;
+    kamyki[0][2] = 4;
+    kamyki[3][2] = 5;
+    kamyki[4][2] = 12;
+    kamyki[5][2] = 5;
+    kamyki[8][2] = 6;
+    kamyki[9][2] = 8;
+    kamyki[0][3] = 5;
+    kamyki[3][3] = 3;
+    kamyki[4][3] = 6;
+    kamyki[5][3] = 3;
+    kamyki[9][3] = 4;
+    kamyki[6][4] = 8;
+    kamyki[0][5] = 8;
+    kamyki[4][5] = 3;
+    kamyki[9][5] = 7;
+    kamyki[0][6] = 10;
+    kamyki[1][6] = 4;
+    kamyki[5][6] = 6;
+    kamyki[8][6] = 3;
+    kamyki[9][6] = 8;                 
+
+    robboMsgNr = 7;
+    drawTiles();
+      break;
+
+    case 10:
+    falkonx = 8;
+    falkony = 2;
+    krawedzx = 8;
+    krawedzy = 2;
+    kierunek = 0;
+
+    kamyki[0][0] = 3;
+    kamyki[2][0] = 7;
+    kamyki[6][0] = 6;
+    kamyki[8][0] = 8;
+    kamyki[0][1] = 8;
+    kamyki[1][1] = 8;
+    kamyki[2][1] = 3;
+    kamyki[3][1] = 5;
+    kamyki[4][1] = 3;
+    kamyki[5][1] = 3;
+    kamyki[7][1] = 3;
+    kamyki[8][1] = 3;
+    kamyki[0][2] = 8;
+    kamyki[1][2] = 3;
+    kamyki[2][2] = 3;
+    kamyki[4][2] = 3;
+    kamyki[5][2] = 8;
+    kamyki[7][2] = 3;
+    kamyki[8][2] = 12;
+    kamyki[9][2] = 7;
+    kamyki[0][3] = 3;
+    kamyki[2][3] = 3;
+    kamyki[4][3] = 3;
+    kamyki[5][3] = 6;
+    kamyki[7][3] = 3;
+    kamyki[8][3] = 3;
+    kamyki[0][4] = 3;
+    kamyki[1][4] = 3;
+    kamyki[2][4] = 3;
+    kamyki[3][4] = 5;
+    kamyki[4][4] = 3;
+    kamyki[5][4] = 7;
+    kamyki[7][4] = 3;
+    kamyki[8][4] = 8;
+    kamyki[0][5] = 3;
+    kamyki[1][5] = 10;
+    kamyki[2][5] = 3;
+    kamyki[4][5] = 3;
+    kamyki[5][5] = 3;
+    kamyki[7][5] = 3;
+    kamyki[8][5] = 3;
+    kamyki[9][5] = 6;
+    kamyki[0][6] = 8;
+    kamyki[2][6] = 5;
+    kamyki[4][6] = 4;
+    kamyki[5][6] = 11;
+    kamyki[6][6] = 4;
+    
+    robboMsgNr = 8;
+    drawTiles();
+      break;
+
+
+    case 11:
     falkonx = 0;
     falkony = 0;
     krawedzx = 0;
@@ -426,17 +529,18 @@ void nextLevel(void) {
     kamyki[5][5] = 3;
     kamyki[6][5] = 3;
     kamyki[7][5] = 3;
-    kamyki[0][5] = 8;
-    kamyki[3][5] = 6;
-    kamyki[4][5] = 7;
+    kamyki[0][6] = 8;
+    kamyki[3][6] = 6;
+    kamyki[4][6] = 7;
     kamyki[6][6] = 7;
     kamyki[8][6] = 3;
     kamyki[9][6] = 10;
 
+    robboMsgNr = 9;
     drawTiles();
       break;
 
-    case 10:
+    case 12:
     falkonx = 5;
     falkony = 4;
     krawedzx = 5;
@@ -495,7 +599,110 @@ void nextLevel(void) {
     drawTiles();
       break;
 
-    case 11: // ta ma byc ostatnia
+    case 13:
+    falkonx = 7;
+    falkony = 0;
+    krawedzx = 7;
+    krawedzy = 0;
+    kierunek = 0; 
+
+    kamyki[0][0] = 8;
+    kamyki[2][0] = 7;
+    kamyki[6][0] = 6;
+    kamyki[7][0] = 12;
+    kamyki[8][0] = 3;
+    kamyki[9][0] = 10;
+    kamyki[1][1] = 3;
+    kamyki[2][1] = 3;
+    kamyki[3][1] = 3;
+    kamyki[5][1] = 8;
+    kamyki[6][1] = 3;
+    kamyki[7][1] = 3;
+    kamyki[8][1] = 3;
+    kamyki[0][2] = 3;
+    kamyki[1][2] = 6;
+    kamyki[4][2] = 7;
+    kamyki[5][2] = 3;
+    kamyki[6][2] = 7;
+    kamyki[7][2] = 8;
+    kamyki[8][2] = 3;
+    kamyki[9][2] = 4;
+    kamyki[0][3] = 9;
+    kamyki[1][3] = 3;
+    kamyki[2][3] = 4;
+    kamyki[3][3] = 3;
+    kamyki[4][3] = 3;
+    kamyki[5][3] = 3;
+    kamyki[7][3] = 3;
+    kamyki[8][3] = 3;
+    kamyki[0][4] = 3;
+    kamyki[3][4] = 7;
+    kamyki[4][4] = 3;
+    kamyki[5][4] = 8;
+    kamyki[8][4] = 3;
+    kamyki[0][5] = 7;
+    kamyki[1][5] = 3;
+    kamyki[2][5] = 3;
+    kamyki[4][5] = 3;
+    kamyki[5][5] = 8;
+    kamyki[6][5] = 3;
+    kamyki[7][5] = 5;
+    kamyki[8][5] = 3;
+    kamyki[0][6] = 8;
+    kamyki[1][6] = 6;
+    kamyki[6][6] = 4;
+    kamyki[9][6] = 6;               
+
+    drawTiles();
+      break;
+
+    case 14: // przedostatnia
+    falkonx = 8;
+    falkony = 1;
+    krawedzx = 8;
+    krawedzy = 1;
+    kierunek = 0;
+
+    kamyki[8][0] = 5;
+    kamyki[9][0] = 8;
+    kamyki[1][1] = 3;
+    kamyki[2][1] = 3;
+    kamyki[7][1] = 3;
+    kamyki[8][1] = 12;
+    kamyki[9][1] = 6;
+    kamyki[0][2] = 7;
+    kamyki[1][2] = 3;
+    kamyki[2][2] = 7;
+    kamyki[7][2] = 7;
+    kamyki[8][2] = 3;
+    kamyki[1][3] = 3;
+    kamyki[2][3] = 7;
+    kamyki[3][3] = 7;
+    kamyki[7][3] = 4;
+    kamyki[1][4] = 3;
+    kamyki[2][4] = 7;
+    kamyki[3][4] = 7;
+    kamyki[4][4] = 7;
+    kamyki[5][4] = 3;
+    kamyki[1][5] = 3;
+    kamyki[2][5] = 3;
+    kamyki[3][5] = 3;
+    kamyki[4][5] = 3;
+    kamyki[5][5] = 3;
+    kamyki[8][5] = 8;
+    kamyki[9][5] = 8;
+    kamyki[0][6] = 10;
+    kamyki[1][6] = 3;
+    kamyki[2][6] = 9;
+    kamyki[3][6] = 8;
+    kamyki[4][6] = 5;
+    kamyki[8][6] = 8;
+    kamyki[9][6] = 9;
+
+    drawTiles();
+      break;
+    
+    case 15: // ta ma byc ostatnia
     falkonx = 0;
     falkony = 3;
     krawedzx = 0;
@@ -563,6 +770,7 @@ void nextLevel(void) {
     kamyki[8][6] = 3;
     kamyki[9][6] = 3;
 
+    robboMsgNr = 10;
     drawTiles();
       break;
 
@@ -702,7 +910,7 @@ void coalAndCollect(void) {
   if(what == 10){
     portalAnim();
     ++level;
-      if(level == 3){
+      if(level == 16){
         stateChange(g_pStateMachineGame, &g_sStateScore);
 		  return;
       }

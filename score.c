@@ -108,7 +108,7 @@ for(BYTE i = 0 ; i < 13 ; ++i){
     sprintf(szScore, "");
     break;
     case 5:
-    sprintf(szScore, "You reclaimed %d of our coal.", coal);
+    sprintf(szScore, "You reclaimed %d tons of our coal.", coal);
     break;
     case 6:
     sprintf(szScore, "");
