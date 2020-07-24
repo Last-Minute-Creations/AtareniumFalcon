@@ -32,6 +32,7 @@ extern BYTE stoneHit;
 extern BYTE frameHit;
 
 extern BYTE level;
+extern BYTE robboMsgNr;
 
 
 static tFont *s_pFont;
@@ -53,6 +54,7 @@ frameHit = 0;
 coal = startingCoal;
 capacitors = 0;
 level = 1;
+robboMsgNr = 0;
 }
 
 void stateScoreCreate(void){

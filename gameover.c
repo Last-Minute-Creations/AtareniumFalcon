@@ -30,6 +30,7 @@ extern BYTE stoneHit;
 extern BYTE frameHit;
 
 extern BYTE level;
+extern BYTE robboMsgNr;
 
 void cleanUp(void);
 
