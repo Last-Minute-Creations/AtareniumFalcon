@@ -4,7 +4,7 @@ project(atarenium LANGUAGES C)
 # ACE
 add_subdirectory(ACE ace)
 
-add_executable(falkon.elf main.c game.c menu.c gameover.c intro.c credits.c score.c) # Compiler emits .elf file, we need hunk for Amiga
+add_executable(falkon.elf main.c game.c menu.c gameover.c intro.c credits.c score.c robbo.c) # Compiler emits .elf file, we need hunk for Amiga
 
 target_compile_options(falkon.elf PRIVATE -Wall -Wextra)
 
@@ -71,6 +71,12 @@ convertBitmaps(
 	TARGET falkon.elf PALETTE ${PLT_PATH}
 	INTERLEAVED SOURCES ${RES_DIR}/HUD.png
 	DESTINATIONS ${DATA_DIR}/HUD.bm
+)
+
+convertBitmaps(
+	TARGET falkon.elf PALETTE ${PLT_PATH}
+	INTERLEAVED SOURCES ${RES_DIR}/ACE.png
+	DESTINATIONS ${DATA_DIR}/ACE.bm
 )
 
 convertBitmaps(

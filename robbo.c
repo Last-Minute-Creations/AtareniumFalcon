@@ -14,28 +14,18 @@ static tVPort *s_pVp;
 static tSimpleBufferManager *s_pVpManager;
 
 
-extern tState g_sStateMenu;
+extern tState g_sStateGame;
 extern tStateManager *g_pStateMachineGame;
+
+extern BYTE robboMsgNr;
 
 static tFont *s_pFont;
 static tTextBitMap *s_pBmText;
 
-char szCredits[80];
-const char *c1 = "ATARENIUM FALCON";
-const char *c2 = "v 0.9 Decrunch 2020 gamedev compo release.";
-const char *c3 = "";
-const char *c4 = "Last Minute Creations are:";
-const char *c5 = "KaiN";
-const char *c6 = "Softiron";
-const char *c7 = "Proxy";
-const char *c8 = "Luc3k";
-const char *c9 = ".";
-const char *c10 = "ENJOY THE PARTY !";
+char szRobboMsg[80];
+char *szRobbo1stLine = "ROBBO says:";
 
-
-
-
-void stateCreditsCreate(void){
+void stateRobboCreate(void){
 
 s_pView = viewCreate(0,
     TAG_VIEW_COPLIST_MODE, COPPER_MODE_BLOCK,
@@ -66,75 +56,66 @@ viewLoad(s_pView);
 s_pFont = fontCreate("data/uni54.fnt");
 s_pBmText = fontCreateTextBitMap(300, s_pFont->uwHeight);
 
-//bitmapLoadFromFile(s_pVpManager->pBack, "data/LMC.bm", 0, 0);
-
-//for(BYTE k = 0 ; k < 150 ; ++k){
-//      vPortWaitForEnd(s_pVp);
-//      }
-
-//bitmapLoadFromFile(s_pVpManager->pBack, "data/ACE.bm", 0, 0);
-
-//for(BYTE k = 0 ; k < 150 ; ++k){
-  //    vPortWaitForEnd(s_pVp);
-   //   }
-
-
-
 blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 22);
 blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 22);
 
-for(BYTE i = 0 ; i < 10 ; ++i){
-
-  switch (i){
+  switch (robboMsgNr){
     case 0:
-    sprintf(szCredits, c1);
+    sprintf(szRobboMsg, "Keep an eye on your coal supplies.");
     break;
     case 1:
-    sprintf(szCredits, c2);
+    sprintf(szRobboMsg, "Follow the Atari portal.");
     break;
     case 2:
-    sprintf(szCredits, c3);
+    sprintf(szRobboMsg, "Avoid the meteorites.");
     break;
     case 3:
-    sprintf(szCredits, c4);
+    sprintf(szRobboMsg, "Try to steal some red and blue capacitors.");
     break;
     case 4:
-    sprintf(szCredits, c5);
+    sprintf(szRobboMsg, "Infiltrate the Amigans territory.");
     break;
     case 5:
-    sprintf(szCredits, c6);
+    sprintf(szRobboMsg, "Minister Renton is counting on you, Sir.");
     break;
     case 6:
-    sprintf(szCredits, c7);
+    sprintf(szRobboMsg, "Hey, you need to clean up here, I found some GermZ ");
     break;
     case 7:
-    sprintf(szCredits, c8);
+    sprintf(szRobboMsg, "Take me home, this place sucks!");
     break;
     case 8:
-    sprintf(szCredits, c9);
+    sprintf(szRobboMsg, "You must reach the coal warehouse and reclaim it for us.");
     break;
     case 9:
-    sprintf(szCredits, c10);
+    sprintf(szRobboMsg, "Well done! Now collect the coal and GTFO !!!");
     break; 
     
   }
-    
-      fontFillTextBitMap(s_pFont, s_pBmText, szCredits);
-      fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText,  1, i * 9, 5, FONT_COOKIE);
+        
+      fontFillTextBitMap(s_pFont, s_pBmText, szRobbo1stLine);
+      fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText,  1, 1, 5, FONT_COOKIE);
+      
       for(BYTE k = 0 ; k < 10 ; ++k){
       vPortWaitForEnd(s_pVp);
       }
+      
+      fontFillTextBitMap(s_pFont, s_pBmText, szRobboMsg);
+      fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText,  1, 10, 5, FONT_COOKIE);
+      
+      
+
+
+    
 }
 
-}
 
-
-void stateCreditsLoop(void){
+void stateRobboLoop(void){
 	joyProcess();
 	keyProcess();
 
 	if(joyUse(JOY1_FIRE) || keyUse(KEY_RETURN)) {
-		stateChange(g_pStateMachineGame, &g_sStateMenu);
+		statePop(g_pStateMachineGame);
 		return;
   }
 
@@ -143,7 +124,7 @@ void stateCreditsLoop(void){
 	vPortWaitForEnd(s_pVp);
 }
 
-void stateCreditsDestroy(void){
+void stateRobboDestroy(void){
 	systemUse();
 	joyClose();
 	keyDestroy();
@@ -152,10 +133,10 @@ void stateCreditsDestroy(void){
 }
 
 
-tState g_sStateCredits = {
-  .cbCreate = stateCreditsCreate,
-  .cbLoop = stateCreditsLoop,
-  .cbDestroy = stateCreditsDestroy,
+tState g_sStateRobbo = {
+  .cbCreate = stateRobboCreate,
+  .cbLoop = stateRobboLoop,
+  .cbDestroy = stateRobboDestroy,
   .cbSuspend = 0,
   .cbResume = 0,
   .pPrev = 0

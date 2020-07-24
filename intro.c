@@ -21,7 +21,7 @@ static tFont *s_pFont;
 static tTextBitMap *s_pBmText;
 
 char szIntro[80];
-const char *line1 = "Captain Tramiel, our planet was attacked by trecherous";
+const char *line1 = "Captain Tramiel, our planet was attacked by treacherous";
 const char *line2 = "Great Miner and his race of Amigans.";
 const char *line3 = "Almost all coal supplies for our Atari are gone.";
 const char *line4 = "Renton - Minister of Mining is reporting that natural coal";
@@ -42,7 +42,7 @@ const char *line18 = "efficient eco pea-coal. It is also equipped with external"
 const char *line19 = "automated arm. This is prototype experimental. Now GO!";
 const char *line20 = "One more thing Captain... While you traverse enemy territory";
 const char *line21 = "try to collect as many capacitors as you can so the Amigans";
-const char *line22 = "can't replaceleaking ones in their Amigas. Let electrolyte";
+const char *line22 = "can't replace leaking ones in their Amigas. Let electrolyte";
 const char *line23 = "eat out their PCBs. HAR! HAR! HAR!";
 
 void stateIntroCreate(void){

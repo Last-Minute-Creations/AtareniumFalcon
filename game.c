@@ -27,6 +27,7 @@ static tTextBitMap *s_pBmText;
 extern tState g_sStateMenu;
 extern tState g_sStateGameOver;
 extern tState g_sStateScore;
+extern tState g_sStateRobbo;
 extern tStateManager *g_pStateMachineGame;
 
 #define MAP_TILE_HEIGHT 7
@@ -53,6 +54,8 @@ BYTE frameHit = 0;
 BYTE coal = 10;
 BYTE capacitors = 0;
 BYTE level = 1;
+BYTE robboMsgNr = 0;
+
 
 
 void drawTiles(void) {
@@ -163,6 +166,8 @@ void nextLevel(void) {
     kamyki[7][5] = 7;
     kamyki[9][6] = 10;
 
+    robboMsgNr = 1;
+
     drawTiles();
       break;
     case 3:
@@ -184,6 +189,8 @@ void nextLevel(void) {
     kamyki[5][3] = 11;
     kamyki[7][5] = 2;
     kamyki[9][6] = 10;
+
+    robboMsgNr = 2;
 
     drawTiles();
       break;
@@ -207,6 +214,8 @@ void nextLevel(void) {
     kamyki[6][6] = 4;
     kamyki[6][4] = 6;
     kamyki[9][6] = 10;
+
+    robboMsgNr = 3;
 
     drawTiles();
       break;
@@ -242,7 +251,9 @@ void nextLevel(void) {
     kamyki[2][5] = 4;
     kamyki[4][5] = 7;
     kamyki[8][6] = 4;
-    kamyki[9][6] = 10;                        
+    kamyki[9][6] = 10;
+
+    robboMsgNr = 4;                        
 
     drawTiles();
       break;
@@ -273,7 +284,9 @@ void nextLevel(void) {
     kamyki[5][4] = 3;
     kamyki[6][4] = 10;
     kamyki[3][6] = 3;
-    kamyki[4][6] = 8;                
+    kamyki[4][6] = 8; 
+
+    robboMsgNr = 5;               
     
     drawTiles();
       break;
@@ -328,7 +341,9 @@ void nextLevel(void) {
     kamyki[8][5] = 3;
     kamyki[0][6] = 5;
     kamyki[1][6] = 8;
-    kamyki[8][6] = 7;                    
+    kamyki[8][6] = 7;
+
+    robboMsgNr = 6;                    
 
     drawTiles();
       break;
@@ -685,6 +700,10 @@ void coalAndCollect(void) {
       }
     nextLevel();
   }
+  if(what == 11){
+        statePush(g_pStateMachineGame, &g_sStateRobbo);
+        return;
+      }
 
 
   coal = coal - 1;
@@ -1230,6 +1249,7 @@ kamyki[2][4] = 6;
 kamyki[5][5] = 6;
 kamyki[8][6] = 4;
 kamyki[9][6] = 10;
+
 
 
 
