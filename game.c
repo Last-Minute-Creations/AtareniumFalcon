@@ -26,6 +26,7 @@ static tTextBitMap *s_pBmText;
 
 extern tState g_sStateMenu;
 extern tState g_sStateGameOver;
+extern tState g_sStateScore;
 extern tStateManager *g_pStateMachineGame;
 
 #define MAP_TILE_HEIGHT 7
@@ -139,9 +140,9 @@ void nextLevel(void) {
     break;
   }
   clearTiles();
-  blitCopy(s_pBg, 0, 0, s_pVpManager->pBack, 0, 0, 320, 128,MINTERM_COOKIE, 0xFF);
-  blitCopy(s_pBg, 0, 128, s_pVpManager->pBack, 0, 128, 320, 128,MINTERM_COOKIE, 0xFF);
-  blitCopy(s_pHUD, 0, 224, s_pVpManager->pBack, 0, 224, 320,32,MINTERM_COOKIE, 0xFF);
+  blitCopy(s_pBg, 0, 0, s_pVpManager->pBack, 0, 0, 320, 128,MINTERM_COPY, 0xFF);
+  blitCopy(s_pBg, 0, 128, s_pVpManager->pBack, 0, 128, 320, 128,MINTERM_COPY, 0xFF);
+  blitCopy(s_pHUD, 0, 224, s_pVpManager->pBack, 0, 224, 320,32,MINTERM_COPY, 0xFF);
   printOnHUD();
   switch(level){
     case 2:
@@ -678,6 +679,10 @@ void coalAndCollect(void) {
   if(what == 10){
     portalAnim();
     ++level;
+      if(level == 12){
+        stateChange(g_pStateMachineGame, &g_sStateScore);
+		  return;
+      }
     nextLevel();
   }
 
