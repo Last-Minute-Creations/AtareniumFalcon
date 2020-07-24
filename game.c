@@ -679,7 +679,7 @@ void coalAndCollect(void) {
   if(what == 10){
     portalAnim();
     ++level;
-      if(level == 12){
+      if(level == 2){
         stateChange(g_pStateMachineGame, &g_sStateScore);
 		  return;
       }

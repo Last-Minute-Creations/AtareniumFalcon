@@ -25,17 +25,6 @@ static tTextBitMap *s_pBmText;
 
 
 char szScore[80];
-const char *s1 = "MISSION COMPLETE !";
-const char *s2 = "";
-const char *s4 = "";
-const char *s6 = "their old capacitors.";
-const char *s7 = "";
-const char *s8 = "... But Sir, I fear all we have done";
-const char *s9 = "is to awaken a sleeping giant.";
-const char *s10 = "Amigans will be back in...";
-
-
-
 
 void stateScoreCreate(void){
 
@@ -71,38 +60,47 @@ s_pBmText = fontCreateTextBitMap(300, s_pFont->uwHeight);
 blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 22);
 blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 22);
 
-for(BYTE i = 0 ; i < 10 ; ++i){
+for(BYTE i = 0 ; i < 13 ; ++i){
 
   switch (i){
     case 0:
-    sprintf(szScore, s1);
+    sprintf(szScore, "MISSION COMPLETE !");
     break;
     case 1:
-    sprintf(szScore, s2);
+    sprintf(szScore, "");
     break;
     case 2:
-    sprintf(szScore, "You reclaimed %d of our coal.", coal);
+    sprintf(szScore, "The ATARI tribe can now plow their fields");
     break;
     case 3:
-    sprintf(szScore, s4);
+    sprintf(szScore, "with peace. Now go get some rest.");
     break;
     case 4:
-    sprintf(szScore, "%d Amigas died with acid leaking from", capacitors);
+    sprintf(szScore, "");
     break;
     case 5:
-    sprintf(szScore, s6);
+    sprintf(szScore, "You reclaimed %d of our coal.", coal);
     break;
     case 6:
-    sprintf(szScore, s7);
+    sprintf(szScore, "");
     break;
     case 7:
-    sprintf(szScore, s8);
+    sprintf(szScore, "%d Amigas died with acid leaking from", capacitors);
     break;
     case 8:
-    sprintf(szScore, s9);
+    sprintf(szScore, "their old capacitors.");
     break;
     case 9:
-    sprintf(szScore, s10);
+    sprintf(szScore, "");
+    break;
+    case 10:
+    sprintf(szScore, "... But Sir, I fear all we have done");
+    break;
+    case 11:
+    sprintf(szScore, "is to awaken a sleeping giant.");
+    break;
+    case 12:
+    sprintf(szScore, "Amigans will be back in...");
     break; 
     
   }
