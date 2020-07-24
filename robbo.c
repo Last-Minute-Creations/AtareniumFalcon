@@ -27,6 +27,7 @@ char *szRobbo1stLine = "ROBBO says:";
 
 
 void stateRobboCreate(void){
+    systemUse();
 
 s_pView = viewCreate(0,
     TAG_VIEW_COPLIST_MODE, COPPER_MODE_BLOCK,
@@ -50,8 +51,7 @@ s_pVpManager = simpleBufferCreate(0,
 );
 
 systemUnuse();
-joyOpen();
-keyCreate();
+
 viewLoad(s_pView);
 
 s_pFont = fontCreate("data/uni54.fnt");
@@ -127,10 +127,9 @@ void stateRobboLoop(void){
 
 void stateRobboDestroy(void){
 	systemUse();
-	joyClose();
-	keyDestroy();
-	viewDestroy(s_pView);
 	
+	viewDestroy(s_pView);
+	systemUnuse();
 }
 
 
