@@ -25,6 +25,7 @@ static tTextBitMap *s_pBmText;
 char szRobboMsg[80];
 char *szRobbo1stLine = "ROBBO says:";
 
+
 void stateRobboCreate(void){
 
 s_pView = viewCreate(0,

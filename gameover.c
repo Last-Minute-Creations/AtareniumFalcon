@@ -15,6 +15,24 @@ static tBitMap *s_pGameOver;
 extern tState g_sStateMenu;
 extern tStateManager *g_pStateMachineGame;
 
+extern BYTE startingCoal;
+
+extern BYTE coal;
+extern BYTE capacitors;
+extern BYTE falkonx;
+extern BYTE falkony;
+extern BYTE krawedzx;
+extern BYTE krawedzy;
+extern BYTE kierunek;
+extern BYTE falkonFace; // kierunek dziobem
+
+extern BYTE stoneHit;
+extern BYTE frameHit;
+
+extern BYTE level;
+
+void cleanUp(void);
+
 
 void stateGameOverCreate(void){
 
@@ -57,6 +75,7 @@ void stateGameOverLoop(void){
 	keyProcess();
 
 	if(joyUse(JOY1_FIRE) || keyUse(KEY_RETURN)) {
+    cleanUp();
 		stateChange(g_pStateMachineGame, &g_sStateMenu);
 		return;
   }

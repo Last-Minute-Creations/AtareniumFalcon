@@ -51,10 +51,18 @@ BYTE falkonFace = 0; // kierunek dziobem
 
 BYTE stoneHit = 0;
 BYTE frameHit = 0;
-BYTE coal = 10;
+
+CONST BYTE startingCoal = 10;
+
+BYTE coal = startingCoal;
 BYTE capacitors = 0;
 BYTE level = 1;
 BYTE robboMsgNr = 0;
+
+void gameOnResume(void) {
+  viewLoad(s_pView);
+}
+
 
 
 
@@ -694,7 +702,7 @@ void coalAndCollect(void) {
   if(what == 10){
     portalAnim();
     ++level;
-      if(level == 2){
+      if(level == 3){
         stateChange(g_pStateMachineGame, &g_sStateScore);
 		  return;
       }
@@ -1234,7 +1242,7 @@ viewLoad(s_pView);
 
 // narysujmy falkona
 blitCopyMask(s_pTiles, 128, 32, s_pVpManager->pBack, falkonx, falkony, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
-//blitRect(s_pVpManager->pBack, falkonx, falkony, 32, 32, 1);
+
 
 // tablica trzyma wlasciwosci tile'a, petla stawia tajle na miejscach wyznaczanych przez tablice
 // level 1
@@ -1292,7 +1300,7 @@ void stateGameLoop(void) {
 		falconMove();
 		coalAndCollect();
 	}
-
+  
 	noCoalLeft();
 
 	viewProcessManagers(s_pView); // obliczenia niezb�dne do poprawnego dzia�ania viewport�w
@@ -1321,6 +1329,6 @@ tState g_sStateGame = {
   .cbLoop = stateGameLoop,
   .cbDestroy = stateGameDestroy,
   .cbSuspend = 0,
-  .cbResume = 0,
+  .cbResume = gameOnResume,
   .pPrev = 0
 };

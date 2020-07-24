@@ -73,11 +73,7 @@ convertBitmaps(
 	DESTINATIONS ${DATA_DIR}/HUD.bm
 )
 
-convertBitmaps(
-	TARGET falkon.elf PALETTE ${PLT_PATH}
-	INTERLEAVED SOURCES ${RES_DIR}/ACE.png
-	DESTINATIONS ${DATA_DIR}/ACE.bm
-)
+
 
 convertBitmaps(
 	TARGET falkon.elf PALETTE ${PLT_PATH}

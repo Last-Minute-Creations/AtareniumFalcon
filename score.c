@@ -17,14 +17,43 @@ static tSimpleBufferManager *s_pVpManager;
 extern tState g_sStateMenu;
 extern tStateManager *g_pStateMachineGame;
 
+extern BYTE startingCoal;
+
 extern BYTE coal;
 extern BYTE capacitors;
+extern BYTE falkonx;
+extern BYTE falkony;
+extern BYTE krawedzx;
+extern BYTE krawedzy;
+extern BYTE kierunek;
+extern BYTE falkonFace; // kierunek dziobem
+
+extern BYTE stoneHit;
+extern BYTE frameHit;
+
+extern BYTE level;
+
 
 static tFont *s_pFont;
 static tTextBitMap *s_pBmText;
 
 
 char szScore[80];
+
+void cleanUp(void){
+falkonx = 0;
+falkony = 0;
+krawedzx = 0;
+krawedzy = 0;
+kierunek = 0;
+falkonFace = 0; 
+
+stoneHit = 0;
+frameHit = 0;
+coal = startingCoal;
+capacitors = 0;
+level = 1;
+}
 
 void stateScoreCreate(void){
 
@@ -120,7 +149,8 @@ void stateScoreLoop(void){
 	keyProcess();
 
 	if(joyUse(JOY1_FIRE) || keyUse(KEY_RETURN)) {
-		stateChange(g_pStateMachineGame, &g_sStateMenu);
+		cleanUp();
+    stateChange(g_pStateMachineGame, &g_sStateMenu);
 		return;
   }
 
