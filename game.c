@@ -153,7 +153,7 @@ void nextLevel(void) {
   clearTiles();
   blitCopy(s_pBg, 0, 0, s_pVpManager->pBack, 0, 0, 320, 128,MINTERM_COPY, 0xFF);
   blitCopy(s_pBg, 0, 128, s_pVpManager->pBack, 0, 128, 320, 128,MINTERM_COPY, 0xFF);
-  blitCopy(s_pHUD, 0, 224, s_pVpManager->pBack, 0, 224, 320,32,MINTERM_COPY, 0xFF);
+  blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320,32,MINTERM_COPY, 0xFF);
   printOnHUD();
   switch(level){
     case 2:
@@ -895,14 +895,14 @@ void coalAndCollect(void) {
   }
   if(what == 8){
     capacitors = capacitors + 2;
-    blitCopy(s_pHUD, 96, 224, s_pVpManager->pBack, 96, 224, 32, 32,MINTERM_COOKIE, 0xFF);
+    blitCopy(s_pHUD, 96, 0, s_pVpManager->pBack, 96, 224, 32, 32,MINTERM_COOKIE, 0xFF);
     sprintf(szMsg2, "%d", capacitors);
     fontFillTextBitMap(s_pFont, s_pBmText, szMsg2);
     fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText,  112, 229, 5, FONT_COOKIE);
   }
   if(what == 9){
     capacitors = capacitors + 4;
-    blitCopy(s_pHUD, 96, 224, s_pVpManager->pBack, 96, 224, 32, 32,MINTERM_COOKIE, 0xFF);
+    blitCopy(s_pHUD, 96, 0, s_pVpManager->pBack, 96, 224, 32, 32,MINTERM_COOKIE, 0xFF);
     sprintf(szMsg2, "%d", capacitors);
     fontFillTextBitMap(s_pFont, s_pBmText, szMsg2);
     fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText,  112, 229, 5, FONT_COOKIE);
@@ -923,7 +923,7 @@ void coalAndCollect(void) {
 
 
   coal = coal - 1;
-  blitCopy(s_pHUD, 32, 224, s_pVpManager->pBack, 32, 224, 32, 32,MINTERM_COOKIE, 0xFF);
+  blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 32, 32,MINTERM_COOKIE, 0xFF);
   sprintf(szMsg, "%d", coal);
   fontFillTextBitMap(s_pFont, s_pBmText, szMsg);
   fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText,  48, 229, 5, FONT_COOKIE);
@@ -1422,7 +1422,7 @@ s_pVpManager = simpleBufferCreate(0,
 
 // po zrobieniu simpleBufferCreate()
 bitmapLoadFromFile(s_pVpManager->pBack, "data/tlo1.bm", 0, 0); // wczytaj zawarto�� bg1.bm bezpo�rednio do bitmapy bufora ekranu, zaczynaj�c od pozycji 0,0
-blitCopy(s_pHUD, 0, 224, s_pVpManager->pBack, 0, 224, 320,32,MINTERM_COOKIE, 0xFF);
+blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320,32,MINTERM_COOKIE, 0xFF);
 joyOpen(); // b�dziemy u�ywa� d�oja w grze
 keyCreate();
 // na koniec create:
