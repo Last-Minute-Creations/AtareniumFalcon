@@ -13,6 +13,9 @@ static tView *s_pView;
 static tVPort *s_pVp;
 static tSimpleBufferManager *s_pVpManager;
 
+static tBitMap *s_pLMC;
+static tBitMap *s_pACE;
+
 extern tState g_sStateMenu;
 extern tStateManager *g_pStateMachineGame;
 
@@ -45,8 +48,6 @@ void stateCreditsCreate(void)
                       TAG_VPORT_VIEW, s_pView,
                       TAG_VPORT_BPP, 5,
                       TAG_END);
-  // Paleta z falkona
-  paletteLoad("data/falkon.plt", s_pVp->pPalette, 32);
 
   s_pVpManager = simpleBufferCreate(0,
                                     TAG_SIMPLEBUFFER_VPORT, s_pVp,
@@ -54,48 +55,83 @@ void stateCreditsCreate(void)
                                     TAG_SIMPLEBUFFER_IS_DBLBUF, 0,
                                     TAG_END);
 
-  systemUnuse();
   joyOpen();
   keyCreate();
   viewLoad(s_pView);
 
   s_pFont = fontCreate("data/uni54.fnt");
   s_pBmText = fontCreateTextBitMap(300, s_pFont->uwHeight);
+  paletteLoad("data/lmcpalette.plt", s_pPalette, 32);
+  s_pLMC = bitmapCreateFromFile("data/LMC.bm", 0);
+  s_pACE = bitmapCreateFromFile("data/ACE.bm", 0);
 
-  //bitmapLoadFromFile(s_pVpManager->pBack, "data/LMC.bm", 0, 0);
+  paletteDim(s_pPalette, s_pVp->pPalette, 32, 0); // 0 - czarno, 15 - peˆna paleta
+  viewUpdateCLUT(s_pView);
 
-  //for(BYTE k = 0 ; k < 150 ; ++k){
-  //      vPortWaitForEnd(s_pVp);
-  //      }
+  blitCopy(s_pLMC, 0, 0, s_pVpManager->pBack, 0, 0, 320, 128, MINTERM_COOKIE, 0xFF);
+  blitCopy(s_pLMC, 0, 128, s_pVpManager->pBack, 0, 128, 320, 128, MINTERM_COOKIE, 0xFF);
 
-  //bitmapLoadFromFile(s_pVpManager->pBack, "data/ACE.bm", 0, 0);
-
-  //for(BYTE k = 0 ; k < 150 ; ++k){
-  //    vPortWaitForEnd(s_pVp);
-  //   }
-  paletteLoad("data/falkon.plt", s_pPalette, 32);
-  blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 23);
-  blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 23);
-  for (int k = 0; k < 200; ++k)
+  for (BYTE bRatio = 0; bRatio >= 15; ++bRatio)
   {
-    vPortWaitForEnd(s_pVp);
-  }
-  // ˜ciemnianie
-
-  for (BYTE ubRatio = 16; ubRatio >= 0; --ubRatio)
-  {
-    paletteDim(s_pPalette, s_pVp->pPalette, 32, ubRatio); // 0 - czarno, 15 - peˆna paleta
+    paletteDim(s_pPalette, s_pVp->pPalette, 32, bRatio); // 0 - czarno, 15 - peˆna paleta
     viewUpdateCLUT(s_pView);                              // we« palet© z viewporta i wrzu† j¥ na ekran
-    for (int k = 0; k < 5; ++k)
+    for (int k = 0; k < 10; ++k)
     {
       vPortWaitForEnd(s_pVp);
     }
   }
 
+  for (int k = 0; k < 100; ++k)
+  {
+    vPortWaitForEnd(s_pVp);
+  }
+  // ˜ciemnianie
+
+  for (BYTE bRatio = 15 ; bRatio >= 0; --bRatio)
+  {
+    paletteDim(s_pPalette, s_pVp->pPalette, 32, bRatio); // 0 - czarno, 15 - peˆna paleta
+    viewUpdateCLUT(s_pView);                              // we« palet© z viewporta i wrzu† j¥ na ekran
+    for (int k = 0; k < 10; ++k)
+    {
+      vPortWaitForEnd(s_pVp);
+    }
+  }
+
+  blitCopy(s_pACE, 0, 0, s_pVpManager->pBack, 0, 0, 320, 128, MINTERM_COOKIE, 0xFF);
+  blitCopy(s_pACE, 0, 128, s_pVpManager->pBack, 0, 128, 320, 128, MINTERM_COOKIE, 0xFF);
+
+  for (BYTE bRatio = 0; bRatio >= 15; ++bRatio)
+  {
+    paletteDim(s_pPalette, s_pVp->pPalette, 32, bRatio); // 0 - czarno, 15 - peˆna paleta
+    viewUpdateCLUT(s_pView);                              // we« palet© z viewporta i wrzu† j¥ na ekran
+    for (int k = 0; k < 10; ++k)
+    {
+      vPortWaitForEnd(s_pVp);
+    }
+  }
+
+  for (int k = 0; k < 100; ++k)
+  {
+    vPortWaitForEnd(s_pVp);
+  }
+  // ˜ciemnianie
+
+  for (BYTE bRatio = 15; bRatio >= 0; --bRatio)
+  {
+    paletteDim(s_pPalette, s_pVp->pPalette, 32, bRatio); // 0 - czarno, 15 - peˆna paleta
+    viewUpdateCLUT(s_pView);                              // we« palet© z viewporta i wrzu† j¥ na ekran
+    for (int k = 0; k < 10; ++k)
+    {
+      vPortWaitForEnd(s_pVp);
+    }
+  }
+
+  paletteLoad("data/falkon.plt", s_pPalette, 32);
+  BYTE ubRatio = 15;
+  paletteDim(s_pPalette, s_pVp->pPalette, 32, ubRatio); // 0 - czarno, 15 - peˆna paleta
+  viewUpdateCLUT(s_pView);
   blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 22);
   blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 22);
-  BYTE ubRatio = 15;
-  paletteDim(s_pPalette, s_pVp->pPalette, 32, ubRatio);
 
   for (BYTE i = 0; i < 10; ++i)
   {
@@ -161,7 +197,7 @@ void stateCreditsLoop(void)
 
 void stateCreditsDestroy(void)
 {
-  systemUse();
+
   joyClose();
   keyDestroy();
   viewDestroy(s_pView);

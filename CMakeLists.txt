@@ -19,8 +19,27 @@ set(RES_DIR ${CMAKE_CURRENT_LIST_DIR}/res) # st�d bierzemy pliki do konwersji
 set(DATA_DIR ${CMAKE_CURRENT_BINARY_DIR}/data) # tu maj� l�dowa�
 file(MAKE_DIRECTORY ${DATA_DIR}) #za���my data
 
+set(PLT_PATH ${DATA_DIR}/lmcpalette.plt) #tak si� b�dzie nazywa� docelowa paleta
+convertPalette(falkon.elf ${RES_DIR}/lmcpalette.pal ${PLT_PATH})
+
+convertBitmaps(
+	TARGET falkon.elf PALETTE ${PLT_PATH}
+	INTERLEAVED SOURCES ${RES_DIR}/LMC.png
+	DESTINATIONS ${DATA_DIR}/LMC.bm
+)
+
+convertBitmaps(
+	TARGET falkon.elf PALETTE ${PLT_PATH}
+	INTERLEAVED SOURCES ${RES_DIR}/ACE.png
+	DESTINATIONS ${DATA_DIR}/ACE.bm
+)
+
+
+
 set(PLT_PATH ${DATA_DIR}/falkon.plt) #tak si� b�dzie nazywa� docelowa paleta
 convertPalette(falkon.elf ${RES_DIR}/falkon.pal ${PLT_PATH}) # z res/falkon.pal do build/data/falkon.plt
+
+
 
 convertBitmaps(
 	TARGET falkon.elf PALETTE ${PLT_PATH}
@@ -72,6 +91,8 @@ convertBitmaps(
 	INTERLEAVED SOURCES ${RES_DIR}/HUD.png
 	DESTINATIONS ${DATA_DIR}/HUD.bm
 )
+
+
 
 
 
