@@ -36,6 +36,34 @@ const char *c8 = "Luc3k";
 const char *c9 = ".";
 const char *c10 = "ENJOY THE PARTY !";
 
+static void doFadeInOut(void) {
+  for (BYTE bRatio = 0; bRatio < 16; ++bRatio)
+  {
+    paletteDim(s_pPalette, s_pVp->pPalette, 32, bRatio); // 0 - czarno, 15 - pe?na paleta
+    viewUpdateCLUT(s_pView);                              // we? palet? z viewporta i wrzu? j? na ekran
+    for (int k = 0; k < 10; ++k)
+    {
+      vPortWaitForEnd(s_pVp);
+    }
+  }
+
+  for (int k = 0; k < 100; ++k)
+  {
+    vPortWaitForEnd(s_pVp);
+  }
+  // ?ciemnianie
+
+  for (BYTE bRatio = 15 ; bRatio >= 0; --bRatio)
+  {
+    paletteDim(s_pPalette, s_pVp->pPalette, 32, bRatio); // 0 - czarno, 15 - pe?na paleta
+    viewUpdateCLUT(s_pView);                              // we? palet? z viewporta i wrzu? j? na ekran
+    for (int k = 0; k < 10; ++k)
+    {
+      vPortWaitForEnd(s_pVp);
+    }
+  }
+}
+
 void stateCreditsCreate(void)
 {
 
@@ -71,60 +99,12 @@ void stateCreditsCreate(void)
   blitCopy(s_pLMC, 0, 0, s_pVpManager->pBack, 0, 0, 320, 128, MINTERM_COOKIE, 0xFF);
   blitCopy(s_pLMC, 0, 128, s_pVpManager->pBack, 0, 128, 320, 128, MINTERM_COOKIE, 0xFF);
 
-  for (BYTE bRatio = 0; bRatio >= 15; ++bRatio)
-  {
-    paletteDim(s_pPalette, s_pVp->pPalette, 32, bRatio); // 0 - czarno, 15 - peˆna paleta
-    viewUpdateCLUT(s_pView);                              // we« palet© z viewporta i wrzu† j¥ na ekran
-    for (int k = 0; k < 10; ++k)
-    {
-      vPortWaitForEnd(s_pVp);
-    }
-  }
-
-  for (int k = 0; k < 100; ++k)
-  {
-    vPortWaitForEnd(s_pVp);
-  }
-  // ˜ciemnianie
-
-  for (BYTE bRatio = 15 ; bRatio >= 0; --bRatio)
-  {
-    paletteDim(s_pPalette, s_pVp->pPalette, 32, bRatio); // 0 - czarno, 15 - peˆna paleta
-    viewUpdateCLUT(s_pView);                              // we« palet© z viewporta i wrzu† j¥ na ekran
-    for (int k = 0; k < 10; ++k)
-    {
-      vPortWaitForEnd(s_pVp);
-    }
-  }
+  doFadeInOut();
 
   blitCopy(s_pACE, 0, 0, s_pVpManager->pBack, 0, 0, 320, 128, MINTERM_COOKIE, 0xFF);
   blitCopy(s_pACE, 0, 128, s_pVpManager->pBack, 0, 128, 320, 128, MINTERM_COOKIE, 0xFF);
 
-  for (BYTE bRatio = 0; bRatio >= 15; ++bRatio)
-  {
-    paletteDim(s_pPalette, s_pVp->pPalette, 32, bRatio); // 0 - czarno, 15 - peˆna paleta
-    viewUpdateCLUT(s_pView);                              // we« palet© z viewporta i wrzu† j¥ na ekran
-    for (int k = 0; k < 10; ++k)
-    {
-      vPortWaitForEnd(s_pVp);
-    }
-  }
-
-  for (int k = 0; k < 100; ++k)
-  {
-    vPortWaitForEnd(s_pVp);
-  }
-  // ˜ciemnianie
-
-  for (BYTE bRatio = 15; bRatio >= 0; --bRatio)
-  {
-    paletteDim(s_pPalette, s_pVp->pPalette, 32, bRatio); // 0 - czarno, 15 - peˆna paleta
-    viewUpdateCLUT(s_pView);                              // we« palet© z viewporta i wrzu† j¥ na ekran
-    for (int k = 0; k < 10; ++k)
-    {
-      vPortWaitForEnd(s_pVp);
-    }
-  }
+  doFadeInOut();
 
   paletteLoad("data/falkon.plt", s_pPalette, 32);
   BYTE ubRatio = 15;
