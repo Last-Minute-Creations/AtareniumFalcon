@@ -1501,6 +1501,11 @@ void stateGameLoop(void) {
 		stateChange(g_pStateMachineGame, &g_sStateMenu);
 		return;
 	}
+  else if(keyUse(KEY_N)) {
+		++level;
+    nextLevel();
+		return;
+	}
 
 	if(kierunek != 0) {
 		isThisStone();

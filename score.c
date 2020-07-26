@@ -91,7 +91,7 @@ s_pBmText = fontCreateTextBitMap(300, s_pFont->uwHeight);
 blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 22);
 blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 22);
 
-for(BYTE i = 0 ; i < 13 ; ++i){
+for(BYTE i = 0 ; i < 17 ; ++i){
 
   switch (i){
     case 0:
@@ -125,12 +125,24 @@ for(BYTE i = 0 ; i < 13 ; ++i){
     sprintf(szScore, "");
     break;
     case 10:
-    sprintf(szScore, "... But Sir, I fear all we have done");
+    sprintf(szScore, "%d tons of coal x 100 = %d pts.", coal, coal * 100);
     break;
     case 11:
-    sprintf(szScore, "is to awaken a sleeping giant.");
+    sprintf(szScore, "%d sets of capacitors x 500 = %d pts.", capacitors, capacitors * 500);
     break;
     case 12:
+    sprintf(szScore, "Total score = %d pts.", (coal * 100) + (capacitors * 500));
+    break;
+    case 13:
+    sprintf(szScore, "");
+    break;
+    case 14:
+    sprintf(szScore, "... But Sir, I fear all we have done");
+    break;
+    case 15:
+    sprintf(szScore, "is to awaken a sleeping giant.");
+    break;
+    case 16:
     sprintf(szScore, "Amigans will be back in...");
     break; 
     
