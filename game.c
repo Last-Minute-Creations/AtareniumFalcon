@@ -120,11 +120,11 @@ for(UBYTE y = 0; y < MAP_TILE_HEIGHT; ++y) {
 void printOnHUD(void) {
   sprintf(szMsg, "%d", coal);
   fontFillTextBitMap(s_pFont, s_pBmText, szMsg);
-  fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText,  48, 229, 5, FONT_COOKIE);
+  fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText,  42, 231, 5, FONT_COOKIE);
 
   sprintf(szMsg2, "%d", capacitors);
   fontFillTextBitMap(s_pFont, s_pBmText, szMsg2);
-  fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText,  112, 229, 5, FONT_COOKIE);
+  fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText,  106, 231, 5, FONT_COOKIE);
 }
 
 void nextLevel(void) {
@@ -898,14 +898,14 @@ void coalAndCollect(void) {
     blitCopy(s_pHUD, 96, 0, s_pVpManager->pBack, 96, 224, 32, 32,MINTERM_COOKIE, 0xFF);
     sprintf(szMsg2, "%d", capacitors);
     fontFillTextBitMap(s_pFont, s_pBmText, szMsg2);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText,  112, 229, 5, FONT_COOKIE);
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText,  106, 231, 5, FONT_COOKIE);
   }
   if(what == 9){
     capacitors = capacitors + 4;
     blitCopy(s_pHUD, 96, 0, s_pVpManager->pBack, 96, 224, 32, 32,MINTERM_COOKIE, 0xFF);
     sprintf(szMsg2, "%d", capacitors);
     fontFillTextBitMap(s_pFont, s_pBmText, szMsg2);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText,  112, 229, 5, FONT_COOKIE);
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText,  106, 231, 5, FONT_COOKIE);
   }
   if(what == 10){
     portalAnim();
@@ -926,7 +926,7 @@ void coalAndCollect(void) {
   blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 32, 32,MINTERM_COOKIE, 0xFF);
   sprintf(szMsg, "%d", coal);
   fontFillTextBitMap(s_pFont, s_pBmText, szMsg);
-  fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText,  48, 229, 5, FONT_COOKIE);
+  fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText,  42, 231, 5, FONT_COOKIE);
 }
 
 void falkonFlyingRight(void){
@@ -1408,7 +1408,7 @@ s_pTilesMask = bitmapCreateFromFile("data/tileset.bm", 0); // z pliku tileset.bm
 s_pBg = bitmapCreateFromFile("data/tlo1.bm", 0); // fragmenty tla do podstawiania po ruchu
 s_pHUD = bitmapCreateFromFile("data/HUD.bm", 0);
 
-s_pFont = fontCreate("data/uni54.fnt");
+s_pFont = fontCreate("data/topaz.fnt");
 s_pBmText = fontCreateTextBitMap(200, s_pFont->uwHeight); // bitmapa robocza długa na 200px, wysoka na jedną linię tekstu
 
 

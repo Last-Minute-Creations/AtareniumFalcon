@@ -87,7 +87,7 @@ void stateCreditsCreate(void)
   keyCreate();
   viewLoad(s_pView);
 
-  s_pFont = fontCreate("data/uni54.fnt");
+  s_pFont = fontCreate("data/topaz.fnt");
   s_pBmText = fontCreateTextBitMap(300, s_pFont->uwHeight);
   paletteLoad("data/lmcpalette.plt", s_pPalette, 32);
   s_pLMC = bitmapCreateFromFile("data/LMC.bm", 0);

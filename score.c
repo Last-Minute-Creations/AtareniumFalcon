@@ -85,7 +85,7 @@ joyOpen();
 keyCreate();
 viewLoad(s_pView);
 
-s_pFont = fontCreate("data/uni54.fnt");
+s_pFont = fontCreate("data/topaz.fnt");
 s_pBmText = fontCreateTextBitMap(300, s_pFont->uwHeight);
 
 blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 22);

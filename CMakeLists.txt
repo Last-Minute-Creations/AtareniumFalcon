@@ -106,6 +106,6 @@ convertBitmaps(
 
 
 file(
-    COPY ${RES_DIR}/uni54.fnt
+    COPY ${RES_DIR}/topaz.fnt
     DESTINATION ${DATA_DIR}
 )
