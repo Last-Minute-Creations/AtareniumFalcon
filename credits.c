@@ -111,8 +111,8 @@ void stateCreditsCreate(void)
   BYTE ubRatio = 15;
   paletteDim(s_pPalette, s_pVp->pPalette, 32, ubRatio); // 0 - czarno, 15 - peˆna paleta
   viewUpdateCLUT(s_pView);
-  blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 22);
-  blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 22);
+  blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 21);
+  blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 21);
 
   for (BYTE i = 0; i < 10; ++i)
   {
@@ -152,7 +152,7 @@ void stateCreditsCreate(void)
     }
 
     fontFillTextBitMap(s_pFont, s_pBmText, szCredits);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 1, i * 9, 5, FONT_COOKIE);
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 10, (i * 9) + 10, 23, FONT_COOKIE);
     for (BYTE k = 0; k < 10; ++k)
     {
       vPortWaitForEnd(s_pVp);
