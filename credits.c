@@ -83,6 +83,7 @@ void stateCreditsCreate(void)
                                     TAG_SIMPLEBUFFER_IS_DBLBUF, 0,
                                     TAG_END);
 
+  systemUnuse();
   joyOpen();
   keyCreate();
   viewLoad(s_pView);
@@ -177,7 +178,8 @@ void stateCreditsLoop(void)
 
 void stateCreditsDestroy(void)
 {
-
+  systemUse();
+  
   joyClose();
   keyDestroy();
   viewDestroy(s_pView);
