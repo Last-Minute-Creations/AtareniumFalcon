@@ -90,8 +90,8 @@ viewLoad(s_pView);
 s_pFont = fontCreate("data/topaz.fnt");
 s_pBmText = fontCreateTextBitMap(300, s_pFont->uwHeight);
 
-blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 22);
-blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 22);
+blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 21);
+blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 21);
 
 for(BYTE i = 0 ; i < 17 ; ++i){
 
@@ -151,8 +151,8 @@ for(BYTE i = 0 ; i < 17 ; ++i){
   }
     
       fontFillTextBitMap(s_pFont, s_pBmText, szScore);
-      fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText,  1, i * 9, 5, FONT_COOKIE);
-      for(BYTE k = 0 ; k < 10 ; ++k){
+      fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText,  10, (i * 9) + 10, 23, FONT_COOKIE);
+      for(BYTE k = 0 ; k < 50 ; ++k){
       vPortWaitForEnd(s_pVp);
       }
 }

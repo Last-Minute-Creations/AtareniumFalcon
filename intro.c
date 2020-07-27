@@ -63,8 +63,8 @@ const char *line35 = "HAR! HAR! HAR!";
 
 void intro2ndPage(void)
 {
-  blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 22);
-  blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 22);
+  blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 21);
+  blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 21);
 
   for (BYTE i = 0; i < 14; ++i)
   {
@@ -116,16 +116,16 @@ void intro2ndPage(void)
     }
 
     fontFillTextBitMap(s_pFont, s_pBmText, szIntro);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 1, i * 9, 5, FONT_COOKIE);
-    for (BYTE k = 0; k < 10; ++k)
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 10, (i * 9) + 10, 23, FONT_COOKIE);
+    for (BYTE k = 0; k < 50; ++k)
     {
       vPortWaitForEnd(s_pVp);
     }
   }
   sprintf(szIntro, IntroContinue);
   fontFillTextBitMap(s_pFont, s_pBmText, szIntro);
-  fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 1, 200, 5, FONT_COOKIE);
-  for (BYTE k = 0; k < 10; ++k)
+  fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 5, 200, 23, FONT_COOKIE);
+  for (BYTE k = 0; k < 50; ++k)
   {
     vPortWaitForEnd(s_pVp);
   }
@@ -160,8 +160,8 @@ void stateIntroCreate(void)
   s_pFont = fontCreate("data/topaz.fnt");
   s_pBmText = fontCreateTextBitMap(300, s_pFont->uwHeight);
 
-  blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 22);
-  blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 22);
+  blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 21);
+  blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 21);
 
   for (BYTE i = 0; i < 21; ++i)
   {
@@ -234,16 +234,16 @@ void stateIntroCreate(void)
     }
 
     fontFillTextBitMap(s_pFont, s_pBmText, szIntro);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 1, i * 9, 5, FONT_COOKIE);
-    for (BYTE k = 0; k < 10; ++k)
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 10, (i * 9) + 10, 23, FONT_COOKIE);
+    for (BYTE k = 0; k < 50; ++k)
     {
       vPortWaitForEnd(s_pVp);
     }
   }
   sprintf(szIntro, IntroContinue);
   fontFillTextBitMap(s_pFont, s_pBmText, szIntro);
-  fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 1, 200, 5, FONT_COOKIE);
-  for (BYTE k = 0; k < 10; ++k)
+  fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 10, 200, 23, FONT_COOKIE);
+  for (BYTE k = 0; k < 50; ++k)
   {
     vPortWaitForEnd(s_pVp);
   }
