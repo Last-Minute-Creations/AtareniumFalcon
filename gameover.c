@@ -32,7 +32,25 @@ extern BYTE frameHit;
 extern BYTE level;
 extern BYTE robboMsgNr;
 
-void cleanUp(void);
+void clearTiles();
+
+void clean(void){
+falkonx = 0;
+falkony = 0;
+krawedzx = 0;
+krawedzy = 0;
+kierunek = 0;
+falkonFace = 0; 
+
+stoneHit = 0;
+frameHit = 0;
+coal = startingCoal;
+capacitors = 0;
+level = 1;
+robboMsgNr = 0;
+}
+
+
 
 
 void stateGameOverCreate(void){
@@ -76,7 +94,8 @@ void stateGameOverLoop(void){
 	keyProcess();
 
 	if(joyUse(JOY1_FIRE) || keyUse(KEY_RETURN)) {
-    cleanUp();
+    clearTiles();
+    clean();
 		stateChange(g_pStateMachineGame, &g_sStateMenu);
 		return;
   }

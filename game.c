@@ -859,6 +859,7 @@ void portalAnim(void){
       UWORD uwPosX = falkonx * 32;
       UWORD uwPosY = falkony * 32;
     for(BYTE i = 0 ; i < 4 ; ++i){
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32,MINTERM_COOKIE, 0xFF);
       blitCopyMask(s_pTiles, i * 32, 128, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
       for(BYTE k = 0 ; k < 15 ; ++k){
         vPortWaitForEnd(s_pVp);
@@ -1404,7 +1405,7 @@ paletteLoad("data/falkon.plt", s_pVp->pPalette, 32);
 g_pCustom->color[0] = 0x0FFF; // zmieä kolor zero aktualnie u¾ywanej palety na 15,15,15
 
 s_pTiles = bitmapCreateFromFile("data/tileset.bm", 0); // z pliku tileset.bm, nie lokuj bitmapy w pamiï¿½ci FAST
-s_pTilesMask = bitmapCreateFromFile("data/tileset.bm", 0); // z pliku tileset.bm, nie lokuj bitmapy w pamiï¿½ci FAST
+s_pTilesMask = bitmapCreateFromFile("data/tileset_mask.bm", 0); // z pliku tileset_mask.bm, nie lokuj bitmapy w pamiï¿½ci FAST
 s_pBg = bitmapCreateFromFile("data/tlo1.bm", 0); // fragmenty tla do podstawiania po ruchu
 s_pHUD = bitmapCreateFromFile("data/HUD.bm", 0);
 
@@ -1485,16 +1486,16 @@ void stateGameLoop(void) {
 	
 
 	kierunek = 0;
-	if(joyUse(JOY1_RIGHT) || keyUse(KEY_D)) {
+	if(joyUse(JOY1_RIGHT) || keyUse(KEY_D) || keyUse(KEY_RIGHT)) {
 		kierunek = 1;
 	}
-	else if(joyUse(JOY1_LEFT) || keyUse(KEY_A)) {
+	else if(joyUse(JOY1_LEFT) || keyUse(KEY_A) || keyUse(KEY_LEFT)) {
 		kierunek = 2;
 	}
-	else if(joyUse(JOY1_UP) || keyUse(KEY_W)) {
+	else if(joyUse(JOY1_UP) || keyUse(KEY_W) || keyUse(KEY_UP)) {
 		kierunek = 3;
 	}
-	else if(joyUse(JOY1_DOWN) || keyUse(KEY_S)) {
+	else if(joyUse(JOY1_DOWN) || keyUse(KEY_S) || keyUse(KEY_DOWN)){
 		kierunek = 4;
 	}
   else if(keyUse(KEY_ESCAPE)) {

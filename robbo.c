@@ -81,13 +81,13 @@ blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 22);
     sprintf(szRobboMsg, "Minister Renton is counting on you, Sir.");
     break;
     case 6:
-    sprintf(szRobboMsg, "Hey, you need to clean up here, I found some GermZ ");
+    sprintf(szRobboMsg, "Hey, you need to clean up here, I found some GermZ");
     break;
     case 7:
     sprintf(szRobboMsg, "Take me home, this place sucks!");
     break;
     case 8:
-    sprintf(szRobboMsg, "You must reach the coal warehouse and reclaim it for us.");
+    sprintf(szRobboMsg, "Reach the coal warehouse and reclaim it for us.");
     break;
     case 9:
     sprintf(szRobboMsg, "We're close, I feel it in my DSP.");

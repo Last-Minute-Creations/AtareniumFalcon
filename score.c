@@ -41,6 +41,8 @@ static tTextBitMap *s_pBmText;
 
 char szScore[80];
 
+void clearTiles();
+
 void cleanUp(void){
 falkonx = 0;
 falkony = 0;
@@ -163,7 +165,8 @@ void stateScoreLoop(void){
 	keyProcess();
 
 	if(joyUse(JOY1_FIRE) || keyUse(KEY_RETURN)) {
-		cleanUp();
+		clearTiles();
+    cleanUp();
     stateChange(g_pStateMachineGame, &g_sStateMenu);
 		return;
   }
