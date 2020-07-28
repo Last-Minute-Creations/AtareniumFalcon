@@ -97,13 +97,16 @@ void stateCreditsCreate(void)
   paletteDim(s_pPalette, s_pVp->pPalette, 32, 0); // 0 - czarno, 15 - peˆna paleta
   viewUpdateCLUT(s_pView);
 
-  blitCopy(s_pLMC, 0, 0, s_pVpManager->pBack, 0, 0, 320, 128, MINTERM_COOKIE, 0xFF);
-  blitCopy(s_pLMC, 0, 128, s_pVpManager->pBack, 0, 128, 320, 128, MINTERM_COOKIE, 0xFF);
+  blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 0);
+  blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 0);
+  blitCopy(s_pLMC, 0, 0, s_pVpManager->pBack, 104, 40, 112, 160, MINTERM_COOKIE, 0xFF);
 
   doFadeInOut();
 
-  blitCopy(s_pACE, 0, 0, s_pVpManager->pBack, 0, 0, 320, 128, MINTERM_COOKIE, 0xFF);
-  blitCopy(s_pACE, 0, 128, s_pVpManager->pBack, 0, 128, 320, 128, MINTERM_COOKIE, 0xFF);
+  blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 0);
+  blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 0);
+  blitCopy(s_pACE, 0, 0, s_pVpManager->pBack, 125, 95, 155, 70, MINTERM_COOKIE, 0xFF);
+
 
   doFadeInOut();
 

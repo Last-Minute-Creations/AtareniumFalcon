@@ -9,6 +9,7 @@
 #include <ace/managers/rand.h>
 #include <ace/managers/state.h>
 #include <ace/utils/custom.h>
+#include <ace/utils/ptplayer.h>
 
 //------------------------------------------------------- gdzie� przed funkcjami
 // zmienne trzymaj�ce adresy do viewa, viewporta, simple buffer managera
@@ -103,7 +104,12 @@ void drawTiles(void)
         blitCopyMask(s_pTiles, 96, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
         break;
       case 12:
+        if(falkonFace == 0){
         blitCopyMask(s_pTiles, 128, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+        }
+        else if(falkonFace == 32){
+        blitCopyMask(s_pTiles, 160, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);  
+        }
         break;
       }
     }
@@ -870,15 +876,31 @@ void portalAnim(void)
 {
   UWORD uwPosX = falkonx * 32;
   UWORD uwPosY = falkony * 32;
-  for (BYTE i = 0; i < 4; ++i)
+  if (falkonFace == 0)
   {
-    blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE, 0xFF);
-    blitCopyMask(s_pTiles, i * 32, 128, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-    for (BYTE k = 0; k < 15; ++k)
+    for (BYTE i = 0; i < 4; ++i)
     {
-      vPortWaitForPos(s_pVp, uwPosY);
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE, 0xFF);
+      blitCopyMask(s_pTiles, i * 32, 128, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+      for (BYTE k = 0; k < 15; ++k)
+      {
+        vPortWaitForPos(s_pVp, uwPosY);
+      }
     }
   }
+  else if (falkonFace == 32)
+  {
+    for (BYTE i = 0; i < 4; ++i)
+    {
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE, 0xFF);
+      blitCopyMask(s_pTiles, i * 32, 160, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+      for (BYTE k = 0; k < 15; ++k)
+      {
+        vPortWaitForPos(s_pVp, uwPosY);
+      }
+    }
+  }
+
 }
 
 void coalAndCollect(void)
@@ -1135,7 +1157,7 @@ void falkonFlyingRightUp(void)
   {
     blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE, 0xFF); // rysuje tlo ze zmeinnej
     --uwPosY;
-    --uwPosY;                                                                                                    // 2px w prawo
+    --uwPosY;                                                                                                     // 2px w prawo
     blitCopy(s_pVpManager->pBack, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE, 0xFF);               // fragment tla wrzuca do zmiennej
     blitCopyMask(s_pTiles, 0, 64, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // rysuje falkona
     for (BYTE z = 0; z < 5; ++z)
@@ -1144,7 +1166,7 @@ void falkonFlyingRightUp(void)
     }
     blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE, 0xFF); // rysuje tlo ze zmeinnej
     --uwPosY;
-    --uwPosY;                                                                                                     // 2px w prawo
+    --uwPosY;                                                                                                      // 2px w prawo
     blitCopy(s_pVpManager->pBack, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE, 0xFF);                // fragment tla wrzuca do zmiennej
     blitCopyMask(s_pTiles, 32, 64, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // rysuje falkona
     for (BYTE z = 0; z < 5; ++z)
@@ -1153,7 +1175,7 @@ void falkonFlyingRightUp(void)
     }
     blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE, 0xFF); // rysuje tlo ze zmeinnej
     --uwPosY;
-    --uwPosY;                                                                                                     // 2px w prawo
+    --uwPosY;                                                                                                      // 2px w prawo
     blitCopy(s_pVpManager->pBack, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE, 0xFF);                // fragment tla wrzuca do zmiennej
     blitCopyMask(s_pTiles, 64, 64, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // rysuje falkona
     for (BYTE z = 0; z < 5; ++z)
@@ -1162,7 +1184,7 @@ void falkonFlyingRightUp(void)
     }
     blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE, 0xFF); // rysuje tlo ze zmeinnej
     --uwPosY;
-    --uwPosY;                                                                                                    // 2px w prawo
+    --uwPosY;                                                                                                      // 2px w prawo
     blitCopy(s_pVpManager->pBack, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE, 0xFF);                // fragment tla wrzuca do zmiennej
     blitCopyMask(s_pTiles, 96, 64, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // rysuje falkona
     for (BYTE z = 0; z < 5; ++z)
@@ -1180,7 +1202,7 @@ void falkonFlyingRightUp(void)
     }
     blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE, 0xFF); // rysuje tlo ze zmeinnej
     --uwPosY;
-    --uwPosY;                                                                                                    // 2px w prawo
+    --uwPosY;                                                                                                      // 2px w prawo
     blitCopy(s_pVpManager->pBack, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE, 0xFF);                // fragment tla wrzuca do zmiennej
     blitCopyMask(s_pTiles, 96, 64, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // rysuje falkona
     for (BYTE z = 0; z < 5; ++z)
@@ -1222,8 +1244,8 @@ void falkonFlyingLeft(void)
   {
     blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE, 0xFF); // rysuje tlo ze zmeinnej
     --uwPosX;
-    --uwPosX;                                                                                                     // 2px w prawo
-    blitCopy(s_pVpManager->pBack, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE, 0xFF);               // fragment tla wrzuca do zmiennej
+    --uwPosX;                                                                                                       // 2px w prawo
+    blitCopy(s_pVpManager->pBack, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE, 0xFF);                 // fragment tla wrzuca do zmiennej
     blitCopyMask(s_pTiles, 128, 96, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // rysuje falkona
     for (BYTE z = 0; z < 5; ++z)
     {
@@ -1258,8 +1280,8 @@ void falkonFlyingLeft(void)
     }
     blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE, 0xFF); // rysuje tlo ze zmeinnej
     --uwPosX;
-    --uwPosX;                                                                                                       // 2px w prawo
-    blitCopy(s_pVpManager->pBack, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE, 0xFF);                 // fragment tla wrzuca do zmiennej
+    --uwPosX;                                                                                                     // 2px w prawo
+    blitCopy(s_pVpManager->pBack, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE, 0xFF);               // fragment tla wrzuca do zmiennej
     blitCopyMask(s_pTiles, 0, 96, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // rysuje falkona
     for (BYTE z = 0; z < 5; ++z)
     {
@@ -1309,8 +1331,8 @@ void falkonFlyingLeftDown(void)
   {
     blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE, 0xFF); // rysuje tlo ze zmeinnej
     ++uwPosY;
-    ++uwPosY;                                                                                                    // 2px w prawo
-    blitCopy(s_pVpManager->pBack, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE, 0xFF);               // fragment tla wrzuca do zmiennej
+    ++uwPosY;                                                                                                       // 2px w prawo
+    blitCopy(s_pVpManager->pBack, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE, 0xFF);                 // fragment tla wrzuca do zmiennej
     blitCopyMask(s_pTiles, 128, 96, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // rysuje falkona
     for (BYTE z = 0; z < 5; ++z)
     {
@@ -1327,7 +1349,7 @@ void falkonFlyingLeftDown(void)
     }
     blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE, 0xFF); // rysuje tlo ze zmeinnej
     ++uwPosY;
-    ++uwPosY;                                                                                                     // 2px w prawo
+    ++uwPosY;                                                                                                      // 2px w prawo
     blitCopy(s_pVpManager->pBack, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE, 0xFF);                // fragment tla wrzuca do zmiennej
     blitCopyMask(s_pTiles, 64, 96, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // rysuje falkona
     for (BYTE z = 0; z < 5; ++z)
@@ -1345,8 +1367,8 @@ void falkonFlyingLeftDown(void)
     }
     blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE, 0xFF); // rysuje tlo ze zmeinnej
     ++uwPosY;
-    ++uwPosY;                                                                                                      // 2px w prawo
-    blitCopy(s_pVpManager->pBack, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE, 0xFF);                 // fragment tla wrzuca do zmiennej
+    ++uwPosY;                                                                                                     // 2px w prawo
+    blitCopy(s_pVpManager->pBack, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE, 0xFF);               // fragment tla wrzuca do zmiennej
     blitCopyMask(s_pTiles, 0, 96, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // rysuje falkona
     for (BYTE z = 0; z < 5; ++z)
     {
@@ -1354,7 +1376,7 @@ void falkonFlyingLeftDown(void)
     }
     blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE, 0xFF); // rysuje tlo ze zmeinnej
     ++uwPosY;
-    ++uwPosY;                                                                                                     // 2px w prawo
+    ++uwPosY;                                                                                                      // 2px w prawo
     blitCopy(s_pVpManager->pBack, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE, 0xFF);                // fragment tla wrzuca do zmiennej
     blitCopyMask(s_pTiles, 32, 96, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // rysuje falkona
     for (BYTE z = 0; z < 5; ++z)
@@ -1363,7 +1385,7 @@ void falkonFlyingLeftDown(void)
     }
     blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE, 0xFF); // rysuje tlo ze zmeinnej
     ++uwPosY;
-    ++uwPosY;                                                                                                     // 2px w prawo
+    ++uwPosY;                                                                                                      // 2px w prawo
     blitCopy(s_pVpManager->pBack, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE, 0xFF);                // fragment tla wrzuca do zmiennej
     blitCopyMask(s_pTiles, 64, 96, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // rysuje falkona
     for (BYTE z = 0; z < 5; ++z)
@@ -1372,7 +1394,7 @@ void falkonFlyingLeftDown(void)
     }
     blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE, 0xFF); // rysuje tlo ze zmeinnej
     ++uwPosY;
-    ++uwPosY;                                                                                                     // 2px w prawo
+    ++uwPosY;                                                                                                      // 2px w prawo
     blitCopy(s_pVpManager->pBack, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE, 0xFF);                // fragment tla wrzuca do zmiennej
     blitCopyMask(s_pTiles, 96, 96, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // rysuje falkona
     for (BYTE z = 0; z < 5; ++z)
@@ -1396,8 +1418,8 @@ void falkonFlyingLeftUp(void)
   {
     blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE, 0xFF); // rysuje tlo ze zmeinnej
     --uwPosY;
-    --uwPosY;                                                                                                    // 2px w prawo
-    blitCopy(s_pVpManager->pBack, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE, 0xFF);               // fragment tla wrzuca do zmiennej
+    --uwPosY;                                                                                                       // 2px w prawo
+    blitCopy(s_pVpManager->pBack, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE, 0xFF);                 // fragment tla wrzuca do zmiennej
     blitCopyMask(s_pTiles, 128, 96, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // rysuje falkona
     for (BYTE z = 0; z < 5; ++z)
     {
@@ -1414,7 +1436,7 @@ void falkonFlyingLeftUp(void)
     }
     blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE, 0xFF); // rysuje tlo ze zmeinnej
     --uwPosY;
-    --uwPosY;                                                                                                     // 2px w prawo
+    --uwPosY;                                                                                                      // 2px w prawo
     blitCopy(s_pVpManager->pBack, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE, 0xFF);                // fragment tla wrzuca do zmiennej
     blitCopyMask(s_pTiles, 64, 96, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // rysuje falkona
     for (BYTE z = 0; z < 5; ++z)
@@ -1432,8 +1454,8 @@ void falkonFlyingLeftUp(void)
     }
     blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE, 0xFF); // rysuje tlo ze zmeinnej
     --uwPosY;
-    --uwPosY;                                                                                                      // 2px w prawo
-    blitCopy(s_pVpManager->pBack, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE, 0xFF);                 // fragment tla wrzuca do zmiennej
+    --uwPosY;                                                                                                     // 2px w prawo
+    blitCopy(s_pVpManager->pBack, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE, 0xFF);               // fragment tla wrzuca do zmiennej
     blitCopyMask(s_pTiles, 0, 96, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // rysuje falkona
     for (BYTE z = 0; z < 5; ++z)
     {
@@ -1441,7 +1463,7 @@ void falkonFlyingLeftUp(void)
     }
     blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE, 0xFF); // rysuje tlo ze zmeinnej
     --uwPosY;
-    --uwPosY;                                                                                                     // 2px w prawo
+    --uwPosY;                                                                                                      // 2px w prawo
     blitCopy(s_pVpManager->pBack, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE, 0xFF);                // fragment tla wrzuca do zmiennej
     blitCopyMask(s_pTiles, 32, 96, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // rysuje falkona
     for (BYTE z = 0; z < 5; ++z)
@@ -1450,7 +1472,7 @@ void falkonFlyingLeftUp(void)
     }
     blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE, 0xFF); // rysuje tlo ze zmeinnej
     --uwPosY;
-    --uwPosY;                                                                                                     // 2px w prawo
+    --uwPosY;                                                                                                      // 2px w prawo
     blitCopy(s_pVpManager->pBack, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE, 0xFF);                // fragment tla wrzuca do zmiennej
     blitCopyMask(s_pTiles, 64, 96, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // rysuje falkona
     for (BYTE z = 0; z < 5; ++z)
@@ -1459,7 +1481,7 @@ void falkonFlyingLeftUp(void)
     }
     blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE, 0xFF); // rysuje tlo ze zmeinnej
     --uwPosY;
-    --uwPosY;                                                                                                     // 2px w prawo
+    --uwPosY;                                                                                                      // 2px w prawo
     blitCopy(s_pVpManager->pBack, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE, 0xFF);                // fragment tla wrzuca do zmiennej
     blitCopyMask(s_pTiles, 96, 96, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // rysuje falkona
     for (BYTE z = 0; z < 5; ++z)
