@@ -23,22 +23,12 @@ static tTextBitMap *s_pBmText;
 char szWungiel[50];
 
 const char *w1 = "READY.";
-char run[] = "RUN ATARENIUM FALCON";
-const char *w3 = "";
-const char *w4 = "";
-const char *w5 = "";
-const char *w6 = "";
-const char *w7 = "";
-const char *w8 = "";
-const char *w9 = "";
-const char *w10 = "";
-const char *w11 = "";
-const char *w12 = "";
-const char *w13 = "";
-const char *w14 = "";
-const char *w15 = "";
-
-
+char load[] = "LOAD ATARENIUM FALCON";
+const char *w2 = "ERROR - INSERT WINCY WUNGLA TO DF0:"; 
+char *dots[] = "...";
+const char *w3 = "WUNGIEL DETECTED";
+const char *w4 = "DONE.";
+char *run[] = "RUN";
 
 void stateWungielCreate(void)
 {
@@ -82,7 +72,7 @@ void stateWungielCreate(void)
     }
 
     for(BYTE i = 0; i < 20 ; ++i){
-     sprintf(szWungiel, "%c", run[i]);
+     sprintf(szWungiel, "%c", load[i]);
     fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
     fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, (i * 9) + 10, 20, 23, FONT_COOKIE);   
         for (BYTE k = 0; k < 15; ++k)
@@ -90,6 +80,11 @@ void stateWungielCreate(void)
         vPortWaitForEnd(s_pVp);
         }
     }
+
+
+
+
+
   }
   
 
