@@ -22,6 +22,8 @@ static tBitMap *s_pBg;
 static tBitMap *s_pHUD;
 static tBitMap *s_pFalconBg;
 
+static tPtplayerMod *s_pMod;
+
 static tFont *s_pFont;
 static tTextBitMap *s_pBmText;
 
@@ -954,6 +956,7 @@ void coalAndCollect(void)
     ++level;
     if (level == 16)
     {
+      ptplayerStop();
       stateChange(g_pStateMachineGame, &g_sStateScore);
       return;
     }
@@ -1560,6 +1563,7 @@ void noCoalLeft(void)
   if (coal == 0)
   {
     coal = 1;
+    ptplayerStop();
     stateChange(g_pStateMachineGame, &g_sStateGameOver);
     return;
   }
@@ -1579,6 +1583,11 @@ void stateGameCreate(void)
                       TAG_VPORT_VIEW, s_pView, // parent view
                       TAG_VPORT_BPP, 5,        // bits per pixel: 4bpp = 16col, 5pp = 32col, etc.
                       TAG_END);
+  
+  ptplayerCreate(1);
+    s_pMod = ptplayerModCreate("data/mod.falkon");
+    ptplayerLoadMod(s_pMod, 0, 0);
+  
   // Paleta z falkona
   paletteLoad("data/falkon.plt", s_pVp->pPalette, 32);
 
@@ -1645,6 +1654,7 @@ void stateGameCreate(void)
   kamyki[9][6] = 10;
 
   drawTiles();
+  ptplayerEnableMusic(1);
 }
 
 void stateGameLoop(void)
@@ -1674,6 +1684,7 @@ void stateGameLoop(void)
   }
   else if (keyUse(KEY_ESCAPE))
   {
+    ptplayerStop();
     stateChange(g_pStateMachineGame, &g_sStateMenu);
     return;
   }
@@ -1703,7 +1714,8 @@ void stateGameDestroy(void)
 {
   // Here goes your cleanup code
   systemUse(); // w��cz grzecznie system
-
+  ptplayerModDestroy(s_pMod);
+    ptplayerDestroy();
   bitmapDestroy(s_pTiles);
   bitmapDestroy(s_pTilesMask);
 
