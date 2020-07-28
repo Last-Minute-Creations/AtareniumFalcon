@@ -81,7 +81,7 @@ blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 21);
     sprintf(szRobboMsg, "Minister Renton is counting on you, Sir.");
     break;
     case 6:
-    sprintf(szRobboMsg, "Hey, you need to clean up here, I found some GermZ");
+    sprintf(szRobboMsg, "Hey, please clean up here, I found some GermZ");
     break;
     case 7:
     sprintf(szRobboMsg, "Take me home, this place sucks!");
@@ -101,7 +101,7 @@ blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 21);
       fontFillTextBitMap(s_pFont, s_pBmText, szRobbo1stLine);
       fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText,  10, 10, 23, FONT_COOKIE);
       
-      for(BYTE k = 0 ; k < 10 ; ++k){
+      for(BYTE k = 0 ; k < 50 ; ++k){
       vPortWaitForEnd(s_pVp);
       }
       
