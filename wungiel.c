@@ -82,7 +82,7 @@ void stateWungielCreate(void)
     }
 
     for(BYTE i = 0; i < 20 ; ++i){
-     sprintf(szWungiel, run[i]);
+     sprintf(szWungiel, "%c", run[i]);
     fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
     fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, (i * 9) + 10, 20, 23, FONT_COOKIE);   
         for (BYTE k = 0; k < 15; ++k)
