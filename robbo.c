@@ -8,6 +8,7 @@
 #include <ace/managers/state.h>
 #include <ace/managers/blit.h>
 #include <ace/utils/font.h>
+#include <ace/utils/ptplayer.h>
 
 static tView *s_pView;
 static tVPort *s_pVp;
@@ -28,6 +29,7 @@ char *szRobboContinue = "(Fire or Return to continue.)";
 
 
 void stateRobboCreate(void){
+    ptplayerEnableMusic(0);
     systemUse();
 
 s_pView = viewCreate(0,
@@ -52,6 +54,7 @@ s_pVpManager = simpleBufferCreate(0,
 );
 
 systemUnuse();
+ptplayerEnableMusic(1);
 
 viewLoad(s_pView);
 
@@ -137,10 +140,12 @@ void stateRobboLoop(void){
 }
 
 void stateRobboDestroy(void){
-	systemUse();
+	ptplayerEnableMusic(0);
+  systemUse();
 	
 	viewDestroy(s_pView);
 	systemUnuse();
+  ptplayerEnableMusic(1);
 }
 
 
