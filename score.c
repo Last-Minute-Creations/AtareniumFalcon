@@ -12,6 +12,7 @@
 static tView *s_pView;
 static tVPort *s_pVp;
 static tSimpleBufferManager *s_pVpManager;
+static tBitMap *s_pVAM;
 
 
 extern tState g_sStateMenu;
@@ -38,10 +39,17 @@ extern BYTE robboMsgNr;
 static tFont *s_pFont;
 static tTextBitMap *s_pBmText;
 
+BYTE vampire = 0;
+
 
 char szScore[80];
 
 void clearTiles();
+
+void vampirePage(void){
+  blitCopy(s_pVAM, 0, 0, s_pVpManager->pBack, 0, 0, 320, 128, MINTERM_COOKIE, 0xFF);
+  blitCopy(s_pVAM, 0, 128, s_pVpManager->pBack, 0, 128, 320, 128, MINTERM_COOKIE, 0xFF);
+}
 
 void cleanUp(void){
 falkonx = 0;
@@ -75,6 +83,8 @@ s_pVp = vPortCreate(0,
 // Paleta z falkona
 paletteLoad("data/falkon.plt", s_pVp->pPalette, 32);
 
+s_pVAM = bitmapCreateFromFile("data/vampire.bm", 0);
+
 s_pVpManager = simpleBufferCreate(0,
     TAG_SIMPLEBUFFER_VPORT, s_pVp,
     TAG_SIMPLEBUFFER_BITMAP_FLAGS, BMF_CLEAR | BMF_INTERLEAVED,
@@ -90,8 +100,8 @@ viewLoad(s_pView);
 s_pFont = fontCreate("data/topaz.fnt");
 s_pBmText = fontCreateTextBitMap(300, s_pFont->uwHeight);
 
-blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 21);
-blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 21);
+blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 22);
+blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 22);
 
 for(BYTE i = 0 ; i < 17 ; ++i){
 
@@ -164,11 +174,21 @@ void stateScoreLoop(void){
 	joyProcess();
 	keyProcess();
 
-	if(joyUse(JOY1_FIRE) || keyUse(KEY_RETURN)) {
+  if (joyUse(JOY1_FIRE) || keyUse(KEY_RETURN))
+  {
+    if (vampire == 0)
+    {
+      ++vampire;
+      vampirePage();
+    }
+    else if (vampire == 1){
+    
 		clearTiles();
     cleanUp();
     stateChange(g_pStateMachineGame, &g_sStateMenu);
 		return;
+  }
+    
   }
 
 	viewProcessManagers(s_pView);

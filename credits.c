@@ -111,8 +111,8 @@ void stateCreditsCreate(void)
   BYTE ubRatio = 15;
   paletteDim(s_pPalette, s_pVp->pPalette, 32, ubRatio); // 0 - czarno, 15 - peˆna paleta
   viewUpdateCLUT(s_pView);
-  blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 21);
-  blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 21);
+  blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 22);
+  blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 22);
 
   for (BYTE i = 0; i < 10; ++i)
   {

@@ -25,10 +25,10 @@ char szWungiel[50];
 const char *w1 = "READY.";
 char load[] = "LOAD ATARENIUM FALCON";
 const char *w2 = "ERROR - INSERT WINCY WUNGLA TO DF0:"; 
-char *dots[] = "...";
+char dots[] = "...";
 const char *w3 = "WUNGIEL DETECTED";
 const char *w4 = "DONE.";
-char *run[] = "RUN";
+char run[] = "RUN";
 
 void stateWungielCreate(void)
 {
@@ -59,8 +59,8 @@ void stateWungielCreate(void)
   s_pFont = fontCreate("data/topaz.fnt");
   s_pBmText = fontCreateTextBitMap(300, s_pFont->uwHeight);
 
-  blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 21);
-  blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 21);
+  blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 22);
+  blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 22);
 
     sprintf(szWungiel, w1);
     fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
@@ -71,18 +71,96 @@ void stateWungielCreate(void)
       vPortWaitForEnd(s_pVp);
     }
 
-    for(BYTE i = 0; i < 20 ; ++i){
+    for(BYTE i = 0; i < 21 ; ++i){
      sprintf(szWungiel, "%c", load[i]);
     fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, (i * 9) + 10, 20, 23, FONT_COOKIE);   
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, (i * 7) + 10, 20, 23, FONT_COOKIE);   
         for (BYTE k = 0; k < 15; ++k)
         {
         vPortWaitForEnd(s_pVp);
         }
     }
 
+    for (BYTE k = 0; k < 50; ++k)
+    {
+      vPortWaitForEnd(s_pVp);
+    }
+    
+    sprintf(szWungiel, w2);
+    fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 10, 30, 23, FONT_COOKIE);
 
+    for (BYTE k = 0; k < 50; ++k)
+    {
+      vPortWaitForEnd(s_pVp);
+    }
 
+    for(BYTE i = 0; i < 3 ; ++i){
+     sprintf(szWungiel, "%c", dots[i]);
+    fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, (i * 7) + 10, 40, 23, FONT_COOKIE);   
+        for (BYTE k = 0; k < 50; ++k)
+        {
+        vPortWaitForEnd(s_pVp);
+        }
+    }
+    sprintf(szWungiel, w3);
+    fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 10, 50, 23, FONT_COOKIE);
+
+    for (BYTE k = 0; k < 50; ++k)
+    {
+      vPortWaitForEnd(s_pVp);
+    }
+
+    for(BYTE i = 0; i < 21 ; ++i){
+     sprintf(szWungiel, "%c", load[i]);
+    fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, (i * 7) + 10, 60, 23, FONT_COOKIE);   
+        for (BYTE k = 0; k < 15; ++k)
+        {
+        vPortWaitForEnd(s_pVp);
+        }
+    }
+
+    for(BYTE i = 0; i < 3 ; ++i){
+     sprintf(szWungiel, "%c", dots[i]);
+    fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, (i * 7) + 10, 70, 23, FONT_COOKIE);   
+        for (BYTE k = 0; k < 55; ++k)
+        {
+        vPortWaitForEnd(s_pVp);
+        }
+    }
+
+    sprintf(szWungiel, w4);
+    fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 10, 80, 23, FONT_COOKIE);
+
+    for (BYTE k = 0; k < 50; ++k)
+    {
+      vPortWaitForEnd(s_pVp);
+    }
+
+    for(BYTE i = 0; i < 3 ; ++i){
+     sprintf(szWungiel, "%c", run[i]);
+    fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, (i * 7) + 10, 90, 23, FONT_COOKIE);   
+        for (BYTE k = 0; k < 15; ++k)
+        {
+        vPortWaitForEnd(s_pVp);
+        }
+    }
+
+    for(BYTE i = 0; i < 3 ; ++i){
+     sprintf(szWungiel, "%c", dots[i]);
+    fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, (i * 7) + 10, 100, 23, FONT_COOKIE);   
+        for (BYTE k = 0; k < 50; ++k)
+        {
+        vPortWaitForEnd(s_pVp);
+        }
+    }
 
 
   }
@@ -91,18 +169,10 @@ void stateWungielCreate(void)
 
 void stateWungielLoop(void)
 {
-  joyProcess();
-  keyProcess();
-
-  if (joyUse(JOY1_FIRE) || keyUse(KEY_RETURN))
-  {
+ 
       stateChange(g_pStateMachineGame, &g_sStateMenu);
       return;
-  }
-
-  viewProcessManagers(s_pView);
-  copProcessBlocks();
-  vPortWaitForEnd(s_pVp);
+  
 }
 
 void stateWungielDestroy(void)

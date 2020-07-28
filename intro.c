@@ -63,8 +63,8 @@ const char *line35 = "HAR! HAR! HAR!";
 
 void intro2ndPage(void)
 {
-  blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 21);
-  blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 21);
+  blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 22);
+  blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 22);
 
   for (BYTE i = 0; i < 14; ++i)
   {
@@ -160,8 +160,8 @@ void stateIntroCreate(void)
   s_pFont = fontCreate("data/topaz.fnt");
   s_pBmText = fontCreateTextBitMap(300, s_pFont->uwHeight);
 
-  blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 21);
-  blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 21);
+  blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 22);
+  blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 22);
 
   for (BYTE i = 0; i < 21; ++i)
   {
