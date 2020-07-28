@@ -23,7 +23,8 @@ static tTextBitMap *s_pBmText;
 char szWungiel[50];
 
 const char *w1 = "READY.";
-char load[] = "LOAD ATARENIUM FALCON";
+char load1[] = "LOAD ATAREN";
+char load2[] = "UM FALCON";
 const char *w2 = "ERROR - INSERT WINCY WUNGLA TO DF0:"; 
 char dots[] = "...";
 const char *w3 = "WUNGIEL DETECTED";
@@ -71,10 +72,28 @@ void stateWungielCreate(void)
       vPortWaitForEnd(s_pVp);
     }
 
-    for(BYTE i = 0; i < 21 ; ++i){
-     sprintf(szWungiel, "%c", load[i]);
+    for(BYTE i = 0; i < 12 ; ++i){
+     sprintf(szWungiel, "%c", load1[i]);
     fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
     fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, (i * 7) + 10, 20, 23, FONT_COOKIE);   
+        for (BYTE k = 0; k < 15; ++k)
+        {
+        vPortWaitForEnd(s_pVp);
+        }
+    }
+
+    sprintf(szWungiel, "I");
+    fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 88, 20, 23, FONT_COOKIE);
+    for (BYTE k = 0; k < 10; ++k)
+        {
+        vPortWaitForEnd(s_pVp);
+        }
+
+    for(BYTE i = 0; i < 10 ; ++i){
+     sprintf(szWungiel, "%c", load2[i]);
+    fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, (i * 7) + 93, 20, 23, FONT_COOKIE);   
         for (BYTE k = 0; k < 15; ++k)
         {
         vPortWaitForEnd(s_pVp);
@@ -113,10 +132,27 @@ void stateWungielCreate(void)
       vPortWaitForEnd(s_pVp);
     }
 
-    for(BYTE i = 0; i < 21 ; ++i){
-     sprintf(szWungiel, "%c", load[i]);
+       for(BYTE i = 0; i < 12 ; ++i){
+     sprintf(szWungiel, "%c", load1[i]);
     fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
     fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, (i * 7) + 10, 60, 23, FONT_COOKIE);   
+        for (BYTE k = 0; k < 15; ++k)
+        {
+        vPortWaitForEnd(s_pVp);
+        }
+    }
+    sprintf(szWungiel, "I");
+    fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 88, 60, 23, FONT_COOKIE);
+    for (BYTE k = 0; k < 10; ++k)
+        {
+        vPortWaitForEnd(s_pVp);
+        }
+
+    for(BYTE i = 0; i < 10 ; ++i){
+     sprintf(szWungiel, "%c", load2[i]);
+    fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, (i * 7) + 93, 60, 23, FONT_COOKIE);   
         for (BYTE k = 0; k < 15; ++k)
         {
         vPortWaitForEnd(s_pVp);
