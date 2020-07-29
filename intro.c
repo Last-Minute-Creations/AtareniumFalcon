@@ -42,7 +42,7 @@ const char *line15 = "You have to go to Amigans Space Sector";
 const char *line16 = "(ASS), retrieve any surviving ROBBOts ";
 const char *line17 = "and reclaim our coal supplies. ";
 const char *line18 = "Beware of their secret weapon";
-const char *line19 = "- 6bit processing power, 32-color graphics";
+const char *line19 = "- 16bit processing power, 32-color graphics";
 const char *line20 = "and 4-channel sound.";
 const char *line21 = "Don't let them foul you.";
 
@@ -63,8 +63,8 @@ const char *line35 = "HAR! HAR! HAR!";
 
 void intro2ndPage(void)
 {
-  blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 22);
-  blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 22);
+  blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 21);
+  blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 21);
 
   for (BYTE i = 0; i < 14; ++i)
   {
@@ -160,8 +160,8 @@ void stateIntroCreate(void)
   s_pFont = fontCreate("data/topaz.fnt");
   s_pBmText = fontCreateTextBitMap(300, s_pFont->uwHeight);
 
-  blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 22);
-  blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 22);
+  blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 21);
+  blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 21);
 
   for (BYTE i = 0; i < 21; ++i)
   {
@@ -263,6 +263,7 @@ void stateIntroLoop(void)
     }
     else if (page == 1)
     {
+      page = 0;
       stateChange(g_pStateMachineGame, &g_sStateMenu);
       return;
     }

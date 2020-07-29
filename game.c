@@ -39,6 +39,8 @@ extern tStateManager *g_pStateMachineGame;
 char szMsg[50];  // do wyswietlania wegla na HUD
 char szMsg2[50]; // do wyswietlania kondkow na HUD
 
+BYTE musicPlay = 1;
+
 BYTE ubStoneImg = 0;
 
 BYTE kamyki[10][7];
@@ -60,6 +62,8 @@ BYTE coal = startingCoal;
 BYTE capacitors = 0;
 BYTE level = 1;
 BYTE robboMsgNr = 0;
+
+void cleanUp();
 
 void gameOnResume(void)
 {
@@ -633,7 +637,7 @@ void nextLevel(void)
     kamyki[6][1] = 3;
     kamyki[7][1] = 3;
     kamyki[8][1] = 3;
-    kamyki[0][2] = 3;
+    kamyki[0][2] = 5;
     kamyki[1][2] = 6;
     kamyki[4][2] = 7;
     kamyki[5][2] = 3;
@@ -686,17 +690,17 @@ void nextLevel(void)
     kamyki[9][1] = 6;
     kamyki[0][2] = 7;
     kamyki[1][2] = 3;
-    kamyki[2][2] = 7;
-    kamyki[7][2] = 7;
+    kamyki[2][2] = 6;
+    kamyki[7][2] = 6;
     kamyki[8][2] = 3;
     kamyki[1][3] = 3;
-    kamyki[2][3] = 7;
+    kamyki[2][3] = 5;
     kamyki[3][3] = 7;
     kamyki[7][3] = 4;
     kamyki[1][4] = 3;
     kamyki[2][4] = 7;
-    kamyki[3][4] = 7;
-    kamyki[4][4] = 7;
+    kamyki[3][4] = 6;
+    kamyki[4][4] = 6;
     kamyki[5][4] = 3;
     kamyki[1][5] = 3;
     kamyki[2][5] = 3;
@@ -734,17 +738,17 @@ void nextLevel(void)
     kamyki[8][0] = 3;
     kamyki[9][0] = 3;
     kamyki[0][1] = 3;
-    kamyki[2][1] = 7;
-    kamyki[3][1] = 6;
+    kamyki[2][1] = 5;
+    kamyki[3][1] = 5;
     kamyki[4][1] = 9;
-    kamyki[5][1] = 7;
+    kamyki[5][1] = 6;
     kamyki[6][1] = 7;
     kamyki[7][1] = 7;
     kamyki[8][1] = 6;
     kamyki[9][1] = 3;
     kamyki[0][2] = 3;
-    kamyki[2][2] = 5;
-    kamyki[6][2] = 7;
+    kamyki[2][2] = 4;
+    kamyki[6][2] = 6;
     kamyki[9][2] = 3;
     kamyki[0][3] = 12;
     kamyki[1][3] = 11;
@@ -753,18 +757,18 @@ void nextLevel(void)
     kamyki[4][3] = 7;
     kamyki[5][3] = 6;
     kamyki[6][3] = 7;
-    kamyki[7][3] = 6;
+    kamyki[7][3] = 5;
     kamyki[8][3] = 4;
     kamyki[9][3] = 3;
     kamyki[0][4] = 3;
     kamyki[1][4] = 7;
-    kamyki[3][4] = 7;
+    kamyki[3][4] = 5;
     kamyki[4][4] = 6;
     kamyki[5][4] = 7;
     kamyki[6][4] = 5;
     kamyki[9][4] = 3;
     kamyki[0][5] = 3;
-    kamyki[2][5] = 7;
+    kamyki[2][5] = 4;
     kamyki[3][5] = 9;
     kamyki[4][5] = 6;
     kamyki[5][5] = 7;
@@ -1685,6 +1689,8 @@ void stateGameLoop(void)
   else if (keyUse(KEY_ESCAPE))
   {
     ptplayerStop();
+    clearTiles();
+    cleanUp();
     stateChange(g_pStateMachineGame, &g_sStateMenu);
     return;
   }
@@ -1694,6 +1700,8 @@ void stateGameLoop(void)
     nextLevel();
     return;
   }
+  
+
 
   if (kierunek != 0)
   {

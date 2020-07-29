@@ -72,7 +72,7 @@ blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 21);
     sprintf(szRobboMsg, "Follow the Atari portal.");
     break;
     case 2:
-    sprintf(szRobboMsg, "Don't waste your coal hitting the meteorites.");
+    sprintf(szRobboMsg, "Don't waste our coal hitting the meteorites.");
     break;
     case 3:
     sprintf(szRobboMsg, "Try to steal some red and blue capacitors.");
@@ -84,13 +84,13 @@ blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 21);
     sprintf(szRobboMsg, "Minister Renton is counting on you, Sir.");
     break;
     case 6:
-    sprintf(szRobboMsg, "Hey, please clean up here, I found some GermZ");
+    sprintf(szRobboMsg, "Please clean up here, I found some GermZ.");
     break;
     case 7:
     sprintf(szRobboMsg, "Take me home, this place sucks!");
     break;
     case 8:
-    sprintf(szRobboMsg, "Find the coal warehouse and reclaim it for us.");
+    sprintf(szRobboMsg, "Find the coal warehouse and reclaim it.");
     break;
     case 9:
     sprintf(szRobboMsg, "We're close, I feel it in my DSP.");

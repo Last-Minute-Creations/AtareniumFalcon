@@ -100,8 +100,8 @@ viewLoad(s_pView);
 s_pFont = fontCreate("data/topaz.fnt");
 s_pBmText = fontCreateTextBitMap(300, s_pFont->uwHeight);
 
-blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 22);
-blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 22);
+blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 21);
+blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 21);
 
 for(BYTE i = 0 ; i < 17 ; ++i){
 
