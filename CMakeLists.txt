@@ -56,6 +56,6 @@ convertBitmaps(
 )
 
 file(
-	COPY ${RES_DIR}/topaz.fnt
+	COPY ${RES_DIR}/topaz.fnt ${RES_DIR}/mod.falkon
 	DESTINATION ${DATA_DIR}
 )
