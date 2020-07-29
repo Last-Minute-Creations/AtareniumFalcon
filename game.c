@@ -969,6 +969,7 @@ void coalAndCollect(void)
   }
   if (what == 11)
   {
+    mt_mastervol(0);
     statePush(g_pStateMachineGame, &g_sStateRobbo);
     return;
   }
@@ -1706,6 +1707,17 @@ void stateGameLoop(void)
     ++level;
     nextLevel();
     return;
+  }
+  else if (keyUse(KEY_M))
+  {
+    if(musicPlay == 1){
+    musicPlay = 0;
+    mt_mastervol(0);
+    }
+    else if(musicPlay == 0){
+    musicPlay = 1;
+    mt_mastervol(64);
+    }
   }
 
 

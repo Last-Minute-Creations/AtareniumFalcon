@@ -130,7 +130,8 @@ void stateRobboLoop(void){
 	keyProcess();
 
 	if(joyUse(JOY1_FIRE) || keyUse(KEY_RETURN)) {
-		statePop(g_pStateMachineGame);
+		mt_mastervol(64);
+    statePop(g_pStateMachineGame);
 		return;
   }
 
