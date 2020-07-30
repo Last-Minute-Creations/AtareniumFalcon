@@ -905,9 +905,9 @@ void portalAnim(void)
   {
     for (BYTE i = 0; i < 4; ++i)
     {
-      for (BYTE k = 0; k < 15; ++k)
+      for (BYTE k = 0; k < 4; ++k)
       {
-        waitFrames(s_pVp, 3, uwPosY + FALCON_HEIGHT);
+        waitFrames(s_pVp, 2, uwPosY + FALCON_HEIGHT);
       }
       blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE, 0xFF);
       blitCopyMask(s_pTiles, i * 32, 160, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
