@@ -28,7 +28,7 @@ char szWungiel[50];
 const char *w1 = "READY";
 char load1[] = "LOAD ATAREN";
 char load2[] = "UM FALCON";
-const char *w2 = "ERROR - INSERT WINCY WUNGLA TO DF0:"; 
+const char *w2 = "ERROR - INSERT WINCY WUNGLA TO DF0:";
 char dots[] = "...";
 const char *w3 = "WUNGIEL DETECTED";
 const char *w4 = "DONE";
@@ -59,7 +59,7 @@ void stateWungielCreate(void)
   joyOpen();
   keyCreate();
   viewLoad(s_pView);
-  
+
   ptplayerCreate(1);
   s_pAtari = ptplayerSfxCreateFromFile("data/Atari.sfx");
 
@@ -81,8 +81,8 @@ void stateWungielCreate(void)
     for(BYTE i = 0; i < 12 ; ++i){
      sprintf(szWungiel, "%c", load1[i]);
     fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, (i * 7) + 10, 20, 23, FONT_COOKIE); 
-    ptplayerSfxPlay(s_pAtari, 3, 64, 100);  
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, (i * 7) + 10, 20, 23, FONT_COOKIE);
+    ptplayerSfxPlay(s_pAtari, 3, 64, 100);
         for (BYTE k = 0; k < 15; ++k)
         {
         vPortWaitForEnd(s_pVp);
@@ -101,8 +101,8 @@ void stateWungielCreate(void)
     for(BYTE i = 0; i < 10 ; ++i){
      sprintf(szWungiel, "%c", load2[i]);
     fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, (i * 7) + 93, 20, 23, FONT_COOKIE);  
-    ptplayerSfxPlay(s_pAtari, 3, 64, 100); 
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, (i * 7) + 93, 20, 23, FONT_COOKIE);
+    ptplayerSfxPlay(s_pAtari, 3, 64, 100);
         for (BYTE k = 0; k < 15; ++k)
         {
         vPortWaitForEnd(s_pVp);
@@ -113,7 +113,7 @@ void stateWungielCreate(void)
     {
       vPortWaitForEnd(s_pVp);
     }
-    
+
     sprintf(szWungiel, w2);
     fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
     fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 10, 30, 23, FONT_COOKIE);
@@ -126,7 +126,7 @@ void stateWungielCreate(void)
     for(BYTE i = 0; i < 3 ; ++i){
      sprintf(szWungiel, "%c", dots[i]);
     fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, (i * 7) + 10, 40, 23, FONT_COOKIE);   
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, (i * 7) + 10, 40, 23, FONT_COOKIE);
         for (BYTE k = 0; k < 50; ++k)
         {
         vPortWaitForEnd(s_pVp);
@@ -144,7 +144,7 @@ void stateWungielCreate(void)
        for(BYTE i = 0; i < 12 ; ++i){
      sprintf(szWungiel, "%c", load1[i]);
     fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, (i * 7) + 10, 60, 23, FONT_COOKIE);   
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, (i * 7) + 10, 60, 23, FONT_COOKIE);
         ptplayerSfxPlay(s_pAtari, 3, 64, 100);
         for (BYTE k = 0; k < 15; ++k)
         {
@@ -163,7 +163,7 @@ void stateWungielCreate(void)
     for(BYTE i = 0; i < 10 ; ++i){
      sprintf(szWungiel, "%c", load2[i]);
     fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, (i * 7) + 93, 60, 23, FONT_COOKIE);   
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, (i * 7) + 93, 60, 23, FONT_COOKIE);
         ptplayerSfxPlay(s_pAtari, 3, 64, 100);
         for (BYTE k = 0; k < 15; ++k)
         {
@@ -174,7 +174,7 @@ void stateWungielCreate(void)
     for(BYTE i = 0; i < 3 ; ++i){
      sprintf(szWungiel, "%c", dots[i]);
     fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, (i * 7) + 10, 70, 23, FONT_COOKIE);   
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, (i * 7) + 10, 70, 23, FONT_COOKIE);
         for (BYTE k = 0; k < 55; ++k)
         {
         vPortWaitForEnd(s_pVp);
@@ -193,8 +193,8 @@ void stateWungielCreate(void)
     for(BYTE i = 0; i < 3 ; ++i){
      sprintf(szWungiel, "%c", run[i]);
     fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, (i * 7) + 10, 90, 23, FONT_COOKIE); 
-    ptplayerSfxPlay(s_pAtari, 3, 64, 100);  
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, (i * 7) + 10, 90, 23, FONT_COOKIE);
+    ptplayerSfxPlay(s_pAtari, 3, 64, 100);
         for (BYTE k = 0; k < 15; ++k)
         {
         vPortWaitForEnd(s_pVp);
@@ -204,7 +204,7 @@ void stateWungielCreate(void)
     for(BYTE i = 0; i < 3 ; ++i){
      sprintf(szWungiel, "%c", dots[i]);
     fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, (i * 7) + 10, 100, 23, FONT_COOKIE);   
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, (i * 7) + 10, 100, 23, FONT_COOKIE);
         for (BYTE k = 0; k < 50; ++k)
         {
         vPortWaitForEnd(s_pVp);
@@ -213,22 +213,24 @@ void stateWungielCreate(void)
 
 
   }
-  
+
 
 
 void stateWungielLoop(void)
 {
- 
+
       stateChange(g_pStateMachineGame, &g_sStateMenu);
       return;
-  
+
 }
 
 void stateWungielDestroy(void)
 {
+  systemUse();
   ptplayerSfxDestroy(s_pAtari);
   ptplayerDestroy();
-  systemUse();
+	fontDestroy(s_pFont);
+	fontDestroyTextBitMap(s_pBmText);
   joyClose();
   keyDestroy();
   viewDestroy(s_pView);

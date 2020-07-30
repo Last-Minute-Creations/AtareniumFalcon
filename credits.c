@@ -94,7 +94,7 @@ void stateCreditsCreate(void)
   keyCreate();
   viewLoad(s_pView);
   ptplayerCreate(1);
-  
+
 
   s_pFont = fontCreate("data/topaz.fnt");
   s_pBmText = fontCreateTextBitMap(300, s_pFont->uwHeight);
@@ -104,8 +104,8 @@ void stateCreditsCreate(void)
 
   s_pACEsfx = ptplayerSfxCreateFromFile("data/AceSample.sfx");
   s_pLMCsfx = ptplayerSfxCreateFromFile("data/Morse_LMC8000.sfx");
-  
-  paletteDim(s_pPalette, s_pVp->pPalette, 32, 0); // 0 - czarno, 15 - peˆna paleta
+
+  paletteDim(s_pPalette, s_pVp->pPalette, 32, 0); // 0 - czarno, 15 - peï¿½na paleta
   viewUpdateCLUT(s_pView);
 
   ptplayerSfxPlay(s_pLMCsfx, 3, 64, 100);
@@ -125,7 +125,7 @@ void stateCreditsCreate(void)
 
   paletteLoad("data/falkon.plt", s_pPalette, 32);
   BYTE ubRatio = 15;
-  paletteDim(s_pPalette, s_pVp->pPalette, 32, ubRatio); // 0 - czarno, 15 - peˆna paleta
+  paletteDim(s_pPalette, s_pVp->pPalette, 32, ubRatio); // 0 - czarno, 15 - peï¿½na paleta
   viewUpdateCLUT(s_pView);
   blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 21);
   blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 21);
@@ -195,13 +195,17 @@ void stateCreditsLoop(void)
 void stateCreditsDestroy(void)
 {
   systemUse();
-  
+
+	fontDestroy(s_pFont);
+	fontDestroyTextBitMap(s_pBmText);
+	bitmapDestroy(s_pLMC);
+	bitmapDestroy(s_pACE);
   joyClose();
   keyDestroy();
   viewDestroy(s_pView);
   ptplayerSfxDestroy(s_pACEsfx);
   ptplayerSfxDestroy(s_pLMCsfx);
-  
+
   ptplayerDestroy();
 }
 

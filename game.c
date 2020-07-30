@@ -1607,6 +1607,9 @@ void stateGameDestroy(void)
     ptplayerDestroy();
   bitmapDestroy(s_pTiles);
   bitmapDestroy(s_pTilesMask);
+	bitmapDestroy(s_pBg);
+	bitmapDestroy(s_pHUD);
+	bitmapDestroy(s_pFalconBg);
 
   fontDestroy(s_pFont);
   fontDestroyTextBitMap(s_pBmText);

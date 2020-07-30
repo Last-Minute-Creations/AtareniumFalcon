@@ -277,6 +277,8 @@ void stateIntroLoop(void)
 void stateIntroDestroy(void)
 {
   systemUse();
+	fontDestroy(s_pFont);
+	fontDestroyTextBitMap(s_pBmText);
   joyClose();
   keyDestroy();
   viewDestroy(s_pView);
