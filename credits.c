@@ -8,6 +8,7 @@
 #include <ace/managers/state.h>
 #include <ace/managers/blit.h>
 #include <ace/utils/font.h>
+#include <ace/utils/ptplayer.h>
 
 static tView *s_pView;
 static tVPort *s_pVp;
@@ -15,6 +16,11 @@ static tSimpleBufferManager *s_pVpManager;
 
 static tBitMap *s_pLMC;
 static tBitMap *s_pACE;
+
+static tPtplayerSfx *s_pACEsfx;
+static tPtplayerSfx *s_pLMCsfx;
+
+
 
 extern tState g_sStateMenu;
 extern tStateManager *g_pStateMachineGame;
@@ -87,6 +93,8 @@ void stateCreditsCreate(void)
   joyOpen();
   keyCreate();
   viewLoad(s_pView);
+  ptplayerCreate(1);
+  
 
   s_pFont = fontCreate("data/topaz.fnt");
   s_pBmText = fontCreateTextBitMap(300, s_pFont->uwHeight);
@@ -94,15 +102,20 @@ void stateCreditsCreate(void)
   s_pLMC = bitmapCreateFromFile("data/LMC.bm", 0);
   s_pACE = bitmapCreateFromFile("data/ACE.bm", 0);
 
+  s_pACEsfx = ptplayerSfxCreateFromFile("data/AceSample.sfx");
+  s_pLMCsfx = ptplayerSfxCreateFromFile("data/Morse_LMC8000.sfx");
+  
   paletteDim(s_pPalette, s_pVp->pPalette, 32, 0); // 0 - czarno, 15 - peˆna paleta
   viewUpdateCLUT(s_pView);
 
+  ptplayerSfxPlay(s_pLMCsfx, 3, 64, 100);
   blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 0);
   blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 0);
   blitCopy(s_pLMC, 0, 0, s_pVpManager->pBack, 104, 40, 112, 160, MINTERM_COOKIE, 0xFF);
 
   doFadeInOut();
 
+  ptplayerSfxPlay(s_pACEsfx, 3, 64, 100);
   blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 0);
   blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 0);
   blitCopy(s_pACE, 0, 0, s_pVpManager->pBack, 80, 95, 155, 70, MINTERM_COOKIE, 0xFF);
@@ -186,6 +199,10 @@ void stateCreditsDestroy(void)
   joyClose();
   keyDestroy();
   viewDestroy(s_pView);
+  ptplayerSfxDestroy(s_pACEsfx);
+  ptplayerSfxDestroy(s_pLMCsfx);
+  
+  ptplayerDestroy();
 }
 
 tState g_sStateCredits = {
