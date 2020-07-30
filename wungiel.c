@@ -22,13 +22,13 @@ static tTextBitMap *s_pBmText;
 
 char szWungiel[50];
 
-const char *w1 = "READY.";
+const char *w1 = "READY";
 char load1[] = "LOAD ATAREN";
 char load2[] = "UM FALCON";
 const char *w2 = "ERROR - INSERT WINCY WUNGLA TO DF0:"; 
 char dots[] = "...";
 const char *w3 = "WUNGIEL DETECTED";
-const char *w4 = "DONE.";
+const char *w4 = "DONE";
 char run[] = "RUN";
 
 void stateWungielCreate(void)

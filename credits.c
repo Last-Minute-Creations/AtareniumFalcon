@@ -25,8 +25,8 @@ static tTextBitMap *s_pBmText;
 static UWORD s_pPalette[32];
 
 char szCredits[80];
-const char *c1 = "ATARENIUM FALCON";
-const char *c2 = "v 0.9 Decrunch 2020 gamedev compo release.";
+const char *c1 = "ATARENIUM FALCON  v0.9 (Demo)";
+const char *c2 = "Decrunch 2020 gamedev compo release.";
 const char *c3 = "";
 const char *c4 = "Last Minute Creations are:";
 const char *c5 = "KaiN";
@@ -41,7 +41,7 @@ static void doFadeInOut(void) {
   {
     paletteDim(s_pPalette, s_pVp->pPalette, 32, bRatio); // 0 - czarno, 15 - pe?na paleta
     viewUpdateCLUT(s_pView);                              // we? palet? z viewporta i wrzu? j? na ekran
-    for (int k = 0; k < 10; ++k)
+    for (int k = 0; k < 2; ++k)
     {
       vPortWaitForEnd(s_pVp);
     }
@@ -57,7 +57,7 @@ static void doFadeInOut(void) {
   {
     paletteDim(s_pPalette, s_pVp->pPalette, 32, bRatio); // 0 - czarno, 15 - pe?na paleta
     viewUpdateCLUT(s_pView);                              // we? palet? z viewporta i wrzu? j? na ekran
-    for (int k = 0; k < 10; ++k)
+    for (int k = 0; k < 2; ++k)
     {
       vPortWaitForEnd(s_pVp);
     }
@@ -105,7 +105,7 @@ void stateCreditsCreate(void)
 
   blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 0);
   blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 0);
-  blitCopy(s_pACE, 0, 0, s_pVpManager->pBack, 125, 95, 155, 70, MINTERM_COOKIE, 0xFF);
+  blitCopy(s_pACE, 0, 0, s_pVpManager->pBack, 80, 95, 155, 70, MINTERM_COOKIE, 0xFF);
 
 
   doFadeInOut();
