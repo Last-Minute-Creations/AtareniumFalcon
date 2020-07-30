@@ -28,12 +28,12 @@ char szCredits[80];
 const char *c1 = "ATARENIUM FALCON  v0.9 (Demo)";
 const char *c2 = "Decrunch 2020 gamedev compo release.";
 const char *c3 = "";
-const char *c4 = "Last Minute Creations are:";
-const char *c5 = "KaiN";
-const char *c6 = "Softiron";
-const char *c7 = "Proxy";
-const char *c8 = "Luc3k";
-const char *c9 = ".";
+const char *c4 = "Luc3k: code & MSX";
+const char *c5 = "Softiron: GFX";
+const char *c6 = "KaiN & Proxy: AFK";
+const char *c7 = "";
+const char *c8 = "Greets to: Renton, Wojt_GL, Sordan, ";
+const char *c9 = "QUAD, Lokaty, MadMan.";
 const char *c10 = "ENJOY THE PARTY !";
 
 static void doFadeInOut(void) {
