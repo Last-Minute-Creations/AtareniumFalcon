@@ -70,7 +70,7 @@ void intro2ndPage(void)
   blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 21);
   blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 21);
 
-  for (BYTE i = 0; i < 15; ++i)
+  for (BYTE i = 0; i < 14; ++i)
   {
 
     sprintf(szIntro, s_pLines[i+21]);
