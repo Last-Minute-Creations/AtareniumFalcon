@@ -10,6 +10,8 @@
 #include <ace/utils/font.h>
 #include <ace/utils/ptplayer.h>
 
+#define CREDITS_LINE_COUNT 11
+
 static tView *s_pView;
 static tVPort *s_pVp;
 static tSimpleBufferManager *s_pVpManager;
@@ -30,17 +32,19 @@ static tTextBitMap *s_pBmText;
 
 static UWORD s_pPalette[32];
 
-char szCredits[80];
-const char *c1 = "ATARENIUM FALCON  v0.9 (Demo)";
-const char *c2 = "Decrunch 2020 gamedev compo release.";
-const char *c3 = "";
-const char *c4 = "Luc3k: code & MSX";
-const char *c5 = "Softiron: GFX";
-const char *c6 = "KaiN & Proxy: AFK";
-const char *c7 = "";
-const char *c8 = "Greets to: Renton, Wojt_GL, Sordan, ";
-const char *c9 = "QUAD, Lokaty, MadMan.";
-const char *c10 = "ENJOY THE PARTY !";
+
+const char *s_pCreditsLines [CREDITS_LINE_COUNT] = { 
+"ATARENIUM FALCON  v0.9 (Demo)",
+"Decrunch 2020 gamedev compo release.",
+"",
+"Luc3k: code & MSX",
+"Softiron: GFX",
+"KaiN & Proxy: AFK",
+"",
+"Greets to: Renton, Wojt_GL, Sordan, ",
+"QUAD, Lokaty, MadMan.",
+"ENJOY THE PARTY !"
+};
 
 static void doFadeInOut(void) {
   for (BYTE bRatio = 0; bRatio < 16; ++bRatio)
@@ -131,50 +135,16 @@ void stateCreditsCreate(void)
   blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 21);
 
   for (BYTE i = 0; i < 10; ++i)
-  {
-
-    switch (i)
     {
-    case 0:
-      sprintf(szCredits, c1);
-      break;
-    case 1:
-      sprintf(szCredits, c2);
-      break;
-    case 2:
-      sprintf(szCredits, c3);
-      break;
-    case 3:
-      sprintf(szCredits, c4);
-      break;
-    case 4:
-      sprintf(szCredits, c5);
-      break;
-    case 5:
-      sprintf(szCredits, c6);
-      break;
-    case 6:
-      sprintf(szCredits, c7);
-      break;
-    case 7:
-      sprintf(szCredits, c8);
-      break;
-    case 8:
-      sprintf(szCredits, c9);
-      break;
-    case 9:
-      sprintf(szCredits, c10);
-      break;
-    }
-
-    fontFillTextBitMap(s_pFont, s_pBmText, szCredits);
+    fontFillTextBitMap(s_pFont, s_pBmText, s_pCreditsLines[i]);
     fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 10, (i * 9) + 10, 23, FONT_COOKIE);
+    }
     for (BYTE k = 0; k < 10; ++k)
     {
       vPortWaitForEnd(s_pVp);
     }
   }
-}
+
 
 void stateCreditsLoop(void)
 {

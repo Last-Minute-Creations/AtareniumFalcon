@@ -26,12 +26,12 @@ static tPtplayerSfx *s_pAtari;
 char szWungiel[50];
 
 const char *w1 = "READY";
-char load1[] = "LOAD ATARENIUM FALCON";
+const char load1[] = "LOAD ATARENIUM FALCON";
 const char *w2 = "ERROR - INSERT WINCY WUNGLA TO DF0:";
-char dots[] = "...";
+const char dots[] = "...";
 const char *w3 = "WUNGIEL DETECTED";
 const char *w4 = "DONE";
-char run[] = "RUN";
+const char run[] = "RUN";
 
 void stateWungielCreate(void)
 {
@@ -78,7 +78,7 @@ void stateWungielCreate(void)
     }
 
     UWORD uwX = 10;
-    for (BYTE i = 0; i < strlen(load1); ++i) {
+    for (UBYTE i = 0; i < strlen(load1); ++i) {
         sprintf(szWungiel, "%c", load1[i]);
         fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
         fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, uwX, 20, 23, FONT_COOKIE);
@@ -123,7 +123,7 @@ void stateWungielCreate(void)
         vPortWaitForEnd(s_pVp);
     }
     uwX = 10;
-    for (BYTE i = 0; i < strlen(load1); ++i) {
+    for (UBYTE i = 0; i < strlen(load1); ++i) {
         sprintf(szWungiel, "%c", load1[i]);
         fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
         fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, uwX, 60, 23, FONT_COOKIE);

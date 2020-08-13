@@ -22,7 +22,7 @@ static tFont *s_pFont;
 static tTextBitMap *s_pBmText;
 
 BYTE page = 0;
-char szIntro[80];
+
 
 const char *IntroContinue = "(Fire or Return to continue)";
 
@@ -72,19 +72,14 @@ void intro2ndPage(void)
 
   for (BYTE i = 0; i < 14; ++i)
   {
-
-    sprintf(szIntro, s_pLines[i+21]);
-    
-
-    fontFillTextBitMap(s_pFont, s_pBmText, szIntro);
+    fontFillTextBitMap(s_pFont, s_pBmText, s_pLines[i+21]);
     fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 10, (i * 9) + 10, 23, FONT_COOKIE);
     for (BYTE k = 0; k < 50; ++k)
     {
       vPortWaitForEnd(s_pVp);
     }
   }
-  sprintf(szIntro, IntroContinue);
-  fontFillTextBitMap(s_pFont, s_pBmText, szIntro);
+  fontFillTextBitMap(s_pFont, s_pBmText, IntroContinue);
   fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 10, 200, 23, FONT_COOKIE);
   for (BYTE k = 0; k < 50; ++k)
   {
@@ -126,18 +121,15 @@ void stateIntroCreate(void)
 
   for (BYTE i = 0; i < 21; ++i)
   {
-
-    sprintf(szIntro, s_pLines[i]);
-
-    fontFillTextBitMap(s_pFont, s_pBmText, szIntro);
+    fontFillTextBitMap(s_pFont, s_pBmText, s_pLines[i]);
     fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 10, (i * 9) + 10, 23, FONT_COOKIE);
     for (BYTE k = 0; k < 50; ++k)
     {
       vPortWaitForEnd(s_pVp);
     }
   }
-  sprintf(szIntro, IntroContinue);
-  fontFillTextBitMap(s_pFont, s_pBmText, szIntro);
+  
+  fontFillTextBitMap(s_pFont, s_pBmText, IntroContinue);
   fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 10, 200, 23, FONT_COOKIE);
   for (BYTE k = 0; k < 50; ++k)
   {

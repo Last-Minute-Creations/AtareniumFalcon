@@ -37,6 +37,8 @@ extern tStateManager *g_pStateMachineGame;
 #define MAP_TILE_WIDTH 10
 #define FALCON_HEIGHT 32
 
+
+
 char szMsg[50];  // do wyswietlania wegla na HUD
 char szMsg2[50]; // do wyswietlania kondkow na HUD
 
@@ -63,6 +65,12 @@ BYTE coal = startingCoal;
 BYTE capacitors = 0;
 BYTE level = 1;
 BYTE robboMsgNr = 0;
+
+
+
+
+
+
 
 void cleanUp();
 
