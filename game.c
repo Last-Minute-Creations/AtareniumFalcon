@@ -10,6 +10,7 @@
 #include <ace/managers/state.h>
 #include <ace/utils/custom.h>
 #include <ace/utils/ptplayer.h>
+#include <ace/utils/file.h>
 
 //------------------------------------------------------- gdzie� przed funkcjami
 // zmienne trzymaj�ce adresy do viewa, viewporta, simple buffer managera
@@ -41,6 +42,7 @@ extern tStateManager *g_pStateMachineGame;
 
 char szMsg[50];  // do wyswietlania wegla na HUD
 char szMsg2[50]; // do wyswietlania kondkow na HUD
+char levelFilePath[5];
 
 BYTE musicPlay = 1;
 
@@ -85,57 +87,68 @@ void gameOnResume(void)
   viewLoad(s_pView);
 }
 
-void drawTiles(void)
-{
-  for (UBYTE y = 0; y < MAP_TILE_HEIGHT; ++y)
-  {
-    for (UBYTE x = 0; x < MAP_TILE_WIDTH; ++x)
+void drawTiles(void){
+
+  sprintf(levelFilePath, "%d.txt", level);
+  tFile levelFile = fileOpen(levelFilePath, "r");
+  BYTE ubZmienna = 0;
+  BYTE x = 0;
+  BYTE y = 0;
+  
+    for (BYTE i = 0; i < 10; ++i)
     {
-      // i już masz zmienne x,y które się ruszają
-      switch (kamyki[x][y])
+      fileRead(levelFile, ubZmienna, 1);
+      logWrite("zmienna: %hhu",ubZmienna);
+      if (ubZmienna == 0x30)
       {
-      //blitCopyMask(s_pTiles, 32, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32,(UWORD*)s_pTilesMask->Planes[0]);
-      // break;
-      case 3:
+        kamyki[x][y] = 0;
+      }
+     
+      else if (ubZmienna == 0x33)
+      {
+        kamyki[x][y] = 3;
         ubStoneImg = ubRandMinMax(0, 2);
         blitCopyMask(s_pTiles, ubStoneImg * 32, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-        break;
-      case 4:
-        blitCopyMask(s_pTiles, 96, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-        break;
-      case 5:
-        blitCopyMask(s_pTiles, 128, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-        break;
-      case 6:
-        blitCopyMask(s_pTiles, 160, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-        break;
-      case 7:
-        blitCopyMask(s_pTiles, 192, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-        break;
-      case 8:
-        blitCopyMask(s_pTiles, 0, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-        break;
-      case 9:
-        blitCopyMask(s_pTiles, 32, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-        break;
-      case 10:
-        blitCopyMask(s_pTiles, 64, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-        break;
-      case 11:
-        blitCopyMask(s_pTiles, 96, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-        break;
-      case 12:
-        if(falkonFace == 0){
-        blitCopyMask(s_pTiles, 128, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-        }
-        else if(falkonFace == 32){
-        blitCopyMask(s_pTiles, 160, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-        }
-        break;
       }
+      else if (ubZmienna == 0x34)
+      {
+        kamyki[x][y] = 4;
+        blitCopyMask(s_pTiles, 96, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+      }
+      ++x;
     }
+      //case 5:
+      //  blitCopyMask(s_pTiles, 128, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+       // break;
+      //case 6:
+      //  blitCopyMask(s_pTiles, 160, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+       // break;
+      //case 7:
+       // blitCopyMask(s_pTiles, 192, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+        //break;
+      //case 8:
+       // blitCopyMask(s_pTiles, 0, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+       // break;
+      //case 9:
+       // blitCopyMask(s_pTiles, 32, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+       // break;
+      //case 10:
+       // blitCopyMask(s_pTiles, 64, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+       // break;
+      //case 11:
+       // blitCopyMask(s_pTiles, 96, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+        //break;
+      //case 12:
+       // if(falkonFace == 0){
+        //blitCopyMask(s_pTiles, 128, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+       // }
+       // else if(falkonFace == 32){
+        //blitCopyMask(s_pTiles, 160, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+       // }
+       // break;
+    
   }
-}
+
 
 void clearTiles(void)
 {
@@ -1350,16 +1363,20 @@ void stateGameCreate(void)
   // tablica trzyma wlasciwosci tile'a, petla stawia tajle na miejscach wyznaczanych przez tablice
   // level 1
 
-  kamyki[1][0] = 4;
-  kamyki[6][1] = 5;
-  kamyki[1][2] = 5;
-  kamyki[7][2] = 4;
-  kamyki[1][3] = 11;
-  kamyki[8][3] = 5;
-  kamyki[2][4] = 6;
-  kamyki[5][5] = 6;
-  kamyki[8][6] = 4;
-  kamyki[9][6] = 10;
+  //kamyki[1][0] = 4;
+  //kamyki[6][1] = 5;
+  //kamyki[1][2] = 5;
+  //kamyki[7][2] = 4;
+  //kamyki[1][3] = 11;
+  //kamyki[8][3] = 5;
+  //kamyki[2][4] = 6;
+  //kamyki[5][5] = 6;
+  //kamyki[8][6] = 4;
+  //kamyki[9][6] = 10;
+
+  
+
+
 
   drawTiles();
   ptplayerEnableMusic(1);

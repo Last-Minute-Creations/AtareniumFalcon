@@ -59,5 +59,6 @@ file(
 	COPY ${RES_DIR}/topaz.fnt ${RES_DIR}/mod.falkon
 	${RES_DIR}/Morse_LMC8000.sfx ${RES_DIR}/Atari.sfx
 	${RES_DIR}/AceSample.sfx
+	${RES_DIR}/1.txt
 	DESTINATION ${DATA_DIR}
 )
