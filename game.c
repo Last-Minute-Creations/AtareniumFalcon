@@ -90,15 +90,16 @@ void gameOnResume(void)
 void drawTiles(void){
 
   sprintf(levelFilePath, "%d.txt", level);
-  tFile levelFile = fileOpen(levelFilePath, "r");
+  tFile *levelFile = fileOpen(levelFilePath, "r");
   BYTE ubZmienna = 0;
   BYTE x = 0;
   BYTE y = 0;
   
     for (BYTE i = 0; i < 10; ++i)
     {
-      fileRead(levelFile, ubZmienna, 1);
+      fileRead(levelFile, &ubZmienna, 1);
       logWrite("zmienna: %hhu",ubZmienna);
+      
       if (ubZmienna == 0x30)
       {
         kamyki[x][y] = 0;
