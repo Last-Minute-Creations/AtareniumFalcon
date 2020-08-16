@@ -61,5 +61,14 @@ file(
 	${RES_DIR}/Morse_LMC8000.sfx ${RES_DIR}/Atari.sfx
 	${RES_DIR}/AceSample.sfx
 	${RES_DIR}/1.txt
+	${RES_DIR}/2.txt
+	${RES_DIR}/3.txt
+	${RES_DIR}/4.txt
+	${RES_DIR}/5.txt
+	${RES_DIR}/6.txt
+	${RES_DIR}/7.txt
+	${RES_DIR}/8.txt
+	${RES_DIR}/9.txt
+	${RES_DIR}/10.txt
 	DESTINATION ${DATA_DIR}
 )
