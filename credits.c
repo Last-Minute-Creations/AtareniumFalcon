@@ -12,6 +12,19 @@
 
 #define CREDITS_LINE_COUNT 11
 
+enum StatesCredits
+{
+  STATE_LMC_FADE_IN,
+  STATE_LMC_WAIT,
+  STATE_LMC_FADE_OUT,
+  STATE_ACE_FADE_IN,
+  STATE_ACE_WAIT,
+  STATE_ACE_FADE_OUT,
+  STATE_CREDITS,
+};
+
+static enum StatesCredits s_eState;
+
 static tView *s_pView;
 static tVPort *s_pVp;
 static tSimpleBufferManager *s_pVpManager;
@@ -22,8 +35,6 @@ static tBitMap *s_pACE;
 static tPtplayerSfx *s_pACEsfx;
 static tPtplayerSfx *s_pLMCsfx;
 
-
-
 extern tState g_sStateMenu;
 extern tStateManager *g_pStateMachineGame;
 
@@ -32,47 +43,21 @@ static tTextBitMap *s_pBmText;
 
 static UWORD s_pPalette[32];
 
+UBYTE bRatio = 0;
+UBYTE waitTime = 0;
+UBYTE drawOnce = 0;
 
-const char *s_pCreditsLines [CREDITS_LINE_COUNT] = { 
-"ATARENIUM FALCON  v0.9 (Demo)",
-"Decrunch 2020 gamedev compo release.",
-"",
-"Luc3k: code & MSX",
-"Softiron: GFX",
-"KaiN & Proxy: AFK",
-"",
-"Greets to: Renton, Wojt_GL, Sordan, ",
-"QUAD, Lokaty, MadMan.",
-"ENJOY THE PARTY !"
-};
-
-static void doFadeInOut(void) {
-  for (BYTE bRatio = 0; bRatio < 16; ++bRatio)
-  {
-    paletteDim(s_pPalette, s_pVp->pPalette, 32, bRatio); // 0 - czarno, 15 - pe?na paleta
-    viewUpdateCLUT(s_pView);                              // we? palet? z viewporta i wrzu? j? na ekran
-    for (int k = 0; k < 2; ++k)
-    {
-      vPortWaitForEnd(s_pVp);
-    }
-  }
-
-  for (int k = 0; k < 100; ++k)
-  {
-    vPortWaitForEnd(s_pVp);
-  }
-  // ?ciemnianie
-
-  for (BYTE bRatio = 15 ; bRatio >= 0; --bRatio)
-  {
-    paletteDim(s_pPalette, s_pVp->pPalette, 32, bRatio); // 0 - czarno, 15 - pe?na paleta
-    viewUpdateCLUT(s_pView);                              // we? palet? z viewporta i wrzu? j? na ekran
-    for (int k = 0; k < 2; ++k)
-    {
-      vPortWaitForEnd(s_pVp);
-    }
-  }
-}
+const char *s_pCreditsLines[CREDITS_LINE_COUNT] = {
+    "ATARENIUM FALCON  v0.9 (Demo)",
+    "Decrunch 2020 gamedev compo release.",
+    "",
+    "Luc3k: code & MSX",
+    "Softiron: GFX",
+    "KaiN & Proxy: AFK",
+    "",
+    "Greets to: Renton, Wojt_GL, Sordan, ",
+    "QUAD, Lokaty, MadMan.",
+    "ENJOY THE PARTY !"};
 
 void stateCreditsCreate(void)
 {
@@ -99,6 +84,11 @@ void stateCreditsCreate(void)
   viewLoad(s_pView);
   ptplayerCreate(1);
 
+  bRatio = 0;
+  waitTime = 0;
+  drawOnce = 0;
+
+  s_eState = STATE_LMC_FADE_IN;
 
   s_pFont = fontCreate("data/topaz.fnt");
   s_pBmText = fontCreateTextBitMap(300, s_pFont->uwHeight);
@@ -108,48 +98,112 @@ void stateCreditsCreate(void)
 
   s_pACEsfx = ptplayerSfxCreateFromFile("data/AceSample.sfx");
   s_pLMCsfx = ptplayerSfxCreateFromFile("data/Morse_LMC8000.sfx");
-
-  paletteDim(s_pPalette, s_pVp->pPalette, 32, 0); // 0 - czarno, 15 - pe�na paleta
-  viewUpdateCLUT(s_pView);
-
-  ptplayerSfxPlay(s_pLMCsfx, 3, 64, 100);
-  blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 0);
-  blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 0);
-  blitCopy(s_pLMC, 0, 0, s_pVpManager->pBack, 104, 40, 112, 160, MINTERM_COOKIE, 0xFF);
-
-  doFadeInOut();
-
-  ptplayerSfxPlay(s_pACEsfx, 3, 64, 100);
-  blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 0);
-  blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 0);
-  blitCopy(s_pACE, 0, 0, s_pVpManager->pBack, 80, 95, 155, 70, MINTERM_COOKIE, 0xFF);
-
-
-  doFadeInOut();
-
-  paletteLoad("data/falkon.plt", s_pPalette, 32);
-  BYTE ubRatio = 15;
-  paletteDim(s_pPalette, s_pVp->pPalette, 32, ubRatio); // 0 - czarno, 15 - pe�na paleta
-  viewUpdateCLUT(s_pView);
-  blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 21);
-  blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 21);
-
-  for (BYTE i = 0; i < 10; ++i)
-    {
-    fontFillTextBitMap(s_pFont, s_pBmText, s_pCreditsLines[i]);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 10, (i * 9) + 10, 23, FONT_COOKIE);
-    }
-    for (BYTE k = 0; k < 10; ++k)
-    {
-      vPortWaitForEnd(s_pVp);
-    }
-  }
-
+}
 
 void stateCreditsLoop(void)
 {
   joyProcess();
   keyProcess();
+
+  switch (s_eState)
+  {
+  case STATE_LMC_FADE_IN:
+    if (drawOnce == 0)
+    {
+      ++drawOnce;
+      paletteDim(s_pPalette, s_pVp->pPalette, 32, 0); // 0 - czarno, 15 - pe�na paleta
+      viewUpdateCLUT(s_pView);
+
+      ptplayerSfxPlay(s_pLMCsfx, 3, 64, 100);
+      blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 0);
+      blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 0);
+      blitCopy(s_pLMC, 0, 0, s_pVpManager->pBack, 104, 40, 112, 160, MINTERM_COOKIE, 0xFF);
+    }
+
+    paletteDim(s_pPalette, s_pVp->pPalette, 32, bRatio); // 0 - czarno, 15 - pe?na paleta
+    viewUpdateCLUT(s_pView);                             // we? palet? z viewporta i wrzu? j? na ekran
+    ++bRatio;
+    if (bRatio == 15)
+    {
+      s_eState = STATE_LMC_WAIT;
+    }
+    break;
+
+  case STATE_LMC_WAIT:
+    ++waitTime;
+    if (waitTime == 50)
+    {
+      waitTime = 0;
+      s_eState = STATE_LMC_FADE_OUT;
+    }
+
+  case STATE_LMC_FADE_OUT:
+    paletteDim(s_pPalette, s_pVp->pPalette, 32, bRatio); // 0 - czarno, 15 - pe?na paleta
+    viewUpdateCLUT(s_pView);                             // we? palet? z viewporta i wrzu? j? na ekran
+    --bRatio;
+    if (bRatio == 0)
+    {
+      s_eState = STATE_ACE_FADE_IN;
+    }
+    break;
+
+  case STATE_ACE_FADE_IN:
+    if (drawOnce == 1)
+    {
+      ++drawOnce;
+      paletteDim(s_pPalette, s_pVp->pPalette, 32, 0); // 0 - czarno, 15 - pe�na paleta
+      viewUpdateCLUT(s_pView);
+
+      ptplayerSfxPlay(s_pACEsfx, 3, 64, 100);
+      blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 0);
+      blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 0);
+      blitCopy(s_pACE, 0, 0, s_pVpManager->pBack, 80, 95, 155, 70, MINTERM_COOKIE, 0xFF);
+    }
+
+    paletteDim(s_pPalette, s_pVp->pPalette, 32, bRatio); // 0 - czarno, 15 - pe?na paleta
+    viewUpdateCLUT(s_pView);                             // we? palet? z viewporta i wrzu? j? na ekran
+    ++bRatio;
+    if (bRatio == 15)
+    {
+      s_eState = STATE_ACE_WAIT;
+    }
+    break;
+
+  case STATE_ACE_WAIT:
+    ++waitTime;
+    if (waitTime == 50)
+    {
+      s_eState = STATE_ACE_FADE_OUT;
+    }
+
+  case STATE_ACE_FADE_OUT:
+    paletteDim(s_pPalette, s_pVp->pPalette, 32, bRatio); // 0 - czarno, 15 - pe?na paleta
+    viewUpdateCLUT(s_pView);                             // we? palet? z viewporta i wrzu? j? na ekran
+    --bRatio;
+    if (bRatio == 0)
+    {
+      s_eState = STATE_CREDITS;
+    }
+    break;
+
+  case STATE_CREDITS:
+    if (drawOnce == 2)
+    {
+      ++drawOnce;
+      paletteLoad("data/falkon.plt", s_pPalette, 32);
+      BYTE ubRatio = 15;
+      paletteDim(s_pPalette, s_pVp->pPalette, 32, ubRatio); // 0 - czarno, 15 - pe�na paleta
+      viewUpdateCLUT(s_pView);
+      blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 21);
+      blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 21);
+    }
+
+    for (BYTE i = 0; i < 10; ++i)
+    {
+      fontFillTextBitMap(s_pFont, s_pBmText, s_pCreditsLines[i]);
+      fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 10, (i * 9) + 10, 23, FONT_COOKIE);
+    }
+  }
 
   if (joyUse(JOY1_FIRE) || keyUse(KEY_RETURN))
   {
@@ -166,10 +220,10 @@ void stateCreditsDestroy(void)
 {
   systemUse();
 
-	fontDestroy(s_pFont);
-	fontDestroyTextBitMap(s_pBmText);
-	bitmapDestroy(s_pLMC);
-	bitmapDestroy(s_pACE);
+  fontDestroy(s_pFont);
+  fontDestroyTextBitMap(s_pBmText);
+  bitmapDestroy(s_pLMC);
+  bitmapDestroy(s_pACE);
   joyClose();
   keyDestroy();
   viewDestroy(s_pView);
