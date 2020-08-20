@@ -769,7 +769,10 @@ void drawTiles(void)
                                       TAG_SIMPLEBUFFER_VPORT, s_pVp,                              // parent viewport
                                       TAG_SIMPLEBUFFER_BITMAP_FLAGS, BMF_CLEAR | BMF_INTERLEAVED, // wst�pne czyszczenie bitmapy, przyspieszenie rysowania grafiki
                                       TAG_SIMPLEBUFFER_IS_DBLBUF, 0,                              // nie potrzebujemy double buffering
+                                      TAG_SIMPLEBUFFER_BOUND_WIDTH, 320 + 16,
                                       TAG_END);
+
+    cameraSetCoord(s_pVpManager->pCamera, 0, 0);
 
     // po zrobieniu simpleBufferCreate()
     bitmapLoadFromFile(s_pVpManager->pBack, "data/tlo1.bm", 0, 0); // wczytaj zawarto�� bg1.bm bezpo�rednio do bitmapy bufora ekranu, zaczynaj�c od pozycji 0,0
@@ -777,7 +780,7 @@ void drawTiles(void)
     joyOpen(); // b�dziemy u�ywa� d�oja w grze
     keyCreate();
     // na koniec create:
-    systemUnuse(); // system w trakcie loop nie jest nam potrzebny
+    
 
     randInit(1337);
 
@@ -803,6 +806,7 @@ void drawTiles(void)
 
     drawTiles();
     ptplayerEnableMusic(1);
+    systemUnuse(); // system w trakcie loop nie jest nam potrzebny
   }
 
   void stateGameLoop(void)
