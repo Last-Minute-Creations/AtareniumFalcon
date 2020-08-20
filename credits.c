@@ -131,11 +131,12 @@ void stateCreditsLoop(void)
 
   case STATE_LMC_WAIT:
     ++waitTime;
-    if (waitTime == 50)
+    if (waitTime == 100)
     {
       waitTime = 0;
       s_eState = STATE_LMC_FADE_OUT;
     }
+    break;
 
   case STATE_LMC_FADE_OUT:
     paletteDim(s_pPalette, s_pVp->pPalette, 32, bRatio); // 0 - czarno, 15 - pe?na paleta
@@ -171,10 +172,11 @@ void stateCreditsLoop(void)
 
   case STATE_ACE_WAIT:
     ++waitTime;
-    if (waitTime == 50)
+    if (waitTime == 100)
     {
       s_eState = STATE_ACE_FADE_OUT;
     }
+    break;
 
   case STATE_ACE_FADE_OUT:
     paletteDim(s_pPalette, s_pVp->pPalette, 32, bRatio); // 0 - czarno, 15 - pe?na paleta
@@ -196,12 +198,13 @@ void stateCreditsLoop(void)
       viewUpdateCLUT(s_pView);
       blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 21);
       blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 21);
-    }
+    
 
     for (BYTE i = 0; i < 10; ++i)
     {
       fontFillTextBitMap(s_pFont, s_pBmText, s_pCreditsLines[i]);
       fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 10, (i * 9) + 10, 23, FONT_COOKIE);
+    }
     }
   }
 
