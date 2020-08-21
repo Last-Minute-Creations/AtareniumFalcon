@@ -59,7 +59,7 @@ BYTE falkonFace = 0; // kierunek dziobem
 BYTE stoneHit = 0;
 BYTE frameHit = 0;
 
-CONST BYTE startingCoal = 8;
+CONST BYTE startingCoal = 1;
 
 BYTE coal = startingCoal;
 BYTE capacitors = 0;
@@ -67,6 +67,15 @@ BYTE level = 1;
 BYTE robboMsgNr = 0;
 
 void cleanUp();
+
+void coalDecrementAndPrintOnHUD (void)
+    {
+    coal = coal - 1;
+    blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 32, 32, MINTERM_COOKIE, 0xFF);
+    sprintf(szMsg, "%d", coal);
+    fontFillTextBitMap(s_pFont, s_pBmText, szMsg);
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 231, 5, FONT_COOKIE);
+    }
 
 void waitFrames(tVPort *pVPort, UBYTE ubHowMany, UWORD uwPosY)
 {
@@ -396,40 +405,41 @@ void drawTiles(void)
     BYTE what = kamyki[pickSthX][pickSthY];
     kamyki[pickSthX][pickSthY] = 0;
 
-    if (what == 4)
+    switch (what)
     {
+    case 4:  
       coal = coal + 2;
-    }
-    if (what == 5)
-    {
+      break;
+    
+    case 5:    
       coal = coal + 3;
-    }
-    if (what == 6)
-    {
+      break;
+    
+    case 6:    
       coal = coal + 4;
-    }
-    if (what == 7)
-    {
+      break;
+
+    case 7:    
       coal = coal + 5;
-    }
-    if (what == 8)
-    {
+      break;
+
+    case 8:
       capacitors = capacitors + 2;
       blitCopy(s_pHUD, 96, 0, s_pVpManager->pBack, 96, 224, 32, 32, MINTERM_COOKIE, 0xFF);
       sprintf(szMsg2, "%d", capacitors);
       fontFillTextBitMap(s_pFont, s_pBmText, szMsg2);
       fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 106, 231, 5, FONT_COOKIE);
-    }
-    if (what == 9)
-    {
+      break;
+
+    case 9:
       capacitors = capacitors + 4;
       blitCopy(s_pHUD, 96, 0, s_pVpManager->pBack, 96, 224, 32, 32, MINTERM_COOKIE, 0xFF);
       sprintf(szMsg2, "%d", capacitors);
       fontFillTextBitMap(s_pFont, s_pBmText, szMsg2);
       fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 106, 231, 5, FONT_COOKIE);
-    }
-    if (what == 10)
-    {
+      break;
+
+    case 10:   
       portalAnim();
       ++level;
       if (level == 16)
@@ -439,19 +449,17 @@ void drawTiles(void)
         return;
       }
       nextLevel();
-    }
-    if (what == 11)
-    {
+      break;
+
+    case 11:
+      coalDecrementAndPrintOnHUD();
       mt_mastervol(0);
       statePush(g_pStateMachineGame, &g_sStateRobbo);
       return;
+      break;
     }
-
-    coal = coal - 1;
-    blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 32, 32, MINTERM_COOKIE, 0xFF);
-    sprintf(szMsg, "%d", coal);
-    fontFillTextBitMap(s_pFont, s_pBmText, szMsg);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 231, 5, FONT_COOKIE);
+    coalDecrementAndPrintOnHUD();
+    
   }
 
   void falkonFlyingRight(void)
@@ -674,7 +682,7 @@ void drawTiles(void)
       frameHit = 0;
       return;
     }
-    // ruch falkonem na razie skokowo
+    
 
     switch (kierunek)
     {
@@ -796,6 +804,7 @@ void drawTiles(void)
 
     printOnHUD();
 
+    viewProcessManagers(s_pView);
     viewLoad(s_pView);
 
     blitCopy(s_pBg, 0, 0, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE, 0xFF);
