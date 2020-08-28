@@ -37,6 +37,7 @@ extern tStateManager *g_pStateMachineGame;
 #define MAP_TILE_HEIGHT 7
 #define MAP_TILE_WIDTH 10
 #define FALCON_HEIGHT 32
+#define ANIM_FRAME_COUNT 16
 
 char szMsg[50];  // do wyswietlania wegla na HUD
 char szMsg2[50]; // do wyswietlania kondkow na HUD
@@ -459,67 +460,74 @@ void coalAndCollect(void)
 
 void falkonFlying(void)
 {
+  UWORD YAnimRow = 0;
   UWORD uwPosX = falkonx * 32;
   UWORD uwPosY = falkony * 32;
   blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE, 0xFF);
   waitFrames(s_pVp, 3, uwPosY + FALCON_HEIGHT);
   blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE, 0xFF);
 
-  for (BYTE i = 0; i < 16; ++i)
+  UWORD *pAnim;
+  if (falkonFace == 0)
+  {
+    pAnim = pAnimR;
+  }
+  else if (falkonFace == 32)
+  {
+    pAnim = pAnimL;
+  }
+
+  for (BYTE i = 0; i < ANIM_FRAME_COUNT; ++i)
   {
     blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE, 0xFF); // rysuje tlo ze zmeinnej
     switch (kierunek)
     {
     case 1:
+      YAnimRow = 64;
       ++uwPosX;
-      ++uwPosX;                                                                                                             // 2px w prawo
-      blitCopy(s_pVpManager->pBack, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE, 0xFF);                       // fragment tla wrzuca do zmiennej
-      blitCopyMask(s_pTiles, pAnimR[i], 64, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // rysuje falkona
-      waitFrames(s_pVp, 3, uwPosY + FALCON_HEIGHT);
+      ++uwPosX;
       break;
     case 2:
+      YAnimRow = 96;
       --uwPosX;
-      --uwPosX;                                                                                                             // 2px w prawo
-      blitCopy(s_pVpManager->pBack, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE, 0xFF);                       // fragment tla wrzuca do zmiennej
-      blitCopyMask(s_pTiles, pAnimL[i], 96, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // rysuje falkona
-      waitFrames(s_pVp, 3, uwPosY + FALCON_HEIGHT);
+      --uwPosX;
       break;
     case 3:
       --uwPosY;
-      --uwPosY;                                                                                       // 2px w prawo
-      blitCopy(s_pVpManager->pBack, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE, 0xFF); // fragment tla wrzuca do zmiennej
+      --uwPosY;
       switch (falkonFace)
       {
       case 0:
-        blitCopyMask(s_pTiles, pAnimR[i], 64, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // rysuje falkona
+        YAnimRow = 64;
         break;
       case 32:
-        blitCopyMask(s_pTiles, pAnimL[i], 96, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+        YAnimRow = 96;
         break;
       }
-      waitFrames(s_pVp, 3, uwPosY + FALCON_HEIGHT);
-
       break;
     case 4:
       ++uwPosY;
-      ++uwPosY;                                                                                       // 2px w prawo
-      blitCopy(s_pVpManager->pBack, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE, 0xFF); // fragment tla wrzuca do zmiennej
+      ++uwPosY;
       switch (falkonFace)
       {
       case 0:
-        blitCopyMask(s_pTiles, pAnimR[i], 64, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // rysuje falkona
+        YAnimRow = 64;
         break;
       case 32:
-        blitCopyMask(s_pTiles, pAnimL[i], 96, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+        YAnimRow = 96;
         break;
       }
-      waitFrames(s_pVp, 3, uwPosY + FALCON_HEIGHT);
       break;
-
+    }  
+      
+      blitCopy(s_pVpManager->pBack, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE, 0xFF);                            // fragment tla wrzuca do zmiennej
+      blitCopyMask(s_pTiles, pAnim[i], YAnimRow, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // rysuje falkona
+      waitFrames(s_pVp, 3, uwPosY + FALCON_HEIGHT);
+    
       blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE, 0xFF);
       blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE, 0xFF);
-      blitCopyMask(s_pTiles, 0, 64, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-    }
+      blitCopyMask(s_pTiles, 0, YAnimRow, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+    
   }
 }
 
