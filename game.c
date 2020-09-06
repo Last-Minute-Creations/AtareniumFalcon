@@ -22,6 +22,7 @@ static tBitMap *s_pTilesMask;
 static tBitMap *s_pBg;
 static tBitMap *s_pHUD;
 static tBitMap *s_pFalconBg;
+static tBitMap *s_pRobbo;
 
 static tPtplayerMod *s_pMod;
 
@@ -42,6 +43,9 @@ extern tStateManager *g_pStateMachineGame;
 char szMsg[50];  // do wyswietlania wegla na HUD
 char szMsg2[50]; // do wyswietlania kondkow na HUD
 char levelFilePath[20];
+
+char szRobboMsg[80];
+char *szRobbo1stLine = "ROBBO says:";
 
 BYTE musicPlay = 1;
 
@@ -69,6 +73,7 @@ BYTE coal = startingCoal;
 BYTE capacitors = 0;
 BYTE level = 1;
 BYTE robboMsgNr = 0;
+BYTE robboMsgCtrl = 0;
 
 void cleanUp();
 
@@ -389,6 +394,83 @@ void portalAnim(void)
   }
 }
 
+void robboScrollUp(void) {
+  {
+  blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 248, 320, 8, MINTERM_COOKIE, 0xFF);
+  waitFrames(s_pVp, 3, 0);
+  blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 240, 320, 16, MINTERM_COOKIE, 0xFF);
+  waitFrames(s_pVp, 3, 0);
+  blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 232, 320, 24, MINTERM_COOKIE, 0xFF);
+  waitFrames(s_pVp, 3, 0);
+  blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 224, 320, 32, MINTERM_COOKIE, 0xFF);
+
+  
+  
+  // waitFrames(s_pVp, 3, 0);
+  }
+}
+
+void robboScrollDown(void) {
+   
+  
+  blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320, 8, MINTERM_COOKIE, 0xFF);
+  blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 232, 320, 24, MINTERM_COOKIE, 0xFF);
+  waitFrames(s_pVp, 3, 0);
+  blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320, 16, MINTERM_COOKIE, 0xFF);
+  blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 240, 320, 16, MINTERM_COOKIE, 0xFF);
+  waitFrames(s_pVp, 3, 0);
+  blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320, 32, MINTERM_COOKIE, 0xFF);
+  blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 248, 320, 8, MINTERM_COOKIE, 0xFF);
+  waitFrames(s_pVp, 3, 0);
+  blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320, 32, MINTERM_COOKIE, 0xFF);
+  waitFrames(s_pVp, 3, 0);
+  blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320, 32, MINTERM_COOKIE, 0xFF);
+}
+
+void robboSays(void){
+  switch (robboMsgNr){
+    case 0:
+    sprintf(szRobboMsg, "Keep an eye on your coal supplies.");
+    break;
+    case 1:
+    sprintf(szRobboMsg, "Follow the Atari portal.");
+    break;
+    case 2:
+    sprintf(szRobboMsg, "Don't waste our coal hitting the meteorites.");
+    break;
+    case 3:
+    sprintf(szRobboMsg, "Try to steal some red and blue capacitors.");
+    break;
+    case 4:
+    sprintf(szRobboMsg, "Infiltrate the Amigans territory.");
+    break;
+    case 5:
+    sprintf(szRobboMsg, "Minister Renton is counting on you, Sir.");
+    break;
+    case 6:
+    sprintf(szRobboMsg, "Please clean up here, I found some GermZ.");
+    break;
+    case 7:
+    sprintf(szRobboMsg, "Take me home, this place sucks!");
+    break;
+    case 8:
+    sprintf(szRobboMsg, "Find the coal warehouse and reclaim it.");
+    break;
+    case 9:
+    sprintf(szRobboMsg, "We're close, I feel it in my DSP.");
+    break; 
+    case 10:
+    sprintf(szRobboMsg, "Well done! Now collect the coal and GTFO !!!");
+    break; 
+    
+  }
+  fontFillTextBitMap(s_pFont, s_pBmText, szRobbo1stLine);
+  fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText,  8, 230, 23, FONT_COOKIE);
+  fontFillTextBitMap(s_pFont, s_pBmText, szRobboMsg);
+  fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText,  8, 240, 23, FONT_COOKIE);
+}
+
+
 void coalAndCollect(void)
 {
   //funkcja do zbierania zasobu jesli jest na danym tajlu
@@ -449,9 +531,10 @@ void coalAndCollect(void)
     break;
 
   case 11:
+    robboMsgCtrl = 1;
     coalDecrementAndPrintOnHUD();
-    mt_mastervol(0);
-    statePush(g_pStateMachineGame, &g_sStateRobbo);
+    robboScrollUp();
+    robboSays();
     return;
     break;
   }
@@ -463,9 +546,9 @@ void falkonFlying(void)
   UWORD YAnimRow = 0;
   UWORD uwPosX = falkonx * 32;
   UWORD uwPosY = falkony * 32;
-  blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE, 0xFF);
-  waitFrames(s_pVp, 3, uwPosY + FALCON_HEIGHT);
-  blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE, 0xFF);
+   blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE, 0xFF);
+   waitFrames(s_pVp, 3, uwPosY + FALCON_HEIGHT);
+   blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE, 0xFF);
 
   UWORD *pAnim;
   if (falkonFace == 0)
@@ -524,10 +607,11 @@ void falkonFlying(void)
       blitCopyMask(s_pTiles, pAnim[i], YAnimRow, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // rysuje falkona
       waitFrames(s_pVp, 3, uwPosY + FALCON_HEIGHT);
     
-      blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE, 0xFF);
-      blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE, 0xFF);
-      blitCopyMask(s_pTiles, 0, YAnimRow, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-    
+      
+  }
+  if (robboMsgCtrl == 1){
+    robboMsgCtrl = 0;
+    robboScrollDown();
   }
 }
 
@@ -615,10 +699,12 @@ void stateGameCreate(void)
   s_pTilesMask = bitmapCreateFromFile("data/tileset_mask.bm", 0); // z pliku tileset_mask.bm, nie lokuj bitmapy w pami�ci FAST
   s_pBg = bitmapCreateFromFile("data/tlo1.bm", 0);                // fragmenty tla do podstawiania po ruchu
   s_pHUD = bitmapCreateFromFile("data/HUD.bm", 0);
+  s_pRobbo = bitmapCreateFromFile("data/falkon_robbo.bm", 0);
+
   s_pFalconBg = bitmapCreate(48, 32, 5, BMF_INTERLEAVED);
 
   s_pFont = fontCreate("data/topaz.fnt");
-  s_pBmText = fontCreateTextBitMap(200, s_pFont->uwHeight); // bitmapa robocza długa na 200px, wysoka na jedną linię tekstu
+  s_pBmText = fontCreateTextBitMap(300, s_pFont->uwHeight); // bitmapa robocza długa na 200px, wysoka na jedną linię tekstu
 
   // proste wy�wietlanie bitmapy na viewporcie
   s_pVpManager = simpleBufferCreate(0,
