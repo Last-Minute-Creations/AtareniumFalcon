@@ -184,14 +184,16 @@ void drawTiles(void)
       falkony = y;
       krawedzx = x;
       krawedzy = y;
-      if (falkonFace == 0)
-      {
-        blitCopyMask(s_pTiles, 128, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-      }
-      else if (falkonFace == 32)
-      {
-        blitCopyMask(s_pTiles, 160, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-      }
+      uwPosX = falkonx * 32;
+      uwPosY = falkony * 32;
+      //if (falkonFace == 0)
+      //{
+      //  blitCopyMask(s_pTiles, 128, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+      //}
+      //else if (falkonFace == 32)
+      //{
+      //  blitCopyMask(s_pTiles, 160, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+      //}
     }
 
     ++x;
