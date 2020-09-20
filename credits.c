@@ -131,7 +131,7 @@ void stateCreditsLoop(void)
 
   case STATE_LMC_WAIT:
     ++waitTime;
-    if (waitTime == 100)
+    if (waitTime == 200)
     {
       waitTime = 0;
       s_eState = STATE_LMC_FADE_OUT;
@@ -172,7 +172,7 @@ void stateCreditsLoop(void)
 
   case STATE_ACE_WAIT:
     ++waitTime;
-    if (waitTime == 100)
+    if (waitTime == 200)
     {
       s_eState = STATE_ACE_FADE_OUT;
     }

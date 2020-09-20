@@ -67,7 +67,7 @@ const char *s_pLines[INTRO_LINE_COUNT] = {
     "Atari Falcon running on highly efficient ",
     "eco pea-coal. It is also equipped with",
     "external automated arm.",
-    "This is prototype experimental. Now GO!",
+    "This is experimental prototype. Now GO!",
     "One more thing Captain... While you traverse",
     "enemy territory try to collect as many",
     "capacitors as you can so the Amigans can't",

@@ -64,14 +64,19 @@ BYTE falkonFace = 0; // kierunek dziobem
 UWORD pAnimR[] = {0, 32, 64, 96, 128, 96, 64, 32, 0, 32, 64, 96, 128, 96, 64, 32};
 UWORD pAnimL[] = {128, 96, 64, 32, 0, 32, 64, 96, 128, 96, 64, 32, 0, 32, 64, 96};
 
+UWORD uwPosX = 0;
+UWORD uwPosY = 0;
+
 BYTE stoneHit = 0;
 BYTE frameHit = 0;
 
-CONST BYTE startingCoal = 1;
+CONST BYTE startingCoal = 48;
+
+BYTE falkonIdle = 0;
 
 BYTE coal = startingCoal;
 BYTE capacitors = 0;
-BYTE level = 1;
+BYTE level = 4;
 BYTE robboMsgNr = 0;
 BYTE robboMsgCtrl = 0;
 
@@ -374,7 +379,7 @@ void portalAnim(void)
     {
       for (BYTE k = 0; k < 4; ++k)
       {
-        waitFrames(s_pVp, 2, uwPosY + FALCON_HEIGHT);
+        waitFrames(s_pVp, 1, uwPosY + FALCON_HEIGHT);
       }
       blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE, 0xFF);
       blitCopyMask(s_pTiles, i * 32, 128, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
@@ -386,7 +391,7 @@ void portalAnim(void)
     {
       for (BYTE k = 0; k < 4; ++k)
       {
-        waitFrames(s_pVp, 2, uwPosY + FALCON_HEIGHT);
+        waitFrames(s_pVp, 1, uwPosY + FALCON_HEIGHT);
       }
       blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE, 0xFF);
       blitCopyMask(s_pTiles, i * 32, 160, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
@@ -394,25 +399,24 @@ void portalAnim(void)
   }
 }
 
-void robboScrollUp(void) {
+void robboScrollUp(void)
+{
   {
-  blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 248, 320, 8, MINTERM_COOKIE, 0xFF);
-  waitFrames(s_pVp, 3, 0);
-  blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 240, 320, 16, MINTERM_COOKIE, 0xFF);
-  waitFrames(s_pVp, 3, 0);
-  blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 232, 320, 24, MINTERM_COOKIE, 0xFF);
-  waitFrames(s_pVp, 3, 0);
-  blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 224, 320, 32, MINTERM_COOKIE, 0xFF);
+    blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 248, 320, 8, MINTERM_COOKIE, 0xFF);
+    waitFrames(s_pVp, 3, 0);
+    blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 240, 320, 16, MINTERM_COOKIE, 0xFF);
+    waitFrames(s_pVp, 3, 0);
+    blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 232, 320, 24, MINTERM_COOKIE, 0xFF);
+    waitFrames(s_pVp, 3, 0);
+    blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 224, 320, 32, MINTERM_COOKIE, 0xFF);
 
-  
-  
-  // waitFrames(s_pVp, 3, 0);
+    // waitFrames(s_pVp, 3, 0);
   }
 }
 
-void robboScrollDown(void) {
-   
-  
+void robboScrollDown(void)
+{
+
   blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320, 8, MINTERM_COOKIE, 0xFF);
   blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 232, 320, 24, MINTERM_COOKIE, 0xFF);
   waitFrames(s_pVp, 3, 0);
@@ -427,49 +431,49 @@ void robboScrollDown(void) {
   blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320, 32, MINTERM_COOKIE, 0xFF);
 }
 
-void robboSays(void){
-  switch (robboMsgNr){
-    case 0:
+void robboSays(void)
+{
+  switch (robboMsgNr)
+  {
+  case 0:
     sprintf(szRobboMsg, "Keep an eye on your coal supplies.");
     break;
-    case 1:
+  case 1:
     sprintf(szRobboMsg, "Follow the Atari portal.");
     break;
-    case 2:
+  case 2:
     sprintf(szRobboMsg, "Don't waste our coal hitting the meteorites.");
     break;
-    case 3:
+  case 3:
     sprintf(szRobboMsg, "Try to steal some red and blue capacitors.");
     break;
-    case 4:
+  case 4:
     sprintf(szRobboMsg, "Infiltrate the Amigans territory.");
     break;
-    case 5:
+  case 5:
     sprintf(szRobboMsg, "Minister Renton is counting on you, Sir.");
     break;
-    case 6:
+  case 6:
     sprintf(szRobboMsg, "Please clean up here, I found some GermZ.");
     break;
-    case 7:
+  case 7:
     sprintf(szRobboMsg, "Take me home, this place sucks!");
     break;
-    case 8:
+  case 8:
     sprintf(szRobboMsg, "Find the coal warehouse and reclaim it.");
     break;
-    case 9:
+  case 9:
     sprintf(szRobboMsg, "We're close, I feel it in my DSP.");
-    break; 
-    case 10:
+    break;
+  case 10:
     sprintf(szRobboMsg, "Well done! Now collect the coal and GTFO !!!");
-    break; 
-    
+    break;
   }
   fontFillTextBitMap(s_pFont, s_pBmText, szRobbo1stLine);
-  fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText,  8, 230, 23, FONT_COOKIE);
+  fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 8, 230, 23, FONT_COOKIE);
   fontFillTextBitMap(s_pFont, s_pBmText, szRobboMsg);
-  fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText,  8, 240, 23, FONT_COOKIE);
+  fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 8, 240, 23, FONT_COOKIE);
 }
-
 
 void coalAndCollect(void)
 {
@@ -541,14 +545,121 @@ void coalAndCollect(void)
   coalDecrementAndPrintOnHUD();
 }
 
+void falkonHittingStone(void)
+{
+  UWORD HitControl = 0;
+  UWORD YAnimRow = 0;
+  uwPosX = falkonx * 32;
+  uwPosY = falkony * 32;
+
+  blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE, 0xFF);
+  waitFrames(s_pVp, 3, uwPosY + FALCON_HEIGHT);
+  blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE, 0xFF);
+
+  UWORD *pAnim;
+
+  for (BYTE i = 0; i < ANIM_FRAME_COUNT; ++i)
+  {
+    if (falkonFace == 0)
+    {
+      pAnim = pAnimR;
+      YAnimRow = 64;
+    }
+    else if (falkonFace == 32)
+    {
+      pAnim = pAnimL;
+      YAnimRow = 96;
+    }
+
+    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE, 0xFF); // rysuje tlo ze zmeinnej
+    switch (kierunek)
+    {
+    case 1:
+
+      if (HitControl == 0)
+      {
+        ++uwPosX;
+        HitControl = 2;
+      }
+      else if (HitControl == 1)
+      {
+        --uwPosX;
+        HitControl = 0;
+      }
+      else if (HitControl == 2)
+      {
+        HitControl = 1;
+      }
+      break;
+
+    case 2:
+
+      if (HitControl == 0)
+      {
+        ++uwPosX;
+        HitControl = 2;
+      }
+      else if (HitControl == 1)
+      {
+        --uwPosX;
+        HitControl = 0;
+      }
+      else if (HitControl == 2)
+      {
+        HitControl = 1;
+      }
+      break;
+
+    case 3:
+
+      if (HitControl == 0)
+      {
+        ++uwPosY;
+        HitControl = 2;
+      }
+      else if (HitControl == 1)
+      {
+        --uwPosY;
+        HitControl = 0;
+      }
+      else if (HitControl == 2)
+      {
+        HitControl = 1;
+      }
+      break;
+
+    case 4:
+      if (HitControl == 0)
+      {
+        ++uwPosY;
+        HitControl = 2;
+      }
+      else if (HitControl == 1)
+      {
+        --uwPosY;
+        HitControl = 0;
+      }
+      else if (HitControl == 2)
+      {
+        HitControl = 1;
+      }
+      break;
+    }
+
+    blitCopy(s_pVpManager->pBack, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE, 0xFF);                            // fragment tla wrzuca do zmiennej
+    blitCopyMask(s_pTiles, pAnim[i], YAnimRow, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // rysuje falkona
+    waitFrames(s_pVp, 3, uwPosY + FALCON_HEIGHT);
+  }
+}
+
 void falkonFlying(void)
 {
   UWORD YAnimRow = 0;
-  UWORD uwPosX = falkonx * 32;
-  UWORD uwPosY = falkony * 32;
-   blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE, 0xFF);
-   waitFrames(s_pVp, 3, uwPosY + FALCON_HEIGHT);
-   blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE, 0xFF);
+  uwPosX = falkonx * 32;
+  uwPosY = falkony * 32;
+  blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE, 0xFF);
+  waitFrames(s_pVp, 3, uwPosY + FALCON_HEIGHT);
+  blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE, 0xFF);
 
   UWORD *pAnim;
   if (falkonFace == 0)
@@ -601,15 +712,14 @@ void falkonFlying(void)
         break;
       }
       break;
-    }  
-      
-      blitCopy(s_pVpManager->pBack, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE, 0xFF);                            // fragment tla wrzuca do zmiennej
-      blitCopyMask(s_pTiles, pAnim[i], YAnimRow, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // rysuje falkona
-      waitFrames(s_pVp, 3, uwPosY + FALCON_HEIGHT);
-    
-      
+    }
+
+    blitCopy(s_pVpManager->pBack, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE, 0xFF);                            // fragment tla wrzuca do zmiennej
+    blitCopyMask(s_pTiles, pAnim[i], YAnimRow, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // rysuje falkona
+    waitFrames(s_pVp, 3, uwPosY + FALCON_HEIGHT);
   }
-  if (robboMsgCtrl == 1){
+  if (robboMsgCtrl == 1)
+  {
     robboMsgCtrl = 0;
     robboScrollDown();
   }
@@ -621,12 +731,30 @@ void falconMove(void)
   // jesli byl kamien to brak ruchu
   if (stoneHit == 1)
   {
+    switch (kierunek)
+    {
+    case 1:
+      krawedzx = krawedzx - 1;
+      break;
+    case 2:
+      krawedzx = krawedzx + 1;
+      break;
+    case 3:
+      krawedzy = krawedzy + 1;
+      break;
+    case 4:
+      krawedzy = krawedzy - 1;
+      break;
+    }
+
+    falkonHittingStone();
     stoneHit = 0;
     return;
   }
 
   if (frameHit == 1)
   {
+    falkonHittingStone();
     frameHit = 0;
     return;
   }
@@ -754,8 +882,26 @@ void stateGameCreate(void)
 void stateGameLoop(void)
 {
   // Here goes code done each game frame
+  ++falkonIdle;
+  BYTE animkaOdDupyStronyBoGrafikNiePoprawil = 0;
+  if (falkonFace == 32){
+      animkaOdDupyStronyBoGrafikNiePoprawil = 96;   
+    }
+  
+  if (falkonIdle == 10)
+  {
+    blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE, 0xFF);
+    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE, 0xFF);
+    blitCopyMask(s_pTiles, 0 + animkaOdDupyStronyBoGrafikNiePoprawil, 64 + falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+  }
+  else if (falkonIdle == 20)
+  {
+    blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE, 0xFF);
+    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE, 0xFF);
+    blitCopyMask(s_pTiles, 32 + animkaOdDupyStronyBoGrafikNiePoprawil, 64 + falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+    falkonIdle = 0;
+  }
 
-  //--------------------------------------------------------------- gdzie� w loop:
   joyProcess();
   keyProcess();
 
@@ -763,10 +909,12 @@ void stateGameLoop(void)
   if (joyUse(JOY1_RIGHT) || keyUse(KEY_D) || keyUse(KEY_RIGHT))
   {
     kierunek = 1;
+    falkonFace = 0;
   }
   else if (joyUse(JOY1_LEFT) || keyUse(KEY_A) || keyUse(KEY_LEFT))
   {
     kierunek = 2;
+    falkonFace = 32;
   }
   else if (joyUse(JOY1_UP) || keyUse(KEY_W) || keyUse(KEY_UP))
   {
