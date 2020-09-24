@@ -16,6 +16,7 @@ static tSimpleBufferManager *s_pVpManager;
 
 extern tState g_sStateIntro;
 extern tStateManager *g_pStateMachineGame;
+extern tState g_sStateCredits;
 
 static tFont *s_pFont;
 static tTextBitMap *s_pBmText;
@@ -184,7 +185,7 @@ void stateWungielCreate(void)
 void stateWungielLoop(void)
 {
 
-    stateChange(g_pStateMachineGame, &g_sStateIntro);
+    stateChange(g_pStateMachineGame, &g_sStateCredits);
     return;
 
 }

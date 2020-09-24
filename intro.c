@@ -24,7 +24,7 @@ static tView *s_pView;
 static tVPort *s_pVp;
 static tSimpleBufferManager *s_pVpManager;
 
-extern tState g_sStateCredits;
+extern tState g_sStateMenu;
 extern tStateManager *g_pStateMachineGame;
 
 static tFont *s_pFont;
@@ -180,7 +180,7 @@ void stateIntroCreate(void)
       page = 0;
       lineCount = 0;
       page2CleanUp = 0;
-      stateChange(g_pStateMachineGame, &g_sStateCredits);
+      stateChange(g_pStateMachineGame, &g_sStateMenu);
       return;
     }
 

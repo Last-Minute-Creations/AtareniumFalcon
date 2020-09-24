@@ -37,6 +37,7 @@ static tPtplayerSfx *s_pLMCsfx;
 
 extern tState g_sStateMenu;
 extern tStateManager *g_pStateMachineGame;
+extern tState g_sStateIntro;
 
 static tFont *s_pFont;
 static tTextBitMap *s_pBmText;
@@ -210,7 +211,7 @@ void stateCreditsLoop(void)
 
   if (joyUse(JOY1_FIRE) || keyUse(KEY_RETURN))
   {
-    stateChange(g_pStateMachineGame, &g_sStateMenu);
+    stateChange(g_pStateMachineGame, &g_sStateIntro);
     return;
   }
 
