@@ -70,13 +70,13 @@ UWORD uwPosY = 0;
 BYTE stoneHit = 0;
 BYTE frameHit = 0;
 
-CONST BYTE startingCoal = 48;
+CONST BYTE startingCoal = 10;
 
 BYTE falkonIdle = 0;
 
 BYTE coal = startingCoal;
 BYTE capacitors = 0;
-BYTE level = 4;
+BYTE level = 1;
 BYTE robboMsgNr = 0;
 BYTE robboMsgCtrl = 0;
 
@@ -89,6 +89,11 @@ void coalDecrementAndPrintOnHUD(void)
   sprintf(szMsg, "%d", coal);
   fontFillTextBitMap(s_pFont, s_pBmText, szMsg);
   fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 231, 5, FONT_COOKIE);
+  blitCopy(s_pHUD, 96, 0, s_pVpManager->pBack, 96, 224, 32, 32, MINTERM_COOKIE, 0xFF);
+    sprintf(szMsg2, "%d", capacitors);
+    fontFillTextBitMap(s_pFont, s_pBmText, szMsg2);
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 106, 231, 5, FONT_COOKIE);
+  
 }
 
 void waitFrames(tVPort *pVPort, UBYTE ubHowMany, UWORD uwPosY)
@@ -273,7 +278,7 @@ void nextLevel(void)
     bitmapDestroy(s_pBg);
     s_pBg = bitmapCreateFromFile("data/tlo6.bm", 0);
     break;
-  case 15: // ta ma byc ostatnia
+  case 16: // ta ma byc ostatnia
 
     robboMsgNr = 10;
     break;
@@ -383,7 +388,7 @@ void portalAnim(void)
       {
         waitFrames(s_pVp, 1, uwPosY + FALCON_HEIGHT);
       }
-      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE, 0xFF);
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE, 0xFF);
       blitCopyMask(s_pTiles, i * 32, 128, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
     }
   }
@@ -395,7 +400,7 @@ void portalAnim(void)
       {
         waitFrames(s_pVp, 1, uwPosY + FALCON_HEIGHT);
       }
-      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE, 0xFF);
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE, 0xFF);
       blitCopyMask(s_pTiles, i * 32, 160, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
     }
   }
@@ -438,10 +443,10 @@ void robboSays(void)
   switch (robboMsgNr)
   {
   case 0:
-    sprintf(szRobboMsg, "Keep an eye on your coal supplies.");
+    sprintf(szRobboMsg, "Follow the Atari portal.");
     break;
   case 1:
-    sprintf(szRobboMsg, "Follow the Atari portal.");
+    sprintf(szRobboMsg, "Keep an eye on your coal supplies.");
     break;
   case 2:
     sprintf(szRobboMsg, "Don't waste our coal hitting the meteorites.");
@@ -659,9 +664,9 @@ void falkonFlying(void)
   UWORD YAnimRow = 0;
   uwPosX = falkonx * 32;
   uwPosY = falkony * 32;
-  blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE, 0xFF);
+  blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE, 0xFF);
   waitFrames(s_pVp, 3, uwPosY + FALCON_HEIGHT);
-  blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE, 0xFF);
+  blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE, 0xFF);
 
   UWORD *pAnim;
   if (falkonFace == 0)
@@ -675,7 +680,7 @@ void falkonFlying(void)
 
   for (BYTE i = 0; i < ANIM_FRAME_COUNT; ++i)
   {
-    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE, 0xFF); // rysuje tlo ze zmeinnej
+    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE, 0xFF); // rysuje tlo ze zmeinnej
     switch (kierunek)
     {
     case 1:
@@ -716,7 +721,7 @@ void falkonFlying(void)
       break;
     }
 
-    blitCopy(s_pVpManager->pBack, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE, 0xFF);                            // fragment tla wrzuca do zmiennej
+    blitCopy(s_pVpManager->pBack, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE, 0xFF);                            // fragment tla wrzuca do zmiennej
     blitCopyMask(s_pTiles, pAnim[i], YAnimRow, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // rysuje falkona
     waitFrames(s_pVp, 3, uwPosY + FALCON_HEIGHT);
   }
@@ -966,7 +971,7 @@ void stateGameLoop(void)
 
   viewProcessManagers(s_pView); // obliczenia niezb�dne do poprawnego dzia�ania viewport�w
   copProcessBlocks();           // obliczenia niezb�dne do poprawnego dzia�ania coppera
-  vPortWaitForEnd(s_pVp);       // r�wnowa�ne amosowemu wait vbl
+  vPortWaitForPos(s_pVp, uwPosY);       // r�wnowa�ne amosowemu wait vbl
 }
 
 void stateGameDestroy(void)
