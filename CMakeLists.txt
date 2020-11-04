@@ -71,5 +71,17 @@ file(
 	${RES_DIR}/8.txt
 	${RES_DIR}/9.txt
 	${RES_DIR}/10.txt
+	${RES_DIR}/11.txt
+	${RES_DIR}/12.txt
+	${RES_DIR}/13.txt
+	${RES_DIR}/14.txt
+	${RES_DIR}/15.txt
+	${RES_DIR}/16.txt
+	${RES_DIR}/17.txt
+	${RES_DIR}/18.txt
+	${RES_DIR}/19.txt
+	${RES_DIR}/20.txt
+	${RES_DIR}/21.txt
+	${RES_DIR}/22.txt
 	DESTINATION ${DATA_DIR}
 )

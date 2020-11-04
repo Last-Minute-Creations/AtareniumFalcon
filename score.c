@@ -29,6 +29,8 @@ extern BYTE krawedzy;
 extern BYTE kierunek;
 extern BYTE falkonFace; // kierunek dziobem
 
+extern BYTE excesscoal;
+
 extern BYTE stoneHit;
 extern BYTE frameHit;
 
@@ -47,8 +49,8 @@ char szScore[80];
 void clearTiles();
 
 void vampirePage(void){
-  blitCopy(s_pVAM, 0, 0, s_pVpManager->pBack, 0, 0, 320, 128, MINTERM_COOKIE, 0xFF);
-  blitCopy(s_pVAM, 0, 128, s_pVpManager->pBack, 0, 128, 320, 128, MINTERM_COOKIE, 0xFF);
+  blitCopy(s_pVAM, 0, 0, s_pVpManager->pBack, 0, 0, 320, 128, MINTERM_COOKIE);
+  blitCopy(s_pVAM, 0, 128, s_pVpManager->pBack, 0, 128, 320, 128, MINTERM_COOKIE);
 }
 
 void cleanUp(void){
@@ -110,7 +112,7 @@ for(BYTE i = 0 ; i < 17 ; ++i){
     sprintf(szScore, "MISSION COMPLETE !");
     break;
     case 1:
-    sprintf(szScore, "");
+    sprintf(szScore, " ");
     break;
     case 2:
     sprintf(szScore, "The ATARI tribe can now plow their fields");
@@ -119,13 +121,13 @@ for(BYTE i = 0 ; i < 17 ; ++i){
     sprintf(szScore, "with peace. Now go get some rest.");
     break;
     case 4:
-    sprintf(szScore, "");
+    sprintf(szScore, " ");
     break;
     case 5:
-    sprintf(szScore, "You reclaimed %d tons of our coal.", coal);
+    sprintf(szScore, "You reclaimed %d tons of our coal.", excesscoal);
     break;
     case 6:
-    sprintf(szScore, "");
+    sprintf(szScore, " ");
     break;
     case 7:
     sprintf(szScore, "%d Amigas died with acid leaking from", capacitors);
@@ -134,7 +136,7 @@ for(BYTE i = 0 ; i < 17 ; ++i){
     sprintf(szScore, "their old capacitors.");
     break;
     case 9:
-    sprintf(szScore, "");
+    sprintf(szScore, " ");
     break;
     case 10:
     sprintf(szScore, "%d tons of coal x 100 = %d pts.", coal, coal * 100);
@@ -146,7 +148,7 @@ for(BYTE i = 0 ; i < 17 ; ++i){
     sprintf(szScore, "Total score = %d pts.", (coal * 100) + (capacitors * 500));
     break;
     case 13:
-    sprintf(szScore, "");
+    sprintf(szScore, " ");
     break;
     case 14:
     sprintf(szScore, "... But Sir, I fear all we have done");

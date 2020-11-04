@@ -42,6 +42,7 @@ extern tStateManager *g_pStateMachineGame;
 
 char szMsg[50];  // do wyswietlania wegla na HUD
 char szMsg2[50]; // do wyswietlania kondkow na HUD
+char szMsg3[50];
 char levelFilePath[20];
 
 char szRobboMsg[80];
@@ -76,32 +77,38 @@ BYTE falkonIdle = 0;
 
 BYTE coal = startingCoal;
 BYTE capacitors = 0;
-BYTE level = 1;
+BYTE excesscoal = 0;
+BYTE level = 21;
 BYTE robboMsgNr = 0;
 BYTE robboMsgCtrl = 0;
-
-void cleanUp();
-
-void coalDecrementAndPrintOnHUD(void)
-{
-  coal = coal - 1;
-  blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 32, 32, MINTERM_COOKIE, 0xFF);
-  sprintf(szMsg, "%d", coal);
-  fontFillTextBitMap(s_pFont, s_pBmText, szMsg);
-  fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 231, 5, FONT_COOKIE);
-  blitCopy(s_pHUD, 96, 0, s_pVpManager->pBack, 96, 224, 32, 32, MINTERM_COOKIE, 0xFF);
-    sprintf(szMsg2, "%d", capacitors);
-    fontFillTextBitMap(s_pFont, s_pBmText, szMsg2);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 106, 231, 5, FONT_COOKIE);
-  
-}
 
 void waitFrames(tVPort *pVPort, UBYTE ubHowMany, UWORD uwPosY)
 {
   for (UBYTE i = 0; i < ubHowMany; ++i)
   {
-    vPortWaitForPos(pVPort, uwPosY);
+    vPortWaitForPos(pVPort, uwPosY,0);
   }
+}
+
+void cleanUp();
+
+void printOnHUD(void)
+{
+  
+  blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 32, 32, MINTERM_COOKIE);
+  sprintf(szMsg, "%d", coal);
+  fontFillTextBitMap(s_pFont, s_pBmText, szMsg);
+  fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 231, 5, FONT_COOKIE);
+  blitCopy(s_pHUD, 96, 0, s_pVpManager->pBack, 96, 224, 32, 32, MINTERM_COOKIE);
+    sprintf(szMsg2, "%d", capacitors);
+    fontFillTextBitMap(s_pFont, s_pBmText, szMsg2);
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 106, 231, 5, FONT_COOKIE);
+  blitCopy(s_pHUD, 160, 0, s_pVpManager->pBack, 160, 224, 32, 32, MINTERM_COOKIE);
+    sprintf(szMsg3, "%d", excesscoal);
+    fontFillTextBitMap(s_pFont, s_pBmText, szMsg3);
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 170, 231, 5, FONT_COOKIE);
+    waitFrames(s_pVp, 10, uwPosY + FALCON_HEIGHT);
+  
 }
 
 void gameOnResume(void)
@@ -137,7 +144,7 @@ void drawTiles(void)
     else if (ubZmienna == 0x33)
     {
       kamyki[x][y] = 3;
-      ubStoneImg = ubRandMinMax(0, 2);
+      ubStoneImg = ulRandMinMax(0, 2);
       blitCopyMask(s_pTiles, ubStoneImg * 32, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
     }
     else if (ubZmienna == 0x34)
@@ -223,19 +230,28 @@ void clearTiles(void)
   }
 }
 
-void printOnHUD(void)
-{
-  sprintf(szMsg, "%d", coal);
-  fontFillTextBitMap(s_pFont, s_pBmText, szMsg);
-  fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 231, 5, FONT_COOKIE);
-
-  sprintf(szMsg2, "%d", capacitors);
-  fontFillTextBitMap(s_pFont, s_pBmText, szMsg2);
-  fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 106, 231, 5, FONT_COOKIE);
+void levelScore(void){
+  BYTE thisLevelExcessCoal = coal - 1;
+  for (UBYTE i = 0; i < thisLevelExcessCoal; ++i)
+  {
+    --coal;
+    ++excesscoal;
+    blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 32, 32, MINTERM_COOKIE);
+    sprintf(szMsg, "%d", coal);
+    fontFillTextBitMap(s_pFont, s_pBmText, szMsg);
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 231, 5, FONT_COOKIE);
+    blitCopy(s_pHUD, 160, 0, s_pVpManager->pBack, 160, 224, 32, 32, MINTERM_COOKIE);
+    sprintf(szMsg3, "%d", excesscoal);
+    fontFillTextBitMap(s_pFont, s_pBmText, szMsg3);
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 170, 231, 5, FONT_COOKIE);
+    waitFrames(s_pVp, 10, uwPosY + FALCON_HEIGHT);
+  }
 }
 
 void nextLevel(void)
 {
+  coal = 1;
+
   switch (level)
   {
   case 2:
@@ -278,15 +294,15 @@ void nextLevel(void)
     bitmapDestroy(s_pBg);
     s_pBg = bitmapCreateFromFile("data/tlo6.bm", 0);
     break;
-  case 16: // ta ma byc ostatnia
+  case 22: // ta ma byc ostatnia
 
     robboMsgNr = 10;
     break;
   }
   clearTiles();
-  blitCopy(s_pBg, 0, 0, s_pVpManager->pBack, 0, 0, 320, 128, MINTERM_COPY, 0xFF);
-  blitCopy(s_pBg, 0, 128, s_pVpManager->pBack, 0, 128, 320, 128, MINTERM_COPY, 0xFF);
-  blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320, 32, MINTERM_COPY, 0xFF);
+  blitCopy(s_pBg, 0, 0, s_pVpManager->pBack, 0, 0, 320, 128, MINTERM_COPY);
+  blitCopy(s_pBg, 0, 128, s_pVpManager->pBack, 0, 128, 320, 128, MINTERM_COPY);
+  blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320, 32, MINTERM_COPY);
   printOnHUD();
   drawTiles();
 }
@@ -388,7 +404,7 @@ void portalAnim(void)
       {
         waitFrames(s_pVp, 1, uwPosY + FALCON_HEIGHT);
       }
-      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE, 0xFF);
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
       blitCopyMask(s_pTiles, i * 32, 128, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
     }
   }
@@ -400,7 +416,7 @@ void portalAnim(void)
       {
         waitFrames(s_pVp, 1, uwPosY + FALCON_HEIGHT);
       }
-      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE, 0xFF);
+      blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
       blitCopyMask(s_pTiles, i * 32, 160, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
     }
   }
@@ -409,13 +425,13 @@ void portalAnim(void)
 void robboScrollUp(void)
 {
   {
-    blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 248, 320, 8, MINTERM_COOKIE, 0xFF);
+    blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 248, 320, 8, MINTERM_COOKIE);
     waitFrames(s_pVp, 3, 0);
-    blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 240, 320, 16, MINTERM_COOKIE, 0xFF);
+    blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 240, 320, 16, MINTERM_COOKIE);
     waitFrames(s_pVp, 3, 0);
-    blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 232, 320, 24, MINTERM_COOKIE, 0xFF);
+    blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 232, 320, 24, MINTERM_COOKIE);
     waitFrames(s_pVp, 3, 0);
-    blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 224, 320, 32, MINTERM_COOKIE, 0xFF);
+    blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 224, 320, 32, MINTERM_COOKIE);
 
     // waitFrames(s_pVp, 3, 0);
   }
@@ -424,18 +440,18 @@ void robboScrollUp(void)
 void robboScrollDown(void)
 {
 
-  blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320, 8, MINTERM_COOKIE, 0xFF);
-  blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 232, 320, 24, MINTERM_COOKIE, 0xFF);
+  blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320, 8, MINTERM_COOKIE);
+  blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 232, 320, 24, MINTERM_COOKIE);
   waitFrames(s_pVp, 3, 0);
-  blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320, 16, MINTERM_COOKIE, 0xFF);
-  blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 240, 320, 16, MINTERM_COOKIE, 0xFF);
+  blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320, 16, MINTERM_COOKIE);
+  blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 240, 320, 16, MINTERM_COOKIE);
   waitFrames(s_pVp, 3, 0);
-  blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320, 32, MINTERM_COOKIE, 0xFF);
-  blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 248, 320, 8, MINTERM_COOKIE, 0xFF);
+  blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320, 32, MINTERM_COOKIE);
+  blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 248, 320, 8, MINTERM_COOKIE);
   waitFrames(s_pVp, 3, 0);
-  blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320, 32, MINTERM_COOKIE, 0xFF);
+  blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320, 32, MINTERM_COOKIE);
   waitFrames(s_pVp, 3, 0);
-  blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320, 32, MINTERM_COOKIE, 0xFF);
+  blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320, 32, MINTERM_COOKIE);
 }
 
 void robboSays(void)
@@ -495,6 +511,8 @@ void coalAndCollect(void)
   BYTE what = kamyki[pickSthX][pickSthY];
   kamyki[pickSthX][pickSthY] = 0;
 
+  --coal;
+
   switch (what)
   {
   case 4:
@@ -515,7 +533,7 @@ void coalAndCollect(void)
 
   case 8:
     capacitors = capacitors + 2;
-    blitCopy(s_pHUD, 96, 0, s_pVpManager->pBack, 96, 224, 32, 32, MINTERM_COOKIE, 0xFF);
+    blitCopy(s_pHUD, 96, 0, s_pVpManager->pBack, 96, 224, 32, 32, MINTERM_COOKIE);
     sprintf(szMsg2, "%d", capacitors);
     fontFillTextBitMap(s_pFont, s_pBmText, szMsg2);
     fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 106, 231, 5, FONT_COOKIE);
@@ -523,16 +541,18 @@ void coalAndCollect(void)
 
   case 9:
     capacitors = capacitors + 4;
-    blitCopy(s_pHUD, 96, 0, s_pVpManager->pBack, 96, 224, 32, 32, MINTERM_COOKIE, 0xFF);
+    blitCopy(s_pHUD, 96, 0, s_pVpManager->pBack, 96, 224, 32, 32, MINTERM_COOKIE);
     sprintf(szMsg2, "%d", capacitors);
     fontFillTextBitMap(s_pFont, s_pBmText, szMsg2);
     fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 106, 231, 5, FONT_COOKIE);
     break;
 
   case 10:
+    levelScore();
     portalAnim();
+    
     ++level;
-    if (level == 16)
+    if (level == 23)
     {
       ptplayerStop();
       stateChange(g_pStateMachineGame, &g_sStateScore);
@@ -543,13 +563,12 @@ void coalAndCollect(void)
 
   case 11:
     robboMsgCtrl = 1;
-    coalDecrementAndPrintOnHUD();
     robboScrollUp();
     robboSays();
     return;
     break;
   }
-  coalDecrementAndPrintOnHUD();
+  printOnHUD();
 }
 
 void falkonHittingStone(void)
@@ -559,9 +578,9 @@ void falkonHittingStone(void)
   uwPosX = falkonx * 32;
   uwPosY = falkony * 32;
 
-  blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE, 0xFF);
+  blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE);
   waitFrames(s_pVp, 3, uwPosY + FALCON_HEIGHT);
-  blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE, 0xFF);
+  blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE);
 
   UWORD *pAnim;
 
@@ -578,7 +597,7 @@ void falkonHittingStone(void)
       YAnimRow = 96;
     }
 
-    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE, 0xFF); // rysuje tlo ze zmeinnej
+    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE); // rysuje tlo ze zmeinnej
     switch (kierunek)
     {
     case 1:
@@ -653,7 +672,7 @@ void falkonHittingStone(void)
       break;
     }
 
-    blitCopy(s_pVpManager->pBack, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE, 0xFF);                            // fragment tla wrzuca do zmiennej
+    blitCopy(s_pVpManager->pBack, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE);                            // fragment tla wrzuca do zmiennej
     blitCopyMask(s_pTiles, pAnim[i], YAnimRow, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // rysuje falkona
     waitFrames(s_pVp, 3, uwPosY + FALCON_HEIGHT);
   }
@@ -664,9 +683,9 @@ void falkonFlying(void)
   UWORD YAnimRow = 0;
   uwPosX = falkonx * 32;
   uwPosY = falkony * 32;
-  blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE, 0xFF);
+  blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
   waitFrames(s_pVp, 3, uwPosY + FALCON_HEIGHT);
-  blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE, 0xFF);
+  blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
 
   UWORD *pAnim;
   if (falkonFace == 0)
@@ -680,7 +699,7 @@ void falkonFlying(void)
 
   for (BYTE i = 0; i < ANIM_FRAME_COUNT; ++i)
   {
-    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE, 0xFF); // rysuje tlo ze zmeinnej
+    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE); // rysuje tlo ze zmeinnej
     switch (kierunek)
     {
     case 1:
@@ -721,7 +740,7 @@ void falkonFlying(void)
       break;
     }
 
-    blitCopy(s_pVpManager->pBack, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE, 0xFF);                            // fragment tla wrzuca do zmiennej
+    blitCopy(s_pVpManager->pBack, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);                            // fragment tla wrzuca do zmiennej
     blitCopyMask(s_pTiles, pAnim[i], YAnimRow, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // rysuje falkona
     waitFrames(s_pVp, 3, uwPosY + FALCON_HEIGHT);
   }
@@ -853,7 +872,7 @@ void stateGameCreate(void)
 
   // po zrobieniu simpleBufferCreate()
   bitmapLoadFromFile(s_pVpManager->pBack, "data/tlo1.bm", 0, 0); // wczytaj zawarto�� bg1.bm bezpo�rednio do bitmapy bufora ekranu, zaczynaj�c od pozycji 0,0
-  blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320, 32, MINTERM_COOKIE, 0xFF);
+  blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320, 32, MINTERM_COOKIE);
   joyOpen(); // b�dziemy u�ywa� d�oja w grze
   keyCreate();
   // na koniec create:
@@ -862,10 +881,10 @@ void stateGameCreate(void)
 
   // Draw grid
   //for(UBYTE i = 0; i < 10; ++i) {
-  //  blitLine(s_pBg, i * 32, 0, i*32, 256, 5, 0xFFFF, 0);
+  //  blitLine(s_pBg, i * 32, 0, i*32, 256, 5, FF, 0);
   //}
   //for(UBYTE i = 0; i < 8; ++i) {
-  //  blitLine(s_pBg, 0, i * 32, 320, i * 32, 5, 0xFFFF, 0);
+  //  blitLine(s_pBg, 0, i * 32, 320, i * 32, 5, FF, 0);
   //}
   //blitCopyAligned(s_pBg, 0, 0, s_pVpManager->pBack, 0, 0, 320, 256 / 2);
   //blitCopyAligned(s_pBg, 0, 256 / 2, s_pVpManager->pBack, 0, 256 / 2, 320, 256 / 2 - 32);
@@ -875,8 +894,8 @@ void stateGameCreate(void)
   viewProcessManagers(s_pView);
   viewLoad(s_pView);
 
-  blitCopy(s_pBg, 0, 0, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE, 0xFF);
-  blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, 0, 0, 33, 32, MINTERM_COOKIE, 0xFF);
+  blitCopy(s_pBg, 0, 0, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE);
+  blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, 0, 0, 33, 32, MINTERM_COOKIE);
 
   // narysujmy falkona
   // blitCopyMask(s_pTiles, 128, 32, s_pVpManager->pBack, falkonx, falkony, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
@@ -893,50 +912,50 @@ void stateGameLoop(void)
   
   if (falkonIdle == 10)
   {
-    blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE, 0xFF);
-    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE, 0xFF);
+    blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
+    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
     blitCopyMask(s_pTiles, 0, 192 + falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
   }
   else if (falkonIdle == 20)
   {
-    blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE, 0xFF);
-    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE, 0xFF);
+    blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
+    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
     blitCopyMask(s_pTiles, 32, 192 + falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
   }
   else if (falkonIdle == 30)
   {
-    blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE, 0xFF);
-    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE, 0xFF);
+    blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
+    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
     blitCopyMask(s_pTiles, 64, 192 + falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
   }
   else if (falkonIdle == 40)
   {
-    blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE, 0xFF);
-    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE, 0xFF);
+    blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
+    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
     blitCopyMask(s_pTiles, 96, 192 + falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
   }
   else if (falkonIdle == 50)
   {
-    blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE, 0xFF);
-    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE, 0xFF);
+    blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
+    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
     blitCopyMask(s_pTiles, 128, 192 + falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
   }
   else if (falkonIdle == 60)
   {
-    blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE, 0xFF);
-    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE, 0xFF);
+    blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
+    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
     blitCopyMask(s_pTiles, 96, 192 + falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
   }
   else if (falkonIdle == 70)
   {
-    blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE, 0xFF);
-    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE, 0xFF);
+    blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
+    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
     blitCopyMask(s_pTiles, 64, 192 + falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
   }
   else if (falkonIdle == 80)
   {
-    blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE, 0xFF);
-    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE, 0xFF);
+    blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
+    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
     blitCopyMask(s_pTiles, 32, 192 + falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
     falkonIdle = 0;
   }
@@ -984,12 +1003,12 @@ void stateGameLoop(void)
     if (musicPlay == 1)
     {
       musicPlay = 0;
-      mt_mastervol(0);
+      ptplayerSetMasterVolume(0);
     }
     else if (musicPlay == 0)
     {
       musicPlay = 1;
-      mt_mastervol(64);
+      ptplayerSetMasterVolume(64);
     }
   }
 
@@ -1005,7 +1024,7 @@ void stateGameLoop(void)
 
   viewProcessManagers(s_pView); // obliczenia niezb�dne do poprawnego dzia�ania viewport�w
   copProcessBlocks();           // obliczenia niezb�dne do poprawnego dzia�ania coppera
-  vPortWaitForPos(s_pVp, uwPosY);       // r�wnowa�ne amosowemu wait vbl
+  vPortWaitForPos(s_pVp, uwPosY, 0);       // r�wnowa�ne amosowemu wait vbl
 }
 
 void stateGameDestroy(void)
