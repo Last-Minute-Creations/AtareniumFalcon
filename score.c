@@ -36,6 +36,7 @@ extern BYTE frameHit;
 
 extern BYTE level;
 extern BYTE robboMsgNr;
+extern BYTE robboMsgCount;
 
 
 static tFont *s_pFont;
@@ -67,6 +68,8 @@ coal = startingCoal;
 capacitors = 0;
 level = 1;
 robboMsgNr = 0;
+robboMsgCount = 0;
+excesscoal = 0;
 }
 
 void stateScoreCreate(void){
@@ -139,13 +142,13 @@ for(BYTE i = 0 ; i < 17 ; ++i){
     sprintf(szScore, " ");
     break;
     case 10:
-    sprintf(szScore, "%d tons of coal x 100 = %d pts.", coal, coal * 100);
+    sprintf(szScore, "%d tons of coal x 100 = %d pts.", excesscoal, excesscoal * 100);
     break;
     case 11:
     sprintf(szScore, "%d sets of capacitors x 500 = %d pts.", capacitors, capacitors * 500);
     break;
     case 12:
-    sprintf(szScore, "Total score = %d pts.", (coal * 100) + (capacitors * 500));
+    sprintf(szScore, "Total score = %d pts.", (excesscoal * 100) + (capacitors * 500));
     break;
     case 13:
     sprintf(szScore, " ");

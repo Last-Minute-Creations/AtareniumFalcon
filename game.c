@@ -43,6 +43,7 @@ extern tStateManager *g_pStateMachineGame;
 char szMsg[50];  // do wyswietlania wegla na HUD
 char szMsg2[50]; // do wyswietlania kondkow na HUD
 char szMsg3[50];
+char szMsg4[50];
 char levelFilePath[20];
 
 char szRobboMsg[80];
@@ -81,6 +82,8 @@ BYTE excesscoal = 0;
 BYTE level = 21;
 BYTE robboMsgNr = 0;
 BYTE robboMsgCtrl = 0;
+BYTE robboMsgCount = 0;
+BYTE HUDfontColor = 23;
 
 void waitFrames(tVPort *pVPort, UBYTE ubHowMany, UWORD uwPosY)
 {
@@ -96,18 +99,23 @@ void printOnHUD(void)
 {
   
   blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 32, 32, MINTERM_COOKIE);
-  sprintf(szMsg, "%d", coal);
-  fontFillTextBitMap(s_pFont, s_pBmText, szMsg);
-  fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 231, 5, FONT_COOKIE);
-  blitCopy(s_pHUD, 96, 0, s_pVpManager->pBack, 96, 224, 32, 32, MINTERM_COOKIE);
+    sprintf(szMsg, "%d", coal);
+    fontFillTextBitMap(s_pFont, s_pBmText, szMsg);
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 232, HUDfontColor, FONT_COOKIE);
+  blitCopy(s_pHUD, 188, 0, s_pVpManager->pBack, 188, 224, 32, 32, MINTERM_COOKIE);
     sprintf(szMsg2, "%d", capacitors);
     fontFillTextBitMap(s_pFont, s_pBmText, szMsg2);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 106, 231, 5, FONT_COOKIE);
-  blitCopy(s_pHUD, 160, 0, s_pVpManager->pBack, 160, 224, 32, 32, MINTERM_COOKIE);
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 190, 236, HUDfontColor, FONT_COOKIE);
+  blitCopy(s_pHUD, 128, 0, s_pVpManager->pBack, 128, 224, 32, 32, MINTERM_COOKIE);
     sprintf(szMsg3, "%d", excesscoal);
     fontFillTextBitMap(s_pFont, s_pBmText, szMsg3);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 170, 231, 5, FONT_COOKIE);
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 130, 232, HUDfontColor, FONT_COOKIE);
     waitFrames(s_pVp, 10, uwPosY + FALCON_HEIGHT);
+  blitCopy(s_pHUD, 248, 0, s_pVpManager->pBack, 248, 224, 32, 32, MINTERM_COOKIE);
+    sprintf(szMsg4, "%d", robboMsgCount);
+    fontFillTextBitMap(s_pFont, s_pBmText, szMsg4);
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 250, 236, HUDfontColor, FONT_COOKIE);
+ 
   
 }
 
@@ -239,11 +247,11 @@ void levelScore(void){
     blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 32, 32, MINTERM_COOKIE);
     sprintf(szMsg, "%d", coal);
     fontFillTextBitMap(s_pFont, s_pBmText, szMsg);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 231, 5, FONT_COOKIE);
-    blitCopy(s_pHUD, 160, 0, s_pVpManager->pBack, 160, 224, 32, 32, MINTERM_COOKIE);
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 231, HUDfontColor, FONT_COOKIE);
+    blitCopy(s_pHUD, 128, 0, s_pVpManager->pBack, 128, 224, 32, 32, MINTERM_COOKIE);
     sprintf(szMsg3, "%d", excesscoal);
     fontFillTextBitMap(s_pFont, s_pBmText, szMsg3);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 170, 231, 5, FONT_COOKIE);
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 130, 232, HUDfontColor, FONT_COOKIE);
     waitFrames(s_pVp, 10, uwPosY + FALCON_HEIGHT);
   }
 }
@@ -533,18 +541,18 @@ void coalAndCollect(void)
 
   case 8:
     capacitors = capacitors + 2;
-    blitCopy(s_pHUD, 96, 0, s_pVpManager->pBack, 96, 224, 32, 32, MINTERM_COOKIE);
+    blitCopy(s_pHUD, 188, 0, s_pVpManager->pBack, 188, 224, 32, 32, MINTERM_COOKIE);
     sprintf(szMsg2, "%d", capacitors);
     fontFillTextBitMap(s_pFont, s_pBmText, szMsg2);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 106, 231, 5, FONT_COOKIE);
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 190, 236, HUDfontColor, FONT_COOKIE);
     break;
 
   case 9:
     capacitors = capacitors + 4;
-    blitCopy(s_pHUD, 96, 0, s_pVpManager->pBack, 96, 224, 32, 32, MINTERM_COOKIE);
+    blitCopy(s_pHUD, 188, 0, s_pVpManager->pBack, 188, 224, 32, 32, MINTERM_COOKIE);
     sprintf(szMsg2, "%d", capacitors);
     fontFillTextBitMap(s_pFont, s_pBmText, szMsg2);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 106, 231, 5, FONT_COOKIE);
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 190, 236, HUDfontColor, FONT_COOKIE);
     break;
 
   case 10:
@@ -562,6 +570,7 @@ void coalAndCollect(void)
     break;
 
   case 11:
+    ++robboMsgCount;
     robboMsgCtrl = 1;
     robboScrollUp();
     robboSays();

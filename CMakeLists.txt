@@ -55,6 +55,7 @@ convertBitmaps(
 	INTERLEAVED SOURCES ${RES_DIR}/tileset.png
 	DESTINATIONS ${DATA_DIR}/tileset.bm
 	MASKS ${DATA_DIR}/tileset_mask.bm
+
 )
 
 file(
