@@ -32,6 +32,11 @@ convertBitmaps(
 	DESTINATIONS ${DATA_DIR}/LMC.bm ${DATA_DIR}/ACE.bm
 )
 
+convertFont(
+    TARGET falkon.elf FIRST_CHAR 32
+    SOURCE ${RES_DIR}/topaz.png DESTINATION ${DATA_DIR}/topaz.fnt
+)
+
 set(PLT_PATH ${DATA_DIR}/falkon.plt) #tak si� b�dzie nazywa� docelowa paleta
 convertPalette(falkon.elf ${RES_DIR}/falkon.pal ${PLT_PATH}) # z res/falkon.pal do build/data/falkon.plt
 
