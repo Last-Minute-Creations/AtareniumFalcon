@@ -40,6 +40,8 @@ extern tStateManager *g_pStateMachineGame;
 #define FALCON_HEIGHT 32
 #define ANIM_FRAME_COUNT 16
 
+#define LAST_LEVEL_NUMBER 25
+
 char szMsg[50];  // do wyswietlania wegla na HUD
 char szMsg2[50]; // do wyswietlania kondkow na HUD
 char szMsg3[50];
@@ -79,7 +81,8 @@ BYTE falkonIdle = 0;
 BYTE coal = startingCoal;
 BYTE capacitors = 0;
 BYTE excesscoal = 0;
-BYTE level = 21;
+BYTE level = 1;
+
 BYTE robboMsgNr = 0;
 BYTE robboMsgCtrl = 0;
 BYTE robboMsgCount = 0;
@@ -110,7 +113,7 @@ void printOnHUD(void)
     sprintf(szMsg3, "%d", excesscoal);
     fontFillTextBitMap(s_pFont, s_pBmText, szMsg3);
     fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 130, 232, HUDfontColor, FONT_COOKIE);
-    waitFrames(s_pVp, 10, uwPosY + FALCON_HEIGHT);
+   
   blitCopy(s_pHUD, 248, 0, s_pVpManager->pBack, 248, 224, 32, 32, MINTERM_COOKIE);
     sprintf(szMsg4, "%d", robboMsgCount);
     fontFillTextBitMap(s_pFont, s_pBmText, szMsg4);
@@ -302,7 +305,7 @@ void nextLevel(void)
     bitmapDestroy(s_pBg);
     s_pBg = bitmapCreateFromFile("data/tlo6.bm", 0);
     break;
-  case 22: // ta ma byc ostatnia
+  case LAST_LEVEL_NUMBER: // ta ma byc ostatnia
 
     robboMsgNr = 10;
     break;
