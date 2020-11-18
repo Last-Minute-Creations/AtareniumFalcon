@@ -17,6 +17,8 @@ extern tState g_sStateIntro;
 extern tState g_sStateCredits;
 extern tStateManager *g_pStateMachineGame;
 
+UBYTE creditsControl = 0;
+
 
 void stateMenuCreate(void){
 	s_pView = viewCreate(0,
@@ -46,6 +48,8 @@ void stateMenuCreate(void){
 	keyCreate();
 	systemUnuse();
 	viewLoad(s_pView);
+
+	creditsControl = 1;
 }
 
 void stateMenuLoop(void){

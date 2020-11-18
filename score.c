@@ -18,6 +18,8 @@ static tBitMap *s_pVAM;
 extern tState g_sStateMenu;
 extern tStateManager *g_pStateMachineGame;
 
+void waitFrames();
+
 extern BYTE startingCoal;
 
 extern BYTE coal;
@@ -162,15 +164,12 @@ for(BYTE i = 0 ; i < 17 ; ++i){
     case 16:
     sprintf(szScore, "Amigans will be back in...");
     break; 
-    
-  }
+    }
     
       fontFillTextBitMap(s_pFont, s_pBmText, szScore);
       fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText,  10, (i * 9) + 10, 23, FONT_COOKIE);
-      for(BYTE k = 0 ; k < 50 ; ++k){
-      vPortWaitForEnd(s_pVp);
-      }
-}
+      waitFrames(s_pVp, 50, 200);
+  }
 
 }
 

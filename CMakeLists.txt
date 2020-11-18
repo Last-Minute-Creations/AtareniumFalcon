@@ -92,5 +92,8 @@ file(
 	${RES_DIR}/23.txt
 	${RES_DIR}/24.txt
 	${RES_DIR}/25.txt
+	${RES_DIR}/26.txt
+	${RES_DIR}/27.txt
+	${RES_DIR}/28.txt
 	DESTINATION ${DATA_DIR}
 )

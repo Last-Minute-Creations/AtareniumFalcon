@@ -17,6 +17,8 @@ extern tStateManager *g_pStateMachineGame;
 
 extern BYTE startingCoal;
 
+void waitFrames();
+
 extern BYTE coal;
 extern BYTE capacitors;
 extern BYTE falkonx;
@@ -102,7 +104,7 @@ void stateGameOverLoop(void){
 
 	viewProcessManagers(s_pView);
 	copProcessBlocks();
-	vPortWaitForEnd(s_pVp);
+	waitFrames(s_pVp, 1, 200);
 }
 
 void stateGameOverDestroy(void){

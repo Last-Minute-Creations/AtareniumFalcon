@@ -40,13 +40,14 @@ extern tStateManager *g_pStateMachineGame;
 #define FALCON_HEIGHT 32
 #define ANIM_FRAME_COUNT 16
 
-#define LAST_LEVEL_NUMBER 25
+#define LAST_LEVEL_NUMBER 28
 
 char szMsg[50];  // do wyswietlania wegla na HUD
 char szMsg2[50]; // do wyswietlania kondkow na HUD
 char szMsg3[50];
 char szMsg4[50];
 char levelFilePath[20];
+char szLvl[50];
 
 char szRobboMsg[80];
 char *szRobbo1stLine = "ROBBO says:";
@@ -113,12 +114,15 @@ void printOnHUD(void)
     sprintf(szMsg3, "%d", excesscoal);
     fontFillTextBitMap(s_pFont, s_pBmText, szMsg3);
     fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 130, 232, HUDfontColor, FONT_COOKIE);
-   
   blitCopy(s_pHUD, 248, 0, s_pVpManager->pBack, 248, 224, 32, 32, MINTERM_COOKIE);
     sprintf(szMsg4, "%d", robboMsgCount);
     fontFillTextBitMap(s_pFont, s_pBmText, szMsg4);
     fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 250, 236, HUDfontColor, FONT_COOKIE);
  
+  blitCopy(s_pHUD, 288, 0, s_pVpManager->pBack, 288, 224, 32, 32, MINTERM_COOKIE);
+    sprintf(szLvl, "%d", level);
+    fontFillTextBitMap(s_pFont, s_pBmText, szLvl);
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 290, 236, HUDfontColor, FONT_COOKIE);
   
 }
 
@@ -563,7 +567,7 @@ void coalAndCollect(void)
     portalAnim();
     
     ++level;
-    if (level == 23)
+    if (level == LAST_LEVEL_NUMBER  + 1)
     {
       ptplayerStop();
       stateChange(g_pStateMachineGame, &g_sStateScore);

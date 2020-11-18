@@ -44,6 +44,8 @@ static tTextBitMap *s_pBmText;
 
 static UWORD s_pPalette[32];
 
+extern UBYTE creditsControl;
+
 UBYTE bRatio = 0;
 UBYTE waitTime = 0;
 UBYTE drawOnce = 0;
@@ -115,7 +117,7 @@ void stateCreditsLoop(void)
       paletteDim(s_pPalette, s_pVp->pPalette, 32, 0); // 0 - czarno, 15 - pe�na paleta
       viewUpdateCLUT(s_pView);
 
-      ptplayerSfxPlay(s_pLMCsfx, 3, 64, 100);
+      // ptplayerSfxPlay(s_pLMCsfx, 3, 64, 100);
       blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 0);
       blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 0);
       blitCopy(s_pLMC, 0, 0, s_pVpManager->pBack, 104, 40, 112, 160, MINTERM_COOKIE);
@@ -156,7 +158,7 @@ void stateCreditsLoop(void)
       paletteDim(s_pPalette, s_pVp->pPalette, 32, 0); // 0 - czarno, 15 - pe�na paleta
       viewUpdateCLUT(s_pView);
 
-      ptplayerSfxPlay(s_pACEsfx, 3, 64, 100);
+      // ptplayerSfxPlay(s_pACEsfx, 3, 64, 100);
       blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 0);
       blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 0);
       blitCopy(s_pACE, 0, 0, s_pVpManager->pBack, 80, 95, 155, 70, MINTERM_COOKIE);
@@ -209,10 +211,17 @@ void stateCreditsLoop(void)
     }
   }
 
-  if (joyUse(JOY1_FIRE) || keyUse(KEY_RETURN))
-  {
-    stateChange(g_pStateMachineGame, &g_sStateIntro);
-    return;
+  if (joyUse(JOY1_FIRE) || keyUse(KEY_RETURN)){
+    if (creditsControl == 0)
+    {
+      stateChange(g_pStateMachineGame, &g_sStateIntro);
+      return;
+    }
+    else if (creditsControl == 1)
+    {
+      stateChange(g_pStateMachineGame, &g_sStateMenu);
+      return;
+    }
   }
 
   viewProcessManagers(s_pView);

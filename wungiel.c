@@ -9,6 +9,7 @@
 #include <ace/managers/blit.h>
 #include <ace/utils/font.h>
 #include <ace/utils/ptplayer.h>
+#include <ace/managers/rand.h>
 
 static tView *s_pView;
 static tVPort *s_pVp;
@@ -18,10 +19,14 @@ extern tState g_sStateIntro;
 extern tStateManager *g_pStateMachineGame;
 extern tState g_sStateCredits;
 
+void waitFrames();
+
 static tFont *s_pFont;
 static tTextBitMap *s_pBmText;
 
 static tPtplayerSfx *s_pAtari;
+
+UBYTE typingRandomizer = 0;
 
 
 char szWungiel[50];
@@ -60,6 +65,9 @@ void stateWungielCreate(void)
     keyCreate();
     viewLoad(s_pView);
 
+    randInit(476);
+    
+
     ptplayerCreate(1);
     s_pAtari = ptplayerSfxCreateFromFile("data/Atari.sfx");
 
@@ -73,10 +81,7 @@ void stateWungielCreate(void)
     fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
     fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 10, 10, 23, FONT_COOKIE);
 
-    for (BYTE k = 0; k < 50; ++k)
-    {
-        vPortWaitForEnd(s_pVp);
-    }
+    waitFrames(s_pVp, 50, 200);
 
     UWORD uwX = 10;
     for (UBYTE i = 0; i < strlen(load1); ++i) {
@@ -85,44 +90,31 @@ void stateWungielCreate(void)
         fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, uwX, 20, 23, FONT_COOKIE);
         uwX += fontGlyphWidth(s_pFont, load1[i]) + 1;
         ptplayerSfxPlay(s_pAtari, 3, 64, 100);
-        for (BYTE k = 0; k < 15; ++k)
-        {
-            vPortWaitForEnd(s_pVp);
-        }
+        typingRandomizer = ulRandMinMax(10, 20);
+        waitFrames(s_pVp, typingRandomizer, 200);
     }
 
 
-    for (BYTE k = 0; k < 50; ++k)
-    {
-        vPortWaitForEnd(s_pVp);
-    }
+    waitFrames(s_pVp, 50, 200);
 
     sprintf(szWungiel, w2);
     fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
     fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 10, 30, 23, FONT_COOKIE);
 
-    for (BYTE k = 0; k < 50; ++k)
-    {
-        vPortWaitForEnd(s_pVp);
-    }
+    waitFrames(s_pVp, 50, 200);
 
     for (BYTE i = 0; i < 3; ++i) {
         sprintf(szWungiel, "%c", dots[i]);
         fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
         fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, (i * 7) + 10, 40, 23, FONT_COOKIE);
-        for (BYTE k = 0; k < 50; ++k)
-        {
-            vPortWaitForEnd(s_pVp);
-        }
+        waitFrames(s_pVp, 50, 200);
     }
     sprintf(szWungiel, w3);
     fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
     fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 10, 50, 23, FONT_COOKIE);
 
-    for (BYTE k = 0; k < 50; ++k)
-    {
-        vPortWaitForEnd(s_pVp);
-    }
+    waitFrames(s_pVp, 50, 200);
+
     uwX = 10;
     for (UBYTE i = 0; i < strlen(load1); ++i) {
         sprintf(szWungiel, "%c", load1[i]);
@@ -130,10 +122,8 @@ void stateWungielCreate(void)
         fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, uwX, 60, 23, FONT_COOKIE);
         uwX += fontGlyphWidth(s_pFont, load1[i]) + 1;
         ptplayerSfxPlay(s_pAtari, 3, 64, 100);
-        for (BYTE k = 0; k < 15; ++k)
-        {
-            vPortWaitForEnd(s_pVp);
-        }
+        typingRandomizer = ulRandMinMax(10, 20);
+       waitFrames(s_pVp, typingRandomizer, 200);
     }
 
 
@@ -141,40 +131,29 @@ void stateWungielCreate(void)
         sprintf(szWungiel, "%c", dots[i]);
         fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
         fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, (i * 7) + 10, 70, 23, FONT_COOKIE);
-        for (BYTE k = 0; k < 55; ++k)
-        {
-            vPortWaitForEnd(s_pVp);
-        }
+        waitFrames(s_pVp, 50, 200);
     }
 
     sprintf(szWungiel, w4);
     fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
     fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 10, 80, 23, FONT_COOKIE);
 
-    for (BYTE k = 0; k < 50; ++k)
-    {
-        vPortWaitForEnd(s_pVp);
-    }
+    waitFrames(s_pVp, 50, 200);
 
     for (BYTE i = 0; i < 3; ++i) {
         sprintf(szWungiel, "%c", run[i]);
         fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
         fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, (i * 7) + 10, 90, 23, FONT_COOKIE);
         ptplayerSfxPlay(s_pAtari, 3, 64, 100);
-        for (BYTE k = 0; k < 15; ++k)
-        {
-            vPortWaitForEnd(s_pVp);
-        }
+        typingRandomizer = ulRandMinMax(10, 20);
+        waitFrames(s_pVp, typingRandomizer, 200);
     }
 
     for (BYTE i = 0; i < 3; ++i) {
         sprintf(szWungiel, "%c", dots[i]);
         fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
         fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, (i * 7) + 10, 100, 23, FONT_COOKIE);
-        for (BYTE k = 0; k < 50; ++k)
-        {
-            vPortWaitForEnd(s_pVp);
-        }
+        waitFrames(s_pVp, 50, 200);
     }
 
 
