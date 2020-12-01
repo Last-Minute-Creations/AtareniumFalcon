@@ -269,49 +269,39 @@ void nextLevel(void)
 
   switch (level)
   {
-  case 2:
-    robboMsgNr = 1;
-    break;
-  case 3:
-    robboMsgNr = 2;
+  
+  case 4:
     bitmapDestroy(s_pBg);
     s_pBg = bitmapCreateFromFile("data/tlo2.bm", 0);
     break;
-  case 4:
-    robboMsgNr = 3;
-    break;
-  case 5:
-    robboMsgNr = 4;
-    break;
-  case 6:
-    robboMsgNr = 5;
+  
+  case 8:
     bitmapDestroy(s_pBg);
     s_pBg = bitmapCreateFromFile("data/tlo3.bm", 0);
     break;
-  case 7:
-    robboMsgNr = 6;
-    break;
-  case 9:
-    robboMsgNr = 7;
+  
+  case 12:
     bitmapDestroy(s_pBg);
     s_pBg = bitmapCreateFromFile("data/tlo4.bm", 0);
     break;
-  case 10:
-    robboMsgNr = 8;
 
-    break;
-  case 11:
-    robboMsgNr = 9;
+  case 17:
     bitmapDestroy(s_pBg);
     s_pBg = bitmapCreateFromFile("data/tlo5.bm", 0);
     break;
-  case 13:
+  case 22:
     bitmapDestroy(s_pBg);
     s_pBg = bitmapCreateFromFile("data/tlo6.bm", 0);
     break;
+
+    case LAST_LEVEL_NUMBER - 1: // ta ma byc przedostatnia
+
+    robboMsgNr = LAST_LEVEL_NUMBER - 1;
+    break;
+  
   case LAST_LEVEL_NUMBER: // ta ma byc ostatnia
 
-    robboMsgNr = 10;
+    robboMsgNr = LAST_LEVEL_NUMBER;
     break;
   }
   clearTiles();
@@ -500,10 +490,44 @@ void robboSays(void)
   case 8:
     sprintf(szRobboMsg, "Find the coal warehouse and reclaim it.");
     break;
-  case 9:
+
+case 9:
+    sprintf(szRobboMsg, "Wymyslic tekst 1.");
+    break;
+
+case 10:
+    sprintf(szRobboMsg, "Wymyslic tekst 2.");
+    break;
+
+case 11:
+    sprintf(szRobboMsg, "Wymyslic tekst 3.");
+    break;
+
+    case 12:
+    sprintf(szRobboMsg, "Wymyslic tekst 4.");
+    break;
+
+    case 13:
+    sprintf(szRobboMsg, "Wymyslic tekst 5.");
+    break;
+    case 14:
+    sprintf(szRobboMsg, "Wymyslic tekst 6.");
+    break;
+    case 15:
+    sprintf(szRobboMsg, "Wymyslic tekst 7.");
+    break;
+    case 16:
+    sprintf(szRobboMsg, "Wymyslic tekst 8.");
+    break;
+    case 17:
+    sprintf(szRobboMsg, "Wymyslic tekst 9.");
+    break;
+
+
+  case 25:
     sprintf(szRobboMsg, "We're close, I feel it in my DSP.");
     break;
-  case 10:
+  case 28:
     sprintf(szRobboMsg, "Well done! Now collect the coal and GTFO !!!");
     break;
   }
@@ -577,10 +601,12 @@ void coalAndCollect(void)
     break;
 
   case 11:
+   
     ++robboMsgCount;
     robboMsgCtrl = 1;
     robboScrollUp();
     robboSays();
+     ++robboMsgNr;
     return;
     break;
   }

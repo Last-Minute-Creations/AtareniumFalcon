@@ -33,6 +33,7 @@ extern BYTE frameHit;
 
 extern BYTE level;
 extern BYTE robboMsgNr;
+extern BYTE robboMsgCount;
 
 void clearTiles();
 
@@ -50,6 +51,7 @@ coal = startingCoal;
 capacitors = 0;
 level = 1;
 robboMsgNr = 0;
+robboMsgCount = 0;
 }
 
 
