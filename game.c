@@ -32,7 +32,6 @@ static tTextBitMap *s_pBmText;
 extern tState g_sStateMenu;
 extern tState g_sStateGameOver;
 extern tState g_sStateScore;
-extern tState g_sStateRobbo;
 extern tStateManager *g_pStateMachineGame;
 
 #define MAP_TILE_HEIGHT 7
@@ -51,6 +50,8 @@ char szLvl[50];
 
 char szRobboMsg[80];
 char *szRobbo1stLine = "ROBBO says:";
+
+BYTE youWin = 0;
 
 BYTE musicPlay = 1;
 
@@ -93,7 +94,7 @@ void waitFrames(tVPort *pVPort, UBYTE ubHowMany, UWORD uwPosY)
 {
   for (UBYTE i = 0; i < ubHowMany; ++i)
   {
-    vPortWaitForPos(pVPort, uwPosY,0);
+    vPortWaitForPos(pVPort, uwPosY, 0);
   }
 }
 
@@ -101,29 +102,28 @@ void cleanUp();
 
 void printOnHUD(void)
 {
-  
+
   blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 32, 32, MINTERM_COOKIE);
-    sprintf(szMsg, "%d", coal);
-    fontFillTextBitMap(s_pFont, s_pBmText, szMsg);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 232, HUDfontColor, FONT_COOKIE);
+  sprintf(szMsg, "%d", coal);
+  fontFillTextBitMap(s_pFont, s_pBmText, szMsg);
+  fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 232, HUDfontColor, FONT_COOKIE);
   blitCopy(s_pHUD, 188, 0, s_pVpManager->pBack, 188, 224, 32, 32, MINTERM_COOKIE);
-    sprintf(szMsg2, "%d", capacitors);
-    fontFillTextBitMap(s_pFont, s_pBmText, szMsg2);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 190, 236, HUDfontColor, FONT_COOKIE);
+  sprintf(szMsg2, "%d", capacitors);
+  fontFillTextBitMap(s_pFont, s_pBmText, szMsg2);
+  fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 190, 236, HUDfontColor, FONT_COOKIE);
   blitCopy(s_pHUD, 128, 0, s_pVpManager->pBack, 128, 224, 32, 32, MINTERM_COOKIE);
-    sprintf(szMsg3, "%d", excesscoal);
-    fontFillTextBitMap(s_pFont, s_pBmText, szMsg3);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 130, 232, HUDfontColor, FONT_COOKIE);
+  sprintf(szMsg3, "%d", excesscoal);
+  fontFillTextBitMap(s_pFont, s_pBmText, szMsg3);
+  fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 130, 232, HUDfontColor, FONT_COOKIE);
   blitCopy(s_pHUD, 248, 0, s_pVpManager->pBack, 248, 224, 32, 32, MINTERM_COOKIE);
-    sprintf(szMsg4, "%d", robboMsgCount);
-    fontFillTextBitMap(s_pFont, s_pBmText, szMsg4);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 250, 236, HUDfontColor, FONT_COOKIE);
- 
+  sprintf(szMsg4, "%d", robboMsgCount);
+  fontFillTextBitMap(s_pFont, s_pBmText, szMsg4);
+  fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 250, 236, HUDfontColor, FONT_COOKIE);
+
   blitCopy(s_pHUD, 288, 0, s_pVpManager->pBack, 288, 224, 32, 32, MINTERM_COOKIE);
-    sprintf(szLvl, "%d", level);
-    fontFillTextBitMap(s_pFont, s_pBmText, szLvl);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 290, 236, HUDfontColor, FONT_COOKIE);
-  
+  sprintf(szLvl, "%d", level);
+  fontFillTextBitMap(s_pFont, s_pBmText, szLvl);
+  fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 290, 236, HUDfontColor, FONT_COOKIE);
 }
 
 void gameOnResume(void)
@@ -245,7 +245,8 @@ void clearTiles(void)
   }
 }
 
-void levelScore(void){
+void levelScore(void)
+{
   BYTE thisLevelExcessCoal = coal - 1;
   for (UBYTE i = 0; i < thisLevelExcessCoal; ++i)
   {
@@ -269,17 +270,17 @@ void nextLevel(void)
 
   switch (level)
   {
-  
+
   case 4:
     bitmapDestroy(s_pBg);
     s_pBg = bitmapCreateFromFile("data/tlo2.bm", 0);
     break;
-  
+
   case 8:
     bitmapDestroy(s_pBg);
     s_pBg = bitmapCreateFromFile("data/tlo3.bm", 0);
     break;
-  
+
   case 12:
     bitmapDestroy(s_pBg);
     s_pBg = bitmapCreateFromFile("data/tlo4.bm", 0);
@@ -294,11 +295,11 @@ void nextLevel(void)
     s_pBg = bitmapCreateFromFile("data/tlo6.bm", 0);
     break;
 
-    case LAST_LEVEL_NUMBER - 1: // ta ma byc przedostatnia
+  case LAST_LEVEL_NUMBER - 1: // ta ma byc przedostatnia
 
     robboMsgNr = LAST_LEVEL_NUMBER - 1;
     break;
-  
+
   case LAST_LEVEL_NUMBER: // ta ma byc ostatnia
 
     robboMsgNr = LAST_LEVEL_NUMBER;
@@ -491,43 +492,42 @@ void robboSays(void)
     sprintf(szRobboMsg, "Find the coal warehouse and reclaim it.");
     break;
 
-case 9:
-    sprintf(szRobboMsg, "Wymyslic tekst 1.");
+  case 9:
+    sprintf(szRobboMsg, "Have you played Aminer yet?");
     break;
 
-case 10:
-    sprintf(szRobboMsg, "Wymyslic tekst 2.");
+  case 10:
+    sprintf(szRobboMsg, "Drop me out at LK Avalon please.");
     break;
 
-case 11:
-    sprintf(szRobboMsg, "Wymyslic tekst 3.");
+  case 11:
+    sprintf(szRobboMsg, "You like Paula? I love Laura!");
     break;
 
-    case 12:
-    sprintf(szRobboMsg, "Wymyslic tekst 4.");
+  case 12:
+    sprintf(szRobboMsg, "Atari has no glitches...");
     break;
 
-    case 13:
-    sprintf(szRobboMsg, "Wymyslic tekst 5.");
+  case 13:
+    sprintf(szRobboMsg, "..even if played in 2077.");
     break;
-    case 14:
-    sprintf(szRobboMsg, "Wymyslic tekst 6.");
+  case 14:
+    sprintf(szRobboMsg, "Make River Raid not Bridge Strike!");
     break;
-    case 15:
-    sprintf(szRobboMsg, "Wymyslic tekst 7.");
+  case 15:
+    sprintf(szRobboMsg, "Cytadela is better than Doom.");
     break;
-    case 16:
-    sprintf(szRobboMsg, "Wymyslic tekst 8.");
+  case 16:
+    sprintf(szRobboMsg, "How to double the value of your Atari...?");
     break;
-    case 17:
-    sprintf(szRobboMsg, "Wymyslic tekst 9.");
+  case 17:
+    sprintf(szRobboMsg, "...Just insert the cassette into tape drive.");
     break;
 
-
-  case 25:
+  case LAST_LEVEL_NUMBER - 1:
     sprintf(szRobboMsg, "We're close, I feel it in my DSP.");
     break;
-  case 28:
+  case LAST_LEVEL_NUMBER:
     sprintf(szRobboMsg, "Well done! Now collect the coal and GTFO !!!");
     break;
   }
@@ -589,24 +589,26 @@ void coalAndCollect(void)
   case 10:
     levelScore();
     portalAnim();
-    
+
     ++level;
-    if (level == LAST_LEVEL_NUMBER  + 1)
+    if (level == LAST_LEVEL_NUMBER + 1)
     {
       ptplayerStop();
-      stateChange(g_pStateMachineGame, &g_sStateScore);
-      return;
+      youWin = 1;
     }
-    nextLevel();
+    else
+    {
+      nextLevel();
+    }
     break;
 
   case 11:
-   
+
     ++robboMsgCount;
     robboMsgCtrl = 1;
     robboScrollUp();
     robboSays();
-     ++robboMsgNr;
+    ++robboMsgNr;
     return;
     break;
   }
@@ -714,7 +716,7 @@ void falkonHittingStone(void)
       break;
     }
 
-    blitCopy(s_pVpManager->pBack, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE);                            // fragment tla wrzuca do zmiennej
+    blitCopy(s_pVpManager->pBack, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE);                                  // fragment tla wrzuca do zmiennej
     blitCopyMask(s_pTiles, pAnim[i], YAnimRow, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // rysuje falkona
     waitFrames(s_pVp, 3, uwPosY + FALCON_HEIGHT);
   }
@@ -782,7 +784,7 @@ void falkonFlying(void)
       break;
     }
 
-    blitCopy(s_pVpManager->pBack, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);                            // fragment tla wrzuca do zmiennej
+    blitCopy(s_pVpManager->pBack, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);                                  // fragment tla wrzuca do zmiennej
     blitCopyMask(s_pTiles, pAnim[i], YAnimRow, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // rysuje falkona
     waitFrames(s_pVp, 3, uwPosY + FALCON_HEIGHT);
   }
@@ -951,7 +953,7 @@ void stateGameLoop(void)
 {
   // Here goes code done each game frame
   ++falkonIdle;
-  
+
   if (falkonIdle == 10)
   {
     blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
@@ -1001,8 +1003,6 @@ void stateGameLoop(void)
     blitCopyMask(s_pTiles, 32, 192 + falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
     falkonIdle = 0;
   }
-
-
 
   joyProcess();
   keyProcess();
@@ -1064,9 +1064,16 @@ void stateGameLoop(void)
 
   noCoalLeft();
 
-  viewProcessManagers(s_pView); // obliczenia niezb�dne do poprawnego dzia�ania viewport�w
-  copProcessBlocks();           // obliczenia niezb�dne do poprawnego dzia�ania coppera
-  vPortWaitForPos(s_pVp, uwPosY, 0);       // r�wnowa�ne amosowemu wait vbl
+  if (youWin == 1)
+  {
+    youWin = 0;
+    stateChange(g_pStateMachineGame, &g_sStateScore);
+    return;
+  }
+
+  viewProcessManagers(s_pView);      // obliczenia niezb�dne do poprawnego dzia�ania viewport�w
+  copProcessBlocks();                // obliczenia niezb�dne do poprawnego dzia�ania coppera
+  vPortWaitForPos(s_pVp, uwPosY, 0); // r�wnowa�ne amosowemu wait vbl
 }
 
 void stateGameDestroy(void)

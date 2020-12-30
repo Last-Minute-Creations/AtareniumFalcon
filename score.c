@@ -31,6 +31,8 @@ extern BYTE krawedzy;
 extern BYTE kierunek;
 extern BYTE falkonFace; // kierunek dziobem
 
+extern UWORD uwPosY;
+
 extern BYTE excesscoal;
 
 extern BYTE stoneHit;
@@ -75,6 +77,7 @@ excesscoal = 0;
 }
 
 void stateScoreCreate(void){
+  
 
 s_pView = viewCreate(0,
     TAG_VIEW_COPLIST_MODE, COPPER_MODE_BLOCK,
@@ -168,13 +171,14 @@ for(BYTE i = 0 ; i < 17 ; ++i){
     
       fontFillTextBitMap(s_pFont, s_pBmText, szScore);
       fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText,  10, (i * 9) + 10, 23, FONT_COOKIE);
-      waitFrames(s_pVp, 50, 200);
+      waitFrames(s_pVp, 50, 0);
   }
-
+logWrite("vp height: %hu\n", s_pVp->uwHeight);
 }
 
 
 void stateScoreLoop(void){
+  
 	joyProcess();
 	keyProcess();
 
@@ -193,11 +197,11 @@ void stateScoreLoop(void){
 		return;
   }
     
-  }
-
+  } 
 	viewProcessManagers(s_pView);
 	copProcessBlocks();
-	vPortWaitForEnd(s_pVp);
+	//vPortWaitForEnd(s_pVp);
+   vPortWaitForPos(s_pVp, uwPosY, 0);
 }
 
 void stateScoreDestroy(void){
