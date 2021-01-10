@@ -10,7 +10,7 @@
 #include <ace/utils/font.h>
 #include <ace/utils/ptplayer.h>
 
-#define CREDITS_LINE_COUNT 11
+#define CREDITS_LINE_COUNT 13
 
 enum StatesCredits
 {
@@ -51,16 +51,18 @@ UBYTE waitTime = 0;
 UBYTE drawOnce = 0;
 
 const char *s_pCreditsLines[CREDITS_LINE_COUNT] = {
-    "ATARENIUM FALCON  v0.9 (Demo)",
-    "Decrunch 2020 gamedev compo release.",
+    "ATARENIUM FALCON  v0.91 (Demo)",
+    "Updated 30.12.2020, first release at",
+    "Decrunch 2020 gamedev compo (2nd place).",
     "",
     "Luc3k: code & MSX",
     "Softiron: GFX",
     "KaiN & Proxy: AFK",
     "",
-    "Greets to: Renton, Wojt_GL, Sordan, ",
-    "QUAD, Lokaty, MadMan.",
-    "ENJOY THE PARTY !"};
+    "Special credit goes to Saberman - ",
+    "The Great Atariman of the Galaxy.",
+    "",
+    "(Fire or Return to continue)"};
 
 void stateCreditsCreate(void)
 {
@@ -203,7 +205,7 @@ void stateCreditsLoop(void)
       blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 21);
     
 
-    for (BYTE i = 0; i < 10; ++i)
+    for (BYTE i = 0; i < CREDITS_LINE_COUNT; ++i)
     {
       fontFillTextBitMap(s_pFont, s_pBmText, s_pCreditsLines[i]);
       fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 10, (i * 9) + 10, 23, FONT_COOKIE);
