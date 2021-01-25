@@ -6,7 +6,7 @@ add_subdirectory(ACE ace)
 
 add_executable(
 	falkon.elf
-	main.c game.c menu.c gameover.c intro.c credits.c score.c wungiel.c
+	main.c game.c menu.c gameover.c intro.c credits.c score.c wungiel.c guruMastah.c
 ) # Compiler emits .elf file, we need hunk for Amiga
 
 target_compile_options(falkon.elf PRIVATE -Wall -Wextra)
@@ -46,12 +46,12 @@ convertBitmaps(
 		${RES_DIR}/title.png ${RES_DIR}/gej_ower.png ${RES_DIR}/HUD.png
 		${RES_DIR}/tlo1.png ${RES_DIR}/tlo2.png ${RES_DIR}/tlo3.png
 		${RES_DIR}/tlo4.png ${RES_DIR}/tlo5.png ${RES_DIR}/tlo6.png
-		${RES_DIR}/vampire.png ${RES_DIR}/falkon_robbo.png
+		${RES_DIR}/vampire.png ${RES_DIR}/falkon_robbo.png ${RES_DIR}/amiHUD.png
 	DESTINATIONS
 		${DATA_DIR}/title.bm ${DATA_DIR}/gej_ower.bm ${DATA_DIR}/HUD.bm
 		${DATA_DIR}/tlo1.bm ${DATA_DIR}/tlo2.bm ${DATA_DIR}/tlo3.bm
 		${DATA_DIR}/tlo4.bm ${DATA_DIR}/tlo5.bm ${DATA_DIR}/tlo6.bm
-		${DATA_DIR}/vampire.bm ${DATA_DIR}/falkon_robbo.bm)
+		${DATA_DIR}/vampire.bm ${DATA_DIR}/falkon_robbo.bm ${DATA_DIR}/amiHUD.bm)
 
 
 convertBitmaps(

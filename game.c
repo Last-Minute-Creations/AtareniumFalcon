@@ -32,6 +32,7 @@ static tTextBitMap *s_pBmText;
 extern tState g_sStateMenu;
 extern tState g_sStateGameOver;
 extern tState g_sStateScore;
+extern tState g_sStateGuruMastah;
 extern tStateManager *g_pStateMachineGame;
 
 #define MAP_TILE_HEIGHT 7
@@ -92,6 +93,7 @@ BYTE HUDfontColor = 23;
 
 int amiganium = 0;
 int amiganiumIdle = 192;
+BYTE amigaMode = 0;
 
 void waitFrames(tVPort *pVPort, UBYTE ubHowMany, UWORD uwPosY)
 {
@@ -623,9 +625,11 @@ void coalAndCollect(void)
   case 12:
   amiganium = 192;
   amiganiumIdle = 320;
-  ++level;
+  amigaMode = 1;
+  s_pHUD = bitmapCreateFromFile("data/amiHUD.bm", 0);
   portalAnim();
-  nextLevel();
+  return;
+  break;
   }
   printOnHUD();
 }
@@ -1085,6 +1089,13 @@ void stateGameLoop(void)
     stateChange(g_pStateMachineGame, &g_sStateScore);
     return;
   }
+
+   if (amigaMode == 1){
+    amigaMode = 0;
+    ptplayerStop();
+   statePush(g_pStateMachineGame, &g_sStateGuruMastah);
+   return;
+   }
 
   viewProcessManagers(s_pView);      // obliczenia niezb�dne do poprawnego dzia�ania viewport�w
   copProcessBlocks();                // obliczenia niezb�dne do poprawnego dzia�ania coppera
