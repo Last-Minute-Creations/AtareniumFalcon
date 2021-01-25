@@ -70,8 +70,7 @@ void stateGuruMastahCreate(void)
     fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 10, (i * 9) + 10, 23, FONT_COOKIE);
   }
 
-  joyOpen();
-  keyCreate();
+  
   viewLoad(s_pView);
 }
 
@@ -94,9 +93,8 @@ void stateGuruMastahLoop(void)
 void stateGuruMastahDestroy(void)
 {
   systemUse();
-  joyClose();
-  keyDestroy();
   viewDestroy(s_pView);
+  systemUnuse();
 }
 
 tState g_sStateGuruMastah = {

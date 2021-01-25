@@ -626,8 +626,11 @@ void coalAndCollect(void)
   amiganium = 192;
   amiganiumIdle = 320;
   amigaMode = 1;
+  bitmapDestroy(s_pHUD);
   s_pHUD = bitmapCreateFromFile("data/amiHUD.bm", 0);
   portalAnim();
+  blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320, 32, MINTERM_COOKIE);
+  printOnHUD();
   return;
   break;
   }
@@ -1092,7 +1095,7 @@ void stateGameLoop(void)
 
    if (amigaMode == 1){
     amigaMode = 0;
-    ptplayerStop();
+   // ptplayerStop();
    statePush(g_pStateMachineGame, &g_sStateGuruMastah);
    return;
    }
