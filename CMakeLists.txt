@@ -6,7 +6,7 @@ add_subdirectory(ACE ace)
 
 add_executable(
 	falkon.elf
-	main.c game.c menu.c gameover.c intro.c credits.c score.c wungiel.c guruMastah.c
+	main.c game.c menu.c gameover.c intro.c credits.c score.c wungiel.c guruMastah.c scoreAmi.c
 ) # Compiler emits .elf file, we need hunk for Amiga
 
 target_compile_options(falkon.elf PRIVATE -Wall -Wextra)

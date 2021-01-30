@@ -34,6 +34,7 @@ extern tState g_sStateGameOver;
 extern tState g_sStateScore;
 extern tState g_sStateGuruMastah;
 extern tStateManager *g_pStateMachineGame;
+extern tState g_sStateScoreAmi;
 
 #define MAP_TILE_HEIGHT 7
 #define MAP_TILE_WIDTH 10
@@ -878,18 +879,6 @@ void falconMove(void)
   }
 }
 
-void noCoalLeft(void)
-{
-  // sprawdzenie warunku na game over
-
-  if (coal == 0)
-  {
-    coal = 1;
-    ptplayerStop();
-    stateChange(g_pStateMachineGame, &g_sStateGameOver);
-    return;
-  }
-}
 
 void stateGameCreate(void)
 {
@@ -1084,21 +1073,35 @@ void stateGameLoop(void)
     coalAndCollect();
   }
 
-  noCoalLeft();
-
-  if (youWin == 1)
-  {
-    youWin = 0;
-    stateChange(g_pStateMachineGame, &g_sStateScore);
-    return;
-  }
-
-   if (amigaMode == 1){
-    amigaMode = 0;
+  if (amigaMode == 1){     // jesli zebralem ami-kondka to wyswietlam ekran z plot twistem
+    amigaMode = 2;   // ustawiam dla sprawdzenia na koniec czy bedzie alternatywne zakonczenie
    // ptplayerStop();
    statePush(g_pStateMachineGame, &g_sStateGuruMastah);
    return;
    }
+
+  if (youWin == 1)   // sprawdzenie ktore zakonczenie uruchomic
+  {
+    youWin = 0;
+    if (amigaMode == 0){    
+    stateChange(g_pStateMachineGame, &g_sStateScore);  // atari ending
+    return;
+    }
+    else if (amigaMode == 2){
+    stateChange(g_pStateMachineGame, &g_sStateScoreAmi);  // amiga ending
+    return; 
+    }
+  }
+
+  if (coal == 0)
+  {
+    coal = 1;
+    ptplayerStop();
+    stateChange(g_pStateMachineGame, &g_sStateGameOver);
+    return;
+  }
+
+
 
   viewProcessManagers(s_pView);      // obliczenia niezb�dne do poprawnego dzia�ania viewport�w
   copProcessBlocks();                // obliczenia niezb�dne do poprawnego dzia�ania coppera
