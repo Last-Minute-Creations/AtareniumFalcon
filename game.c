@@ -92,8 +92,7 @@ BYTE robboMsgCtrl = 0;
 BYTE robboMsgCount = 0;
 BYTE HUDfontColor = 23;
 
-int amiganium = 0;
-int amiganiumIdle = 192;
+
 BYTE amigaMode = 0;
 
 void waitFrames(tVPort *pVPort, UBYTE ubHowMany, UWORD uwPosY)
@@ -213,7 +212,7 @@ void drawTiles(void)
     else if (ubZmienna == 0x42)
     {
       kamyki[x][y] = 12;
-      blitCopyMask(s_pTiles, 160, 256, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+      blitCopyMask(s_pTiles, 128, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
     }
     else if (ubZmienna == 0x31)
     {
@@ -624,12 +623,14 @@ void coalAndCollect(void)
     break;
   
   case 12:
-  amiganium = 192;
-  amiganiumIdle = 320;
   amigaMode = 1;
+  portalAnim();
+  bitmapDestroy(s_pTiles);
+  bitmapDestroy(s_pTilesMask);
+  s_pTiles = bitmapCreateFromFile("data/tileset2.bm", 0);
+  s_pTilesMask = bitmapCreateFromFile("data/tileset_mask2.bm", 0);
   bitmapDestroy(s_pHUD);
   s_pHUD = bitmapCreateFromFile("data/amiHUD.bm", 0);
-  portalAnim();
   blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320, 32, MINTERM_COOKIE);
   printOnHUD();
   return;
@@ -656,12 +657,12 @@ void falkonHittingStone(void)
     if (falkonFace == 0)
     {
       pAnim = pAnimR;
-      YAnimRow = 64 + amiganium;
+      YAnimRow = 64;
     }
     else if (falkonFace == 32)
     {
       pAnim = pAnimL;
-      YAnimRow = 96 + amiganium;
+      YAnimRow = 96;
     }
 
     blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE); // rysuje tlo ze zmeinnej
@@ -770,12 +771,12 @@ void falkonFlying(void)
     switch (kierunek)
     {
     case 1:
-      YAnimRow = 64 + amiganium;
+      YAnimRow = 64;
       ++uwPosX;
       ++uwPosX;
       break;
     case 2:
-      YAnimRow = 96 + amiganium;
+      YAnimRow = 96;
       --uwPosX;
       --uwPosX;
       break;
@@ -785,10 +786,10 @@ void falkonFlying(void)
       switch (falkonFace)
       {
       case 0:
-        YAnimRow = 64 + amiganium;
+        YAnimRow = 64;
         break;
       case 32:
-        YAnimRow = 96 + amiganium;
+        YAnimRow = 96;
         break;
       }
       break;
@@ -798,10 +799,10 @@ void falkonFlying(void)
       switch (falkonFace)
       {
       case 0:
-        YAnimRow = 64 + amiganium;
+        YAnimRow = 64;
         break;
       case 32:
-        YAnimRow = 96 + amiganium;
+        YAnimRow = 96;
         break;
       }
       break;
@@ -969,49 +970,49 @@ void stateGameLoop(void)
   {
     blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
     blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
-    blitCopyMask(s_pTiles, 0, amiganiumIdle + falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+    blitCopyMask(s_pTiles, 0, 192 +falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
   }
   else if (falkonIdle == 20)
   {
     blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
     blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
-    blitCopyMask(s_pTiles, 32, amiganiumIdle + falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+    blitCopyMask(s_pTiles, 32, 192 + falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
   }
   else if (falkonIdle == 30)
   {
     blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
     blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
-    blitCopyMask(s_pTiles, 64, amiganiumIdle + falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+    blitCopyMask(s_pTiles, 64, 192 + falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
   }
   else if (falkonIdle == 40)
   {
     blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
     blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
-    blitCopyMask(s_pTiles, 96, amiganiumIdle + falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+    blitCopyMask(s_pTiles, 96, 192 + falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
   }
   else if (falkonIdle == 50)
   {
     blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
     blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
-    blitCopyMask(s_pTiles, 128, amiganiumIdle + falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+    blitCopyMask(s_pTiles, 128, 192 +falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
   }
   else if (falkonIdle == 60)
   {
     blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
     blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
-    blitCopyMask(s_pTiles, 96, amiganiumIdle + falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+    blitCopyMask(s_pTiles, 96, 192 + falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
   }
   else if (falkonIdle == 70)
   {
     blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
     blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
-    blitCopyMask(s_pTiles, 64, amiganiumIdle + falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+    blitCopyMask(s_pTiles, 64, 192 + falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
   }
   else if (falkonIdle == 80)
   {
     blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
     blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
-    blitCopyMask(s_pTiles, 32, amiganiumIdle + falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+    blitCopyMask(s_pTiles, 32, 192 + falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
     falkonIdle = 0;
   }
 

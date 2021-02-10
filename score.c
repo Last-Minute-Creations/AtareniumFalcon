@@ -42,8 +42,6 @@ extern BYTE level;
 extern BYTE robboMsgNr;
 extern BYTE robboMsgCount;
 
-extern int amiganium;
-extern int amiganiumIdle;
 extern BYTE amigaMode;
 
 
@@ -79,8 +77,6 @@ robboMsgNr = 0;
 robboMsgCount = 0;
 excesscoal = 0;
 
-amiganium = 0;
-amiganiumIdle = 192;
 amigaMode = 0;
 }
 
