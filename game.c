@@ -92,7 +92,7 @@ BYTE robboMsgCtrl = 0;
 BYTE robboMsgCount = 0;
 BYTE HUDfontColor = 23;
 
-
+UBYTE idleFrame = 0;
 BYTE amigaMode = 0;
 
 void waitFrames(tVPort *pVPort, UBYTE ubHowMany, UWORD uwPosY)
@@ -880,6 +880,46 @@ void falconMove(void)
   }
 }
 
+void falconIdleAnimation(void){
+  
+  if (falkonIdle == 10)
+  {
+    idleFrame = 0;
+    
+  }
+  else if (falkonIdle == 20)
+  {
+    idleFrame = 1;
+  }
+  else if (falkonIdle == 30)
+  {
+    idleFrame = 2;
+  }
+  else if (falkonIdle == 40)
+  {
+   idleFrame = 3; 
+  }
+  else if (falkonIdle == 50)
+  {
+    idleFrame = 4;
+  }
+  else if (falkonIdle == 60)
+  {
+    idleFrame = 3;
+  }
+  else if (falkonIdle == 70)
+  {
+   idleFrame = 2;
+  }
+  else if (falkonIdle == 80)
+  {
+    idleFrame = 1;
+    falkonIdle = 0;
+  }
+  blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
+    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
+    blitCopyMask(s_pTiles, idleFrame * 32, 192 + falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+}
 
 void stateGameCreate(void)
 {
@@ -957,7 +997,7 @@ void stateGameCreate(void)
   // blitCopyMask(s_pTiles, 128, 32, s_pVpManager->pBack, falkonx, falkony, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
 
   drawTiles();
-  ptplayerEnableMusic(1);
+  ptplayerEnableMusic(0);
   systemUnuse(); // system w trakcie loop nie jest nam potrzebny
 }
 
@@ -965,56 +1005,8 @@ void stateGameLoop(void)
 {
   // Here goes code done each game frame
   ++falkonIdle;
-
-  if (falkonIdle == 10)
-  {
-    blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
-    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
-    blitCopyMask(s_pTiles, 0, 192 +falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-  }
-  else if (falkonIdle == 20)
-  {
-    blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
-    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
-    blitCopyMask(s_pTiles, 32, 192 + falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-  }
-  else if (falkonIdle == 30)
-  {
-    blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
-    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
-    blitCopyMask(s_pTiles, 64, 192 + falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-  }
-  else if (falkonIdle == 40)
-  {
-    blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
-    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
-    blitCopyMask(s_pTiles, 96, 192 + falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-  }
-  else if (falkonIdle == 50)
-  {
-    blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
-    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
-    blitCopyMask(s_pTiles, 128, 192 +falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-  }
-  else if (falkonIdle == 60)
-  {
-    blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
-    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
-    blitCopyMask(s_pTiles, 96, 192 + falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-  }
-  else if (falkonIdle == 70)
-  {
-    blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
-    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
-    blitCopyMask(s_pTiles, 64, 192 + falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-  }
-  else if (falkonIdle == 80)
-  {
-    blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
-    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
-    blitCopyMask(s_pTiles, 32, 192 + falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-    falkonIdle = 0;
-  }
+  falconIdleAnimation();
+  
 
   joyProcess();
   keyProcess();
