@@ -82,8 +82,10 @@ BYTE frameHit = 0;
 CONST BYTE startingCoal = 10;
 
 BYTE falkonIdle = 0;
-BYTE collectiblesAnimTick = 0;
-BYTE collectiblesAnimTileCheck = 0;
+BYTE redCapacitorsAnimTick = 0;
+BYTE redCapacitorsAnimTileCheck = 0;
+BYTE blueCapacitorsAnimTick = 0;
+BYTE blueCapacitorsAnimTileCheck = 0;
 
 BYTE coal = startingCoal;
 BYTE capacitors = 0;
@@ -195,12 +197,13 @@ void drawTiles(void)
     else if (ubZmienna == 0x38)
     {
       kamyki[x][y] = 8;
+      collectiblesAnim[x][y] = 8;
       blitCopyMask(s_pTiles, 0, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
     }
     else if (ubZmienna == 0x39)
     {
       kamyki[x][y] = 9;
-      collectiblesAnim[x][y] = 1;
+      collectiblesAnim[x][y] = 9;
       blitCopyMask(s_pTiles, 32, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
     }
     else if (ubZmienna == 0x45)
@@ -926,45 +929,87 @@ void falconIdleAnimation(void)
   blitCopyMask(s_pTiles, idleFrame * 32, 192 + falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
 }
 
-void collectiblesAnimation(void)
+void redCapacitorsAnimation(void)
 {
   if (falkonIdle == 77)
   {
-    ++collectiblesAnimTick;
+    ++redCapacitorsAnimTick;
   }
-  if (collectiblesAnimTileCheck == 0 && collectiblesAnimTick == ulRandMinMax(2, 5))
+  if (redCapacitorsAnimTileCheck == 0 && redCapacitorsAnimTick == ulRandMinMax(1, 10))
   {
-    collectiblesAnimTileCheck = 1;
+    redCapacitorsAnimTileCheck = 1;
     for (UBYTE i = 0; i < 10; ++i)
     {
       for (UBYTE k = 0; k < 7; ++k)
       {
-        if (collectiblesAnim[i][k] == 1)
+        if (collectiblesAnim[i][k] == 9)
         {
-          blitCopyMask(s_pTiles, 128, 32, s_pVpManager->pBack, i * 32, k * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+          blitCopyMask(s_pTiles, 192, 32, s_pVpManager->pBack, i * 32, k * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
         }
       }
     }
   }
-  else if (collectiblesAnimTileCheck == 1 && collectiblesAnimTick == ulRandMinMax(2, 5))
+  else if (redCapacitorsAnimTileCheck == 1 && redCapacitorsAnimTick == ulRandMinMax(1, 10))
   {
-    collectiblesAnimTileCheck = 0;
+    redCapacitorsAnimTileCheck = 0;
     for (UBYTE i = 0; i < 10; ++i)
     {
       for (UBYTE k = 0; k < 7; ++k)
       {
-        if (collectiblesAnim[i][k] == 1)
+        if (collectiblesAnim[i][k] == 9)
         {
           blitCopyMask(s_pTiles, 32, 32, s_pVpManager->pBack, i * 32, k * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
         }
       }
     }
   }
-  if (collectiblesAnimTick == 5)
+  if (redCapacitorsAnimTick == 10)
   {
-    collectiblesAnimTick = 0;
+    redCapacitorsAnimTick = 0;
   }
 }
+
+void blueCapacitorsAnimation(void)
+{
+  if (falkonIdle == 79)
+  {
+    ++blueCapacitorsAnimTick;
+  }
+  if (blueCapacitorsAnimTileCheck == 0 && blueCapacitorsAnimTick == ulRandMinMax(2, 20))
+  {
+    blueCapacitorsAnimTileCheck = 1;
+    for (UBYTE i = 0; i < 10; ++i)
+    {
+      for (UBYTE k = 0; k < 7; ++k)
+      {
+        if (collectiblesAnim[i][k] == 8)
+        {
+          blitCopyMask(s_pTiles, 160, 32, s_pVpManager->pBack, i * 32, k * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+        }
+      }
+    }
+  }
+  else if (blueCapacitorsAnimTileCheck == 1 && blueCapacitorsAnimTick == ulRandMinMax(2, 20))
+  {
+    blueCapacitorsAnimTileCheck = 0;
+    for (UBYTE i = 0; i < 10; ++i)
+    {
+      for (UBYTE k = 0; k < 7; ++k)
+      {
+        if (collectiblesAnim[i][k] == 8)
+        {
+          blitCopyMask(s_pTiles, 0, 32, s_pVpManager->pBack, i * 32, k * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+        }
+      }
+    }
+  }
+  if (blueCapacitorsAnimTick == 20)
+  {
+    blueCapacitorsAnimTick = 0;
+  }
+}
+
+
 
 void stateGameCreate(void)
 {
@@ -1051,7 +1096,8 @@ void stateGameLoop(void)
   // Here goes code done each game frame
   ++falkonIdle;
   falconIdleAnimation();
-  collectiblesAnimation();
+  redCapacitorsAnimation();
+  blueCapacitorsAnimation();
 
   joyProcess();
   keyProcess();
