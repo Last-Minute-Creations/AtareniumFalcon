@@ -60,6 +60,7 @@ BYTE musicPlay = 1;
 BYTE ubStoneImg = 0;
 
 BYTE kamyki[10][7];
+BYTE collectiblesAnim[10][7];
 
 // coordsy do rysowania falkona i kontrolowania zeby sie nie wypierdolil za ekran
 BYTE falkonx = 0;
@@ -81,6 +82,8 @@ BYTE frameHit = 0;
 CONST BYTE startingCoal = 10;
 
 BYTE falkonIdle = 0;
+BYTE collectiblesAnimTick = 0;
+BYTE collectiblesAnimTileCheck = 0;
 
 BYTE coal = startingCoal;
 BYTE capacitors = 0;
@@ -197,6 +200,7 @@ void drawTiles(void)
     else if (ubZmienna == 0x39)
     {
       kamyki[x][y] = 9;
+      collectiblesAnim[x][y] = 1;
       blitCopyMask(s_pTiles, 32, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
     }
     else if (ubZmienna == 0x45)
@@ -251,6 +255,7 @@ void clearTiles(void)
     for (UBYTE x = 0; x < MAP_TILE_WIDTH; ++x)
     {
       kamyki[x][y] = 0;
+      collectiblesAnim[x][y] = 0;
     }
   }
 }
@@ -621,20 +626,20 @@ void coalAndCollect(void)
     ++robboMsgNr;
     return;
     break;
-  
+
   case 12:
-  amigaMode = 1;
-  portalAnim();
-  bitmapDestroy(s_pTiles);
-  bitmapDestroy(s_pTilesMask);
-  s_pTiles = bitmapCreateFromFile("data/tileset2.bm", 0);
-  s_pTilesMask = bitmapCreateFromFile("data/tileset_mask2.bm", 0);
-  bitmapDestroy(s_pHUD);
-  s_pHUD = bitmapCreateFromFile("data/amiHUD.bm", 0);
-  blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320, 32, MINTERM_COOKIE);
-  printOnHUD();
-  return;
-  break;
+    amigaMode = 1;
+    portalAnim();
+    bitmapDestroy(s_pTiles);
+    bitmapDestroy(s_pTilesMask);
+    s_pTiles = bitmapCreateFromFile("data/tileset2.bm", 0);
+    s_pTilesMask = bitmapCreateFromFile("data/tileset_mask2.bm", 0);
+    bitmapDestroy(s_pHUD);
+    s_pHUD = bitmapCreateFromFile("data/amiHUD.bm", 0);
+    blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320, 32, MINTERM_COOKIE);
+    printOnHUD();
+    return;
+    break;
   }
   printOnHUD();
 }
@@ -880,12 +885,12 @@ void falconMove(void)
   }
 }
 
-void falconIdleAnimation(void){
-  
+void falconIdleAnimation(void)
+{
+
   if (falkonIdle == 10)
   {
     idleFrame = 0;
-    
   }
   else if (falkonIdle == 20)
   {
@@ -897,7 +902,7 @@ void falconIdleAnimation(void){
   }
   else if (falkonIdle == 40)
   {
-   idleFrame = 3; 
+    idleFrame = 3;
   }
   else if (falkonIdle == 50)
   {
@@ -909,7 +914,7 @@ void falconIdleAnimation(void){
   }
   else if (falkonIdle == 70)
   {
-   idleFrame = 2;
+    idleFrame = 2;
   }
   else if (falkonIdle == 80)
   {
@@ -917,8 +922,48 @@ void falconIdleAnimation(void){
     falkonIdle = 0;
   }
   blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
-    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
-    blitCopyMask(s_pTiles, idleFrame * 32, 192 + falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+  blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
+  blitCopyMask(s_pTiles, idleFrame * 32, 192 + falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+}
+
+void collectiblesAnimation(void)
+{
+  if (falkonIdle == 77)
+  {
+    ++collectiblesAnimTick;
+  }
+  if (collectiblesAnimTileCheck == 0 && collectiblesAnimTick == ulRandMinMax(2, 5))
+  {
+    collectiblesAnimTileCheck = 1;
+    for (UBYTE i = 0; i < 10; ++i)
+    {
+      for (UBYTE k = 0; k < 7; ++k)
+      {
+        if (collectiblesAnim[i][k] == 1)
+        {
+          blitCopyMask(s_pTiles, 128, 32, s_pVpManager->pBack, i * 32, k * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+        }
+      }
+    }
+  }
+  else if (collectiblesAnimTileCheck == 1 && collectiblesAnimTick == ulRandMinMax(2, 5))
+  {
+    collectiblesAnimTileCheck = 0;
+    for (UBYTE i = 0; i < 10; ++i)
+    {
+      for (UBYTE k = 0; k < 7; ++k)
+      {
+        if (collectiblesAnim[i][k] == 1)
+        {
+          blitCopyMask(s_pTiles, 32, 32, s_pVpManager->pBack, i * 32, k * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+        }
+      }
+    }
+  }
+  if (collectiblesAnimTick == 5)
+  {
+    collectiblesAnimTick = 0;
+  }
 }
 
 void stateGameCreate(void)
@@ -1006,7 +1051,7 @@ void stateGameLoop(void)
   // Here goes code done each game frame
   ++falkonIdle;
   falconIdleAnimation();
-  
+  collectiblesAnimation();
 
   joyProcess();
   keyProcess();
@@ -1066,23 +1111,26 @@ void stateGameLoop(void)
     coalAndCollect();
   }
 
-  if (amigaMode == 1){     // jesli zebralem ami-kondka to wyswietlam ekran z plot twistem
-    amigaMode = 2;   // ustawiam dla sprawdzenia na koniec czy bedzie alternatywne zakonczenie
-   // ptplayerStop();
-   statePush(g_pStateMachineGame, &g_sStateGuruMastah);
-   return;
-   }
+  if (amigaMode == 1)
+  {                // jesli zebralem ami-kondka to wyswietlam ekran z plot twistem
+    amigaMode = 2; // ustawiam dla sprawdzenia na koniec czy bedzie alternatywne zakonczenie
+    // ptplayerStop();
+    statePush(g_pStateMachineGame, &g_sStateGuruMastah);
+    return;
+  }
 
-  if (youWin == 1)   // sprawdzenie ktore zakonczenie uruchomic
+  if (youWin == 1) // sprawdzenie ktore zakonczenie uruchomic
   {
     youWin = 0;
-    if (amigaMode == 0){    
-    stateChange(g_pStateMachineGame, &g_sStateScore);  // atari ending
-    return;
+    if (amigaMode == 0)
+    {
+      stateChange(g_pStateMachineGame, &g_sStateScore); // atari ending
+      return;
     }
-    else if (amigaMode == 2){
-    stateChange(g_pStateMachineGame, &g_sStateScoreAmi);  // amiga ending
-    return; 
+    else if (amigaMode == 2)
+    {
+      stateChange(g_pStateMachineGame, &g_sStateScoreAmi); // amiga ending
+      return;
     }
   }
 
@@ -1093,8 +1141,6 @@ void stateGameLoop(void)
     stateChange(g_pStateMachineGame, &g_sStateGameOver);
     return;
   }
-
-
 
   viewProcessManagers(s_pView);      // obliczenia niezb�dne do poprawnego dzia�ania viewport�w
   copProcessBlocks();                // obliczenia niezb�dne do poprawnego dzia�ania coppera
