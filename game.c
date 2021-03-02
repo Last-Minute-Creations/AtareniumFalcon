@@ -107,7 +107,9 @@ void waitFrames(tVPort *pVPort, UBYTE ubHowMany, UWORD uwPosY)
 {
   for (UBYTE i = 0; i < ubHowMany; ++i)
   {
-    vPortWaitForPos(pVPort, uwPosY, 0);
+    viewProcessManagers(s_pView); 
+    copProcessBlocks();
+    vPortWaitForEnd(s_pVp);
   }
 }
 
@@ -174,55 +176,72 @@ void drawTiles(void)
       kamyki[x][y] = 3;
       ubStoneImg = ulRandMinMax(0, 2);
       blitCopyMask(s_pTiles, ubStoneImg * 32, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+      blitCopyMask(s_pTiles, ubStoneImg * 32, 0, s_pVpManager->pFront, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
     }
     else if (ubZmienna == 0x34)
     {
       kamyki[x][y] = 4;
       blitCopyMask(s_pTiles, 96, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-    }
+      blitCopyMask(s_pTiles, 96, 0, s_pVpManager->pFront, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+
+   }
 
     else if (ubZmienna == 0x35)
     {
       kamyki[x][y] = 5;
       blitCopyMask(s_pTiles, 128, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+      blitCopyMask(s_pTiles, 128, 0, s_pVpManager->pFront, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+
     }
 
     else if (ubZmienna == 0x36)
     {
       kamyki[x][y] = 6;
       blitCopyMask(s_pTiles, 160, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+      blitCopyMask(s_pTiles, 160, 0, s_pVpManager->pFront, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+
     }
     else if (ubZmienna == 0x37)
     {
       kamyki[x][y] = 7;
       blitCopyMask(s_pTiles, 192, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+      blitCopyMask(s_pTiles, 192, 0, s_pVpManager->pFront, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+   
     }
     else if (ubZmienna == 0x38)
     {
       kamyki[x][y] = 8;
       collectiblesAnim[x][y] = 8;
       blitCopyMask(s_pTiles, 0, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+    
     }
     else if (ubZmienna == 0x39)
     {
       kamyki[x][y] = 9;
       collectiblesAnim[x][y] = 9;
       blitCopyMask(s_pTiles, 32, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+   
     }
     else if (ubZmienna == 0x45)
     {
       kamyki[x][y] = 10;
       blitCopyMask(s_pTiles, 64, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+      blitCopyMask(s_pTiles, 64, 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+    
     }
     else if (ubZmienna == 0x52)
     {
       kamyki[x][y] = 11;
       blitCopyMask(s_pTiles, 96, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+      blitCopyMask(s_pTiles, 96, 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+    
     }
     else if (ubZmienna == 0x42)
     {
       kamyki[x][y] = 12;
       blitCopyMask(s_pTiles, 128, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+      blitCopyMask(s_pTiles, 128, 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+    
     }
     else if (ubZmienna == 0x31)
     {
@@ -1256,7 +1275,7 @@ void stateGameCreate(void)
   s_pVpManager = simpleBufferCreate(0,
                                     TAG_SIMPLEBUFFER_VPORT, s_pVp,                              // parent viewport
                                     TAG_SIMPLEBUFFER_BITMAP_FLAGS, BMF_CLEAR | BMF_INTERLEAVED, // wst�pne czyszczenie bitmapy, przyspieszenie rysowania grafiki
-                                    TAG_SIMPLEBUFFER_IS_DBLBUF, 0,                              // nie potrzebujemy double buffering
+                                    TAG_SIMPLEBUFFER_IS_DBLBUF, 1,                              // nie potrzebujemy double buffering
                                     TAG_SIMPLEBUFFER_BOUND_WIDTH, 320 + 16,
                                     TAG_END);
 
@@ -1264,7 +1283,9 @@ void stateGameCreate(void)
 
   // po zrobieniu simpleBufferCreate()
   bitmapLoadFromFile(s_pVpManager->pBack, "data/tlo1.bm", 0, 0); // wczytaj zawarto�� bg1.bm bezpo�rednio do bitmapy bufora ekranu, zaczynaj�c od pozycji 0,0
+  bitmapLoadFromFile(s_pVpManager->pFront, "data/tlo1.bm", 0, 0);
   blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320, 32, MINTERM_COOKIE);
+  blitCopy(s_pHUD, 0, 0, s_pVpManager->pFront, 0, 224, 320, 32, MINTERM_COOKIE);
   joyOpen(); // b�dziemy u�ywa� d�oja w grze
   keyCreate();
   // na koniec create:
@@ -1398,7 +1419,7 @@ void stateGameLoop(void)
 
   viewProcessManagers(s_pView);      // obliczenia niezb�dne do poprawnego dzia�ania viewport�w
   copProcessBlocks();                // obliczenia niezb�dne do poprawnego dzia�ania coppera
-  vPortWaitForPos(s_pVp, uwPosY, 0); // r�wnowa�ne amosowemu wait vbl
+  vPortWaitForEnd(s_pVp); // r�wnowa�ne amosowemu wait vbl
 }
 
 void stateGameDestroy(void)
