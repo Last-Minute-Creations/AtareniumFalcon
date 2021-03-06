@@ -347,7 +347,10 @@ void nextLevel(void)
   clearTiles();
   blitCopy(s_pBg, 0, 0, s_pVpManager->pBack, 0, 0, 320, 128, MINTERM_COPY);
   blitCopy(s_pBg, 0, 128, s_pVpManager->pBack, 0, 128, 320, 128, MINTERM_COPY);
+  blitCopy(s_pBg, 0, 0, s_pVpManager->pFront, 0, 0, 320, 128, MINTERM_COPY);
+  blitCopy(s_pBg, 0, 128, s_pVpManager->pFront, 0, 128, 320, 128, MINTERM_COPY);
   blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320, 32, MINTERM_COPY);
+  blitCopy(s_pHUD, 0, 0, s_pVpManager->pFront, 0, 224, 320, 32, MINTERM_COPY);
   printOnHUD();
   drawTiles();
 }
