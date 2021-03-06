@@ -84,8 +84,7 @@ CONST BYTE startingCoal = 10;
 
 BYTE falkonIdle = 0;
 BYTE redCapacitorsAnimTick = 0;
-BYTE redTickTempo = 1;
-BYTE blueTickTempo = 4;
+BYTE tickTempo = 1;
 BYTE redCapacitorsAnimTileCheck = 0;
 BYTE blueCapacitorsAnimTick = 0;
 BYTE blueCapacitorsAnimTileCheck = 0;
@@ -955,9 +954,8 @@ void falconIdleAnimation(void)
 void redCapacitorsAnimation(void)
 {
   
-  if (redCapacitorsAnimTick == redTickTempo && redCapacitorsAnimTileCheck == 0)
+  if (redCapacitorsAnimTick == tickTempo)
   {
-    redCapacitorsAnimTileCheck = 1;
     redCapacitorsAnimTick = 0;
     for (UBYTE i = 0; i < 10; ++i)
     {
@@ -967,138 +965,24 @@ void redCapacitorsAnimation(void)
         {
           blitCopy(s_pBg, i * 32, k * 32, s_pAnimBg, 0, 0, 32, 32, MINTERM_COOKIE);
           blitCopy(s_pAnimBg, 0, 0, s_pVpManager->pBack, i * 32, k * 32, 32, 32, MINTERM_COOKIE);
-          blitCopyMask(s_pTiles, 0, 288, s_pVpManager->pBack, i * 32, k * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+          blitCopyMask(s_pTiles, redCapacitorsAnimTileCheck * 32, 288, s_pVpManager->pBack, i * 32, k * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
         }
       }
     }
-  }
-  else if (redCapacitorsAnimTick == redTickTempo &&  redCapacitorsAnimTileCheck == 1)
-  {
-    redCapacitorsAnimTileCheck = 2;
-    redCapacitorsAnimTick = 0;
-    for (UBYTE i = 0; i < 10; ++i)
-    {
-      for (UBYTE k = 0; k < 7; ++k)
-      {
-        if (collectiblesAnim[i][k] == 9)
-        {
-          blitCopy(s_pBg, i * 32, k * 32, s_pAnimBg, 0, 0, 32, 32, MINTERM_COOKIE);
-          blitCopy(s_pAnimBg, 0, 0, s_pVpManager->pBack, i * 32, k * 32, 32, 32, MINTERM_COOKIE);
-          blitCopyMask(s_pTiles, 32, 288, s_pVpManager->pBack, i * 32, k * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-        }
-      }
+    ++redCapacitorsAnimTileCheck;
+    if (redCapacitorsAnimTileCheck == 7){
+      redCapacitorsAnimTileCheck = 0;
     }
-  }
-  else if (redCapacitorsAnimTick == redTickTempo &&  redCapacitorsAnimTileCheck == 2)
-  {
-    redCapacitorsAnimTileCheck = 3;
-    redCapacitorsAnimTick = 0;
-    for (UBYTE i = 0; i < 10; ++i)
-    {
-      for (UBYTE k = 0; k < 7; ++k)
-      {
-        if (collectiblesAnim[i][k] == 9)
-        {
-          blitCopy(s_pBg, i * 32, k * 32, s_pAnimBg, 0, 0, 32, 32, MINTERM_COOKIE);
-          blitCopy(s_pAnimBg, 0, 0, s_pVpManager->pBack, i * 32, k * 32, 32, 32, MINTERM_COOKIE);
-          blitCopyMask(s_pTiles, 64, 288, s_pVpManager->pBack, i * 32, k * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-        }
-      }
-    }
-  }
-  else if (redCapacitorsAnimTick == redTickTempo &&  redCapacitorsAnimTileCheck == 3)
-  {
-    redCapacitorsAnimTileCheck = 4;
-    redCapacitorsAnimTick = 0;
-    for (UBYTE i = 0; i < 10; ++i)
-    {
-      for (UBYTE k = 0; k < 7; ++k)
-      {
-        if (collectiblesAnim[i][k] == 9)
-        {
-          blitCopy(s_pBg, i * 32, k * 32, s_pAnimBg, 0, 0, 32, 32, MINTERM_COOKIE);
-          blitCopy(s_pAnimBg, 0, 0, s_pVpManager->pBack, i * 32, k * 32, 32, 32, MINTERM_COOKIE);
-          blitCopyMask(s_pTiles, 96, 288, s_pVpManager->pBack, i * 32, k * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-        }
-      }
-    }
-  }
-  else if (redCapacitorsAnimTick == redTickTempo &&  redCapacitorsAnimTileCheck == 4)
-  {
-    redCapacitorsAnimTileCheck = 5;
-    redCapacitorsAnimTick = 0;
-    for (UBYTE i = 0; i < 10; ++i)
-    {
-      for (UBYTE k = 0; k < 7; ++k)
-      {
-        if (collectiblesAnim[i][k] == 9)
-        {
-          blitCopy(s_pBg, i * 32, k * 32, s_pAnimBg, 0, 0, 32, 32, MINTERM_COOKIE);
-          blitCopy(s_pAnimBg, 0, 0, s_pVpManager->pBack, i * 32, k * 32, 32, 32, MINTERM_COOKIE);
-          blitCopyMask(s_pTiles, 128, 288, s_pVpManager->pBack, i * 32, k * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-        }
-      }
-    }
-  }
-  else if (redCapacitorsAnimTick == redTickTempo &&  redCapacitorsAnimTileCheck == 5)
-  {
-    redCapacitorsAnimTileCheck = 6;
-    redCapacitorsAnimTick = 0;
-    for (UBYTE i = 0; i < 10; ++i)
-    {
-      for (UBYTE k = 0; k < 7; ++k)
-      {
-        if (collectiblesAnim[i][k] == 9)
-        {
-          blitCopy(s_pBg, i * 32, k * 32, s_pAnimBg, 0, 0, 32, 32, MINTERM_COOKIE);
-          blitCopy(s_pAnimBg, 0, 0, s_pVpManager->pBack, i * 32, k * 32, 32, 32, MINTERM_COOKIE);
-          blitCopyMask(s_pTiles, 160, 288, s_pVpManager->pBack, i * 32, k * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-        }
-      }
-    }
-  }
-  else if (redCapacitorsAnimTick == redTickTempo &&  redCapacitorsAnimTileCheck == 6)
-  {
-    redCapacitorsAnimTileCheck = 7;
-    redCapacitorsAnimTick = 0;
-    for (UBYTE i = 0; i < 10; ++i)
-    {
-      for (UBYTE k = 0; k < 7; ++k)
-      {
-        if (collectiblesAnim[i][k] == 9)
-        {
-          blitCopy(s_pBg, i * 32, k * 32, s_pAnimBg, 0, 0, 32, 32, MINTERM_COOKIE);
-          blitCopy(s_pAnimBg, 0, 0, s_pVpManager->pBack, i * 32, k * 32, 32, 32, MINTERM_COOKIE);
-          blitCopyMask(s_pTiles, 192, 288, s_pVpManager->pBack, i * 32, k * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-        }
-      }
-    }
-  }
-  else if (redCapacitorsAnimTick == redTickTempo &&  redCapacitorsAnimTileCheck == 7)
-  {
-    redCapacitorsAnimTileCheck = 0;
-    redCapacitorsAnimTick = 0;
-    for (UBYTE i = 0; i < 10; ++i)
-    {
-      for (UBYTE k = 0; k < 7; ++k)
-      {
-        if (collectiblesAnim[i][k] == 9)
-        {
-          blitCopy(s_pBg, i * 32, k * 32, s_pAnimBg, 0, 0, 32, 32, MINTERM_COOKIE);
-          blitCopy(s_pAnimBg, 0, 0, s_pVpManager->pBack, i * 32, k * 32, 32, 32, MINTERM_COOKIE);
-          blitCopyMask(s_pTiles, 224, 288, s_pVpManager->pBack, i * 32, k * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-        }
-      }
-    }
+
   }
 }
+  
 
 void blueCapacitorsAnimation(void)
 {
   
-  if (blueCapacitorsAnimTick == blueTickTempo && blueCapacitorsAnimTileCheck == 0)
+  if (blueCapacitorsAnimTick == tickTempo)
   {
-    blueCapacitorsAnimTileCheck = 1;
     blueCapacitorsAnimTick = 0;
     for (UBYTE i = 0; i < 10; ++i)
     {
@@ -1108,129 +992,15 @@ void blueCapacitorsAnimation(void)
         {
           blitCopy(s_pBg, i * 32, k * 32, s_pAnimBg, 0, 0, 32, 32, MINTERM_COOKIE);
           blitCopy(s_pAnimBg, 0, 0, s_pVpManager->pBack, i * 32, k * 32, 32, 32, MINTERM_COOKIE);
-          blitCopyMask(s_pTiles, 0, 256, s_pVpManager->pBack, i * 32, k * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+          blitCopyMask(s_pTiles, blueCapacitorsAnimTileCheck * 32, 256, s_pVpManager->pBack, i * 32, k * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
         }
       }
     }
-  }
-  else if (blueCapacitorsAnimTick == blueTickTempo &&  blueCapacitorsAnimTileCheck == 1)
-  {
-    blueCapacitorsAnimTileCheck = 2;
-    blueCapacitorsAnimTick = 0;
-    for (UBYTE i = 0; i < 10; ++i)
-    {
-      for (UBYTE k = 0; k < 7; ++k)
-      {
-        if (collectiblesAnim[i][k] == 8)
-        {
-          blitCopy(s_pBg, i * 32, k * 32, s_pAnimBg, 0, 0, 32, 32, MINTERM_COOKIE);
-          blitCopy(s_pAnimBg, 0, 0, s_pVpManager->pBack, i * 32, k * 32, 32, 32, MINTERM_COOKIE);
-          blitCopyMask(s_pTiles, 32, 256, s_pVpManager->pBack, i * 32, k * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-        }
-      }
+    ++blueCapacitorsAnimTileCheck;
+    if (blueCapacitorsAnimTileCheck == 7){
+      blueCapacitorsAnimTileCheck = 0;
     }
-  }
-  else if (blueCapacitorsAnimTick == blueTickTempo &&  blueCapacitorsAnimTileCheck == 2)
-  {
-    blueCapacitorsAnimTileCheck = 3;
-    blueCapacitorsAnimTick = 0;
-    for (UBYTE i = 0; i < 10; ++i)
-    {
-      for (UBYTE k = 0; k < 7; ++k)
-      {
-        if (collectiblesAnim[i][k] == 8)
-        {
-          blitCopy(s_pBg, i * 32, k * 32, s_pAnimBg, 0, 0, 32, 32, MINTERM_COOKIE);
-          blitCopy(s_pAnimBg, 0, 0, s_pVpManager->pBack, i * 32, k * 32, 32, 32, MINTERM_COOKIE);
-          blitCopyMask(s_pTiles, 64, 256, s_pVpManager->pBack, i * 32, k * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-        }
-      }
-    }
-  }
-  else if (blueCapacitorsAnimTick == blueTickTempo &&  blueCapacitorsAnimTileCheck == 3)
-  {
-    blueCapacitorsAnimTileCheck = 4;
-    blueCapacitorsAnimTick = 0;
-    for (UBYTE i = 0; i < 10; ++i)
-    {
-      for (UBYTE k = 0; k < 7; ++k)
-      {
-        if (collectiblesAnim[i][k] == 8)
-        {
-          blitCopy(s_pBg, i * 32, k * 32, s_pAnimBg, 0, 0, 32, 32, MINTERM_COOKIE);
-          blitCopy(s_pAnimBg, 0, 0, s_pVpManager->pBack, i * 32, k * 32, 32, 32, MINTERM_COOKIE);
-          blitCopyMask(s_pTiles, 96, 256, s_pVpManager->pBack, i * 32, k * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-        }
-      }
-    }
-  }
-  else if (blueCapacitorsAnimTick == blueTickTempo &&  blueCapacitorsAnimTileCheck == 4)
-  {
-    blueCapacitorsAnimTileCheck = 5;
-    blueCapacitorsAnimTick = 0;
-    for (UBYTE i = 0; i < 10; ++i)
-    {
-      for (UBYTE k = 0; k < 7; ++k)
-      {
-        if (collectiblesAnim[i][k] == 8)
-        {
-          blitCopy(s_pBg, i * 32, k * 32, s_pAnimBg, 0, 0, 32, 32, MINTERM_COOKIE);
-          blitCopy(s_pAnimBg, 0, 0, s_pVpManager->pBack, i * 32, k * 32, 32, 32, MINTERM_COOKIE);
-          blitCopyMask(s_pTiles, 128, 256, s_pVpManager->pBack, i * 32, k * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-        }
-      }
-    }
-  }
-  else if (blueCapacitorsAnimTick == blueTickTempo &&  blueCapacitorsAnimTileCheck == 5)
-  {
-    blueCapacitorsAnimTileCheck = 6;
-    blueCapacitorsAnimTick = 0;
-    for (UBYTE i = 0; i < 10; ++i)
-    {
-      for (UBYTE k = 0; k < 7; ++k)
-      {
-        if (collectiblesAnim[i][k] == 8)
-        {
-          blitCopy(s_pBg, i * 32, k * 32, s_pAnimBg, 0, 0, 32, 32, MINTERM_COOKIE);
-          blitCopy(s_pAnimBg, 0, 0, s_pVpManager->pBack, i * 32, k * 32, 32, 32, MINTERM_COOKIE);
-          blitCopyMask(s_pTiles, 160, 256, s_pVpManager->pBack, i * 32, k * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-        }
-      }
-    }
-  }
-  else if (blueCapacitorsAnimTick == blueTickTempo &&  blueCapacitorsAnimTileCheck == 6)
-  {
-    blueCapacitorsAnimTileCheck = 7;
-    blueCapacitorsAnimTick = 0;
-    for (UBYTE i = 0; i < 10; ++i)
-    {
-      for (UBYTE k = 0; k < 7; ++k)
-      {
-        if (collectiblesAnim[i][k] == 8)
-        {
-          blitCopy(s_pBg, i * 32, k * 32, s_pAnimBg, 0, 0, 32, 32, MINTERM_COOKIE);
-          blitCopy(s_pAnimBg, 0, 0, s_pVpManager->pBack, i * 32, k * 32, 32, 32, MINTERM_COOKIE);
-          blitCopyMask(s_pTiles, 192, 256, s_pVpManager->pBack, i * 32, k * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-        }
-      }
-    }
-  }
-  else if (blueCapacitorsAnimTick == blueTickTempo &&  blueCapacitorsAnimTileCheck == 7)
-  {
-    blueCapacitorsAnimTileCheck = 0;
-    blueCapacitorsAnimTick = 0;
-    for (UBYTE i = 0; i < 10; ++i)
-    {
-      for (UBYTE k = 0; k < 7; ++k)
-      {
-        if (collectiblesAnim[i][k] == 8)
-        {
-          blitCopy(s_pBg, i * 32, k * 32, s_pAnimBg, 0, 0, 32, 32, MINTERM_COOKIE);
-          blitCopy(s_pAnimBg, 0, 0, s_pVpManager->pBack, i * 32, k * 32, 32, 32, MINTERM_COOKIE);
-          blitCopyMask(s_pTiles, 224, 256, s_pVpManager->pBack, i * 32, k * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-        }
-      }
-    }
+
   }
 }
 
