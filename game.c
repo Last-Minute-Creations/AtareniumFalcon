@@ -20,10 +20,9 @@ static tSimpleBufferManager *s_pVpManager;
 static tBitMap *s_pTiles;
 static tBitMap *s_pTilesMask;
 static tBitMap *s_pBg;
-static tBitMap *s_pAnimBg;
-static tBitMap *s_pAnimBg2;
 static tBitMap *s_pHUD;
 static tBitMap *s_pFalconBg;
+static tBitMap *s_pAnimBg;
 static tBitMap *s_pRobbo;
 
 static tPtplayerMod *s_pMod;
@@ -83,12 +82,13 @@ BYTE frameHit = 0;
 CONST BYTE startingCoal = 10;
 
 BYTE falkonIdle = 0;
-BYTE falkonIdleTempo = 2;
+BYTE falkonIdleTempo = 4;
 BYTE redCapacitorsAnimTick = 0;
-BYTE tickTempo = 1;
+BYTE tickTempo = 8;
 BYTE redCapacitorsAnimTileCheck = 0;
 BYTE blueCapacitorsAnimTick = 0;
 BYTE blueCapacitorsAnimTileCheck = 0;
+static UBYTE isDrawnOnce = 0;
 
 BYTE coal = startingCoal;
 BYTE capacitors = 0;
@@ -169,18 +169,24 @@ void drawTiles(void)
     if (ubZmienna == 0x30)
     {
       kamyki[x][y] = 0;
+      blitCopy(s_pBg, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
+      blitCopy(s_pBg, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
     }
 
     else if (ubZmienna == 0x33)
     {
       kamyki[x][y] = 3;
       ubStoneImg = ulRandMinMax(0, 2);
+      blitCopy(s_pBg, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
+      blitCopy(s_pBg, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopyMask(s_pTiles, ubStoneImg * 32, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
       blitCopyMask(s_pTiles, ubStoneImg * 32, 0, s_pVpManager->pFront, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
     }
     else if (ubZmienna == 0x34)
     {
       kamyki[x][y] = 4;
+      blitCopy(s_pBg, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
+      blitCopy(s_pBg, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopyMask(s_pTiles, 96, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
       blitCopyMask(s_pTiles, 96, 0, s_pVpManager->pFront, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
 
@@ -189,6 +195,8 @@ void drawTiles(void)
     else if (ubZmienna == 0x35)
     {
       kamyki[x][y] = 5;
+      blitCopy(s_pBg, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
+      blitCopy(s_pBg, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopyMask(s_pTiles, 128, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
       blitCopyMask(s_pTiles, 128, 0, s_pVpManager->pFront, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
 
@@ -197,6 +205,8 @@ void drawTiles(void)
     else if (ubZmienna == 0x36)
     {
       kamyki[x][y] = 6;
+      blitCopy(s_pBg, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
+      blitCopy(s_pBg, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopyMask(s_pTiles, 160, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
       blitCopyMask(s_pTiles, 160, 0, s_pVpManager->pFront, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
 
@@ -204,6 +214,8 @@ void drawTiles(void)
     else if (ubZmienna == 0x37)
     {
       kamyki[x][y] = 7;
+      blitCopy(s_pBg, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
+      blitCopy(s_pBg, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopyMask(s_pTiles, 192, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
       blitCopyMask(s_pTiles, 192, 0, s_pVpManager->pFront, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
    
@@ -212,6 +224,8 @@ void drawTiles(void)
     {
       kamyki[x][y] = 8;
       collectiblesAnim[x][y] = 8;
+      blitCopy(s_pBg, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
+      blitCopy(s_pBg, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopyMask(s_pTiles, 0, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
       blitCopyMask(s_pTiles, 0, 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
     
@@ -220,6 +234,8 @@ void drawTiles(void)
     {
       kamyki[x][y] = 9;
       collectiblesAnim[x][y] = 9;
+      blitCopy(s_pBg, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
+      blitCopy(s_pBg, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopyMask(s_pTiles, 32, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
       blitCopyMask(s_pTiles, 32, 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
    
@@ -227,6 +243,8 @@ void drawTiles(void)
     else if (ubZmienna == 0x45)
     {
       kamyki[x][y] = 10;
+      blitCopy(s_pBg, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
+      blitCopy(s_pBg, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopyMask(s_pTiles, 64, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
       blitCopyMask(s_pTiles, 64, 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
     
@@ -234,6 +252,8 @@ void drawTiles(void)
     else if (ubZmienna == 0x52)
     {
       kamyki[x][y] = 11;
+      blitCopy(s_pBg, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
+      blitCopy(s_pBg, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopyMask(s_pTiles, 96, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
       blitCopyMask(s_pTiles, 96, 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
     
@@ -241,6 +261,8 @@ void drawTiles(void)
     else if (ubZmienna == 0x42)
     {
       kamyki[x][y] = 12;
+      blitCopy(s_pBg, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
+      blitCopy(s_pBg, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopyMask(s_pTiles, 128, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
       blitCopyMask(s_pTiles, 128, 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
     
@@ -348,10 +370,6 @@ void nextLevel(void)
     break;
   }
   clearTiles();
-  blitCopy(s_pBg, 0, 0, s_pVpManager->pBack, 0, 0, 320, 128, MINTERM_COPY);
-  blitCopy(s_pBg, 0, 128, s_pVpManager->pBack, 0, 128, 320, 128, MINTERM_COPY);
-  blitCopy(s_pBg, 0, 0, s_pVpManager->pFront, 0, 0, 320, 128, MINTERM_COPY);
-  blitCopy(s_pBg, 0, 128, s_pVpManager->pFront, 0, 128, 320, 128, MINTERM_COPY);
   blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320, 32, MINTERM_COPY);
   blitCopy(s_pHUD, 0, 0, s_pVpManager->pFront, 0, 224, 320, 32, MINTERM_COPY);
   printOnHUD();
@@ -951,14 +969,15 @@ void redCapacitorsAnimation(void)
   
   if (redCapacitorsAnimTick == tickTempo)
   {
-    redCapacitorsAnimTick = 0;
+  
     for (i = 0; i < 10; ++i)
     {
       for (k = 0; k < 7; ++k)
       {
         if (collectiblesAnim[i][k] == 9)
         {
-          blitCopy(s_pBg, i * 32, k * 32, s_pVpManager->pBack, 0, 0, 32, 32, MINTERM_COOKIE);
+          blitCopy(s_pBg, i * 32, k * 32, s_pAnimBg, 0, 0, 32, 32, MINTERM_COOKIE);
+          blitCopy(s_pAnimBg, 0, 0, s_pVpManager->pBack, i * 32, k * 32, 32, 32, MINTERM_COOKIE);
           blitCopyMask(s_pTiles, redCapacitorsAnimTileCheck * 32, 288, s_pVpManager->pBack, i * 32, k * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
         }
       }
@@ -977,14 +996,15 @@ void blueCapacitorsAnimation(void)
   
   if (blueCapacitorsAnimTick == tickTempo)
   {
-    blueCapacitorsAnimTick = 0;
+  
     for (UBYTE i = 0; i < 10; ++i)
     {
       for (UBYTE k = 0; k < 7; ++k)
       {
         if (collectiblesAnim[i][k] == 8)
         {
-          blitCopy(s_pBg, i * 32, k * 32, s_pVpManager->pBack, 0, 0, 32, 32, MINTERM_COOKIE);
+          blitCopy(s_pBg, i * 32, k * 32, s_pAnimBg, 0, 0, 32, 32, MINTERM_COOKIE);
+          blitCopy(s_pAnimBg, 0, 0, s_pVpManager->pBack, i * 32, k * 32, 32, 32, MINTERM_COOKIE);
           blitCopyMask(s_pTiles, blueCapacitorsAnimTileCheck * 32, 256, s_pVpManager->pBack, i * 32, k * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
         }
       }
@@ -1030,6 +1050,7 @@ void stateGameCreate(void)
   s_pRobbo = bitmapCreateFromFile("data/falkon_robbo.bm", 0);
 
   s_pFalconBg = bitmapCreate(48, 32, 5, BMF_INTERLEAVED);
+  s_pAnimBg = bitmapCreate(48, 32, 5, BMF_INTERLEAVED);
 
   s_pFont = fontCreate("data/topaz.fnt");
   s_pBmText = fontCreateTextBitMap(300, s_pFont->uwHeight); // bitmapa robocza długa na 200px, wysoka na jedną linię tekstu
@@ -1072,11 +1093,27 @@ void stateGameLoop(void)
 {
   // Here goes code done each game frame
   ++falkonIdle;
-  ++redCapacitorsAnimTick;
-  ++blueCapacitorsAnimTick;
+  //++redCapacitorsAnimTick;
+  //++blueCapacitorsAnimTick;
   falconIdleAnimation();
   redCapacitorsAnimation();
   blueCapacitorsAnimation();
+
+  if(isDrawnOnce){
+    ++redCapacitorsAnimTick;
+    if(redCapacitorsAnimTick > tickTempo){
+      redCapacitorsAnimTick = 0;
+    }
+    ++blueCapacitorsAnimTick;
+    if(blueCapacitorsAnimTick > tickTempo){
+      blueCapacitorsAnimTick = 0;
+    }
+    isDrawnOnce = 0;
+  }
+  else{
+    isDrawnOnce = 1; 
+  }
+
 
   joyProcess();
   keyProcess();
@@ -1190,7 +1227,6 @@ void stateGameDestroy(void)
   bitmapDestroy(s_pBg);
   bitmapDestroy(s_pHUD);
   bitmapDestroy(s_pFalconBg);
-  bitmapDestroy(s_pAnimBg);
 
   fontDestroy(s_pFont);
   fontDestroyTextBitMap(s_pBmText);
