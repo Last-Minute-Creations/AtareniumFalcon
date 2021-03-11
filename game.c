@@ -958,8 +958,7 @@ void redCapacitorsAnimation(void)
       {
         if (collectiblesAnim[i][k] == 9)
         {
-          blitCopy(s_pBg, i * 32, k * 32, s_pAnimBg, 0, 0, 32, 32, MINTERM_COOKIE);
-          blitCopy(s_pAnimBg, 0, 0, s_pVpManager->pBack, i * 32, k * 32, 32, 32, MINTERM_COOKIE);
+          blitCopy(s_pBg, i * 32, k * 32, s_pVpManager->pBack, 0, 0, 32, 32, MINTERM_COOKIE);
           blitCopyMask(s_pTiles, redCapacitorsAnimTileCheck * 32, 288, s_pVpManager->pBack, i * 32, k * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
         }
       }
@@ -985,8 +984,7 @@ void blueCapacitorsAnimation(void)
       {
         if (collectiblesAnim[i][k] == 8)
         {
-          blitCopy(s_pBg, i * 32, k * 32, s_pAnimBg2, 0, 0, 32, 32, MINTERM_COOKIE);
-          blitCopy(s_pAnimBg2, 0, 0, s_pVpManager->pBack, i * 32, k * 32, 32, 32, MINTERM_COOKIE);
+          blitCopy(s_pBg, i * 32, k * 32, s_pVpManager->pBack, 0, 0, 32, 32, MINTERM_COOKIE);
           blitCopyMask(s_pTiles, blueCapacitorsAnimTileCheck * 32, 256, s_pVpManager->pBack, i * 32, k * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
         }
       }
