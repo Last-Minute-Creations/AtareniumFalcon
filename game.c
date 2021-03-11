@@ -21,6 +21,7 @@ static tBitMap *s_pTiles;
 static tBitMap *s_pTilesMask;
 static tBitMap *s_pBg;
 static tBitMap *s_pAnimBg;
+static tBitMap *s_pAnimBg2;
 static tBitMap *s_pHUD;
 static tBitMap *s_pFalconBg;
 static tBitMap *s_pRobbo;
@@ -40,7 +41,7 @@ extern tState g_sStateScoreAmi;
 #define MAP_TILE_HEIGHT 7
 #define MAP_TILE_WIDTH 10
 #define FALCON_HEIGHT 32
-#define ANIM_FRAME_COUNT 16
+#define ANIM_FRAME_COUNT 8
 
 #define LAST_LEVEL_NUMBER 28
 
@@ -71,8 +72,7 @@ BYTE krawedzy = 0;
 BYTE kierunek = 0;
 BYTE falkonFace = 0; // kierunek dziobem
 
-UWORD pAnimR[] = {0, 32, 64, 96, 128, 96, 64, 32, 0, 32, 64, 96, 128, 96, 64, 32};
-UWORD pAnimL[] = {128, 96, 64, 32, 0, 32, 64, 96, 128, 96, 64, 32, 0, 32, 64, 96};
+UWORD pAnim[] = {0, 32, 64, 96, 128, 160, 192, 224};
 
 UWORD uwPosX = 0;
 UWORD uwPosY = 0;
@@ -83,6 +83,7 @@ BYTE frameHit = 0;
 CONST BYTE startingCoal = 10;
 
 BYTE falkonIdle = 0;
+BYTE falkonIdleTempo = 2;
 BYTE redCapacitorsAnimTick = 0;
 BYTE tickTempo = 1;
 BYTE redCapacitorsAnimTileCheck = 0;
@@ -99,6 +100,7 @@ BYTE robboMsgCtrl = 0;
 BYTE robboMsgCount = 0;
 BYTE HUDfontColor = 23;
 
+UBYTE doubleBufferFrameControl = 2;
 UBYTE idleFrame = 0;
 BYTE amigaMode = 0;
 
@@ -133,7 +135,6 @@ void printOnHUD(void)
   sprintf(szMsg4, "%d", robboMsgCount);
   fontFillTextBitMap(s_pFont, s_pBmText, szMsg4);
   fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 250, 236, HUDfontColor, FONT_COOKIE);
-
   blitCopy(s_pHUD, 288, 0, s_pVpManager->pBack, 288, 224, 32, 32, MINTERM_COOKIE);
   sprintf(szLvl, "%d", level);
   fontFillTextBitMap(s_pFont, s_pBmText, szLvl);
@@ -212,6 +213,7 @@ void drawTiles(void)
       kamyki[x][y] = 8;
       collectiblesAnim[x][y] = 8;
       blitCopyMask(s_pTiles, 0, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+      blitCopyMask(s_pTiles, 0, 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
     
     }
     else if (ubZmienna == 0x39)
@@ -219,6 +221,7 @@ void drawTiles(void)
       kamyki[x][y] = 9;
       collectiblesAnim[x][y] = 9;
       blitCopyMask(s_pTiles, 32, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+      blitCopyMask(s_pTiles, 32, 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
    
     }
     else if (ubZmienna == 0x45)
@@ -352,6 +355,7 @@ void nextLevel(void)
   blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320, 32, MINTERM_COPY);
   blitCopy(s_pHUD, 0, 0, s_pVpManager->pFront, 0, 224, 320, 32, MINTERM_COPY);
   printOnHUD();
+  doubleBufferFrameControl = 2;
   drawTiles();
 }
 
@@ -683,18 +687,14 @@ void falkonHittingStone(void)
   waitFrames(s_pVp, 3, uwPosY + FALCON_HEIGHT);
   blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE);
 
-  UWORD *pAnim;
-
   for (BYTE i = 0; i < ANIM_FRAME_COUNT; ++i)
   {
     if (falkonFace == 0)
     {
-      pAnim = pAnimR;
       YAnimRow = 64;
     }
     else if (falkonFace == 32)
     {
-      pAnim = pAnimL;
       YAnimRow = 96;
     }
 
@@ -788,19 +788,10 @@ void falkonFlying(void)
   waitFrames(s_pVp, 3, uwPosY + FALCON_HEIGHT);
   blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
 
-  UWORD *pAnim;
-  if (falkonFace == 0)
-  {
-    pAnim = pAnimR;
-  }
-  else if (falkonFace == 32)
-  {
-    pAnim = pAnimL;
-  }
-
   for (BYTE i = 0; i < ANIM_FRAME_COUNT; ++i)
   {
     blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE); // rysuje tlo ze zmeinnej
+
     switch (kierunek)
     {
     case 1:
@@ -916,35 +907,35 @@ void falconMove(void)
 void falconIdleAnimation(void)
 {
 
-  if (falkonIdle == 10)
+  if (falkonIdle == falkonIdleTempo * 1)
   {
     idleFrame = 0;
   }
-  else if (falkonIdle == 20)
+  else if (falkonIdle == falkonIdleTempo * 2)
   {
     idleFrame = 1;
   }
-  else if (falkonIdle == 30)
+  else if (falkonIdle == falkonIdleTempo * 3)
   {
     idleFrame = 2;
   }
-  else if (falkonIdle == 40)
+  else if (falkonIdle == falkonIdleTempo * 4)
   {
     idleFrame = 3;
   }
-  else if (falkonIdle == 50)
+  else if (falkonIdle == falkonIdleTempo * 5)
   {
     idleFrame = 4;
   }
-  else if (falkonIdle == 60)
+  else if (falkonIdle == falkonIdleTempo * 6)
   {
     idleFrame = 3;
   }
-  else if (falkonIdle == 70)
+  else if (falkonIdle == falkonIdleTempo * 7)
   {
     idleFrame = 2;
   }
-  else if (falkonIdle == 80)
+  else if (falkonIdle == falkonIdleTempo * 8)
   {
     idleFrame = 1;
     falkonIdle = 0;
@@ -956,13 +947,14 @@ void falconIdleAnimation(void)
 
 void redCapacitorsAnimation(void)
 {
+  UBYTE i = 0, k = 0;
   
   if (redCapacitorsAnimTick == tickTempo)
   {
     redCapacitorsAnimTick = 0;
-    for (UBYTE i = 0; i < 10; ++i)
+    for (i = 0; i < 10; ++i)
     {
-      for (UBYTE k = 0; k < 7; ++k)
+      for (k = 0; k < 7; ++k)
       {
         if (collectiblesAnim[i][k] == 9)
         {
@@ -993,8 +985,8 @@ void blueCapacitorsAnimation(void)
       {
         if (collectiblesAnim[i][k] == 8)
         {
-          blitCopy(s_pBg, i * 32, k * 32, s_pAnimBg, 0, 0, 32, 32, MINTERM_COOKIE);
-          blitCopy(s_pAnimBg, 0, 0, s_pVpManager->pBack, i * 32, k * 32, 32, 32, MINTERM_COOKIE);
+          blitCopy(s_pBg, i * 32, k * 32, s_pAnimBg2, 0, 0, 32, 32, MINTERM_COOKIE);
+          blitCopy(s_pAnimBg2, 0, 0, s_pVpManager->pBack, i * 32, k * 32, 32, 32, MINTERM_COOKIE);
           blitCopyMask(s_pTiles, blueCapacitorsAnimTileCheck * 32, 256, s_pVpManager->pBack, i * 32, k * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
         }
       }
@@ -1065,16 +1057,6 @@ void stateGameCreate(void)
 
   randInit(1337);
 
-  // Draw grid
-  //for(UBYTE i = 0; i < 10; ++i) {
-  //  blitLine(s_pBg, i * 32, 0, i*32, 256, 5, FF, 0);
-  //}
-  //for(UBYTE i = 0; i < 8; ++i) {
-  //  blitLine(s_pBg, 0, i * 32, 320, i * 32, 5, FF, 0);
-  //}
-  //blitCopyAligned(s_pBg, 0, 0, s_pVpManager->pBack, 0, 0, 320, 256 / 2);
-  //blitCopyAligned(s_pBg, 0, 256 / 2, s_pVpManager->pBack, 0, 256 / 2, 320, 256 / 2 - 32);
-
   printOnHUD();
 
   viewProcessManagers(s_pView);
@@ -1082,9 +1064,6 @@ void stateGameCreate(void)
 
   blitCopy(s_pBg, 0, 0, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE);
   blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, 0, 0, 33, 32, MINTERM_COOKIE);
-
-  // narysujmy falkona
-  // blitCopyMask(s_pTiles, 128, 32, s_pVpManager->pBack, falkonx, falkony, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
 
   drawTiles();
   ptplayerEnableMusic(0);
@@ -1153,10 +1132,17 @@ void stateGameLoop(void)
 
   if (kierunek != 0)
   {
+    doubleBufferFrameControl = 2;
     isThisStone();
     czyRamka();
     falconMove();
     coalAndCollect();
+  }
+
+  if (doubleBufferFrameControl > 0)
+  {
+    printOnHUD();
+    --doubleBufferFrameControl;
   }
 
   if (amigaMode == 1)
@@ -1206,6 +1192,7 @@ void stateGameDestroy(void)
   bitmapDestroy(s_pBg);
   bitmapDestroy(s_pHUD);
   bitmapDestroy(s_pFalconBg);
+  bitmapDestroy(s_pAnimBg);
 
   fontDestroy(s_pFont);
   fontDestroyTextBitMap(s_pBmText);
