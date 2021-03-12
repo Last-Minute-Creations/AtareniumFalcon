@@ -93,7 +93,7 @@ static UBYTE isDrawnOnce = 0;
 BYTE coal = startingCoal;
 BYTE capacitors = 0;
 BYTE excesscoal = 0;
-BYTE level = 16;
+BYTE level = 1;
 
 BYTE robboMsgNr = 0;
 BYTE robboMsgCtrl = 0;
@@ -108,7 +108,7 @@ void waitFrames(tVPort *pVPort, UBYTE ubHowMany, UWORD uwPosY)
 {
   for (UBYTE i = 0; i < ubHowMany; ++i)
   {
-    viewProcessManagers(s_pView); 
+    viewProcessManagers(s_pView);
     copProcessBlocks();
     vPortWaitForEnd(s_pVp);
   }
@@ -189,8 +189,7 @@ void drawTiles(void)
       blitCopy(s_pBg, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopyMask(s_pTiles, 96, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
       blitCopyMask(s_pTiles, 96, 0, s_pVpManager->pFront, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-
-   }
+    }
 
     else if (ubZmienna == 0x35)
     {
@@ -199,7 +198,6 @@ void drawTiles(void)
       blitCopy(s_pBg, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopyMask(s_pTiles, 128, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
       blitCopyMask(s_pTiles, 128, 0, s_pVpManager->pFront, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-
     }
 
     else if (ubZmienna == 0x36)
@@ -209,7 +207,6 @@ void drawTiles(void)
       blitCopy(s_pBg, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopyMask(s_pTiles, 160, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
       blitCopyMask(s_pTiles, 160, 0, s_pVpManager->pFront, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-
     }
     else if (ubZmienna == 0x37)
     {
@@ -218,7 +215,6 @@ void drawTiles(void)
       blitCopy(s_pBg, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopyMask(s_pTiles, 192, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
       blitCopyMask(s_pTiles, 192, 0, s_pVpManager->pFront, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-   
     }
     else if (ubZmienna == 0x38)
     {
@@ -228,7 +224,6 @@ void drawTiles(void)
       blitCopy(s_pBg, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopyMask(s_pTiles, 0, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
       blitCopyMask(s_pTiles, 0, 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-    
     }
     else if (ubZmienna == 0x39)
     {
@@ -238,7 +233,6 @@ void drawTiles(void)
       blitCopy(s_pBg, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopyMask(s_pTiles, 32, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
       blitCopyMask(s_pTiles, 32, 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-   
     }
     else if (ubZmienna == 0x45)
     {
@@ -247,7 +241,6 @@ void drawTiles(void)
       blitCopy(s_pBg, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopyMask(s_pTiles, 64, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
       blitCopyMask(s_pTiles, 64, 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-    
     }
     else if (ubZmienna == 0x52)
     {
@@ -256,7 +249,6 @@ void drawTiles(void)
       blitCopy(s_pBg, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopyMask(s_pTiles, 96, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
       blitCopyMask(s_pTiles, 96, 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-    
     }
     else if (ubZmienna == 0x42)
     {
@@ -265,7 +257,6 @@ void drawTiles(void)
       blitCopy(s_pBg, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopyMask(s_pTiles, 128, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
       blitCopyMask(s_pTiles, 128, 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-    
     }
     else if (ubZmienna == 0x31)
     {
@@ -494,34 +485,65 @@ void portalAnim(void)
 
 void robboScrollUp(void)
 {
-  {
-    blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 248, 320, 8, MINTERM_COOKIE);
-    waitFrames(s_pVp, 3, 0);
-    blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 240, 320, 16, MINTERM_COOKIE);
-    waitFrames(s_pVp, 3, 0);
-    blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 232, 320, 24, MINTERM_COOKIE);
-    waitFrames(s_pVp, 3, 0);
-    blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 224, 320, 32, MINTERM_COOKIE);
-
-    // waitFrames(s_pVp, 3, 0);
+  if (robboMsgCtrl != 1){
+    return;
   }
+  doubleBufferFrameControl = 2;
+
+    if (falkonIdle == 0 || falkonIdle == 1)  // nie moze byc powiazane z falkonidle w ten sposob !
+    {                                        // bo rusza w losowych momentach !
+      blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 248, 320, 8, MINTERM_COOKIE);
+    }
+    else if (falkonIdle == 4 || falkonIdle == 5)
+    {
+      blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 240, 320, 16, MINTERM_COOKIE);
+    }
+    else if (falkonIdle == 8  || falkonIdle == 9)
+    {
+      blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 232, 320, 24, MINTERM_COOKIE);
+    }
+    else if (falkonIdle == 12 || falkonIdle == 13)
+    {
+      blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 224, 320, 32, MINTERM_COOKIE);  
+    }
+    else if (falkonIdle == 16)
+    {
+      blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 224, 320, 32, MINTERM_COOKIE);  
+      robboMsgCtrl = 3;
+    }
 }
+
 
 void robboScrollDown(void)
 {
-
+  if (robboMsgCtrl != 2){
+    return;
+  }
+  doubleBufferFrameControl = 2;
+  if (falkonIdle == 0 || falkonIdle == 1)
+    {
   blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320, 8, MINTERM_COOKIE);
   blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 232, 320, 24, MINTERM_COOKIE);
-  waitFrames(s_pVp, 3, 0);
+  }
+  else if (falkonIdle == 4 || falkonIdle == 5)
+  {
   blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320, 16, MINTERM_COOKIE);
   blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 240, 320, 16, MINTERM_COOKIE);
-  waitFrames(s_pVp, 3, 0);
+  }
+  else if (falkonIdle == 8 || falkonIdle == 9)
+  {
   blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320, 32, MINTERM_COOKIE);
   blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 248, 320, 8, MINTERM_COOKIE);
-  waitFrames(s_pVp, 3, 0);
+  }
+  else if (falkonIdle == 12 || falkonIdle == 13)
+  {
   blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320, 32, MINTERM_COOKIE);
-  waitFrames(s_pVp, 3, 0);
+  }
+  else if (falkonIdle == 16)
+  {
   blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320, 32, MINTERM_COOKIE);
+  robboMsgCtrl = 0;
+  }
 }
 
 void robboSays(void)
@@ -671,8 +693,7 @@ void coalAndCollect(void)
 
     ++robboMsgCount;
     robboMsgCtrl = 1;
-    robboScrollUp();
-    robboSays();
+    // robboSays();
     ++robboMsgNr;
     return;
     break;
@@ -687,6 +708,7 @@ void coalAndCollect(void)
     bitmapDestroy(s_pHUD);
     s_pHUD = bitmapCreateFromFile("data/amiHUD.bm", 0);
     blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320, 32, MINTERM_COOKIE);
+    blitCopy(s_pHUD, 0, 0, s_pVpManager->pFront, 0, 224, 320, 32, MINTERM_COOKIE);
     printOnHUD();
     return;
     break;
@@ -854,11 +876,11 @@ void falkonFlying(void)
     blitCopyMask(s_pTiles, pAnim[i], YAnimRow, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // rysuje falkona
     waitFrames(s_pVp, 3, uwPosY + FALCON_HEIGHT);
   }
-  if (robboMsgCtrl == 1)
-  {
-    robboMsgCtrl = 0;
-    robboScrollDown();
+  if (robboMsgCtrl == 3){
+    robboMsgCtrl == 2;
   }
+
+  
 }
 
 void falconMove(void)
@@ -966,10 +988,10 @@ void falconIdleAnimation(void)
 void redCapacitorsAnimation(void)
 {
   UBYTE i = 0, k = 0;
-  
+
   if (redCapacitorsAnimTick == tickTempo)
   {
-  
+
     for (i = 0; i < 10; ++i)
     {
       for (k = 0; k < 7; ++k)
@@ -983,20 +1005,19 @@ void redCapacitorsAnimation(void)
       }
     }
     ++redCapacitorsAnimTileCheck;
-    if (redCapacitorsAnimTileCheck == 7){
+    if (redCapacitorsAnimTileCheck == 7)
+    {
       redCapacitorsAnimTileCheck = 0;
     }
-
   }
 }
-  
 
 void blueCapacitorsAnimation(void)
 {
-  
+
   if (blueCapacitorsAnimTick == tickTempo)
   {
-  
+
     for (UBYTE i = 0; i < 10; ++i)
     {
       for (UBYTE k = 0; k < 7; ++k)
@@ -1010,14 +1031,12 @@ void blueCapacitorsAnimation(void)
       }
     }
     ++blueCapacitorsAnimTileCheck;
-    if (blueCapacitorsAnimTileCheck == 7){
+    if (blueCapacitorsAnimTileCheck == 7)
+    {
       blueCapacitorsAnimTileCheck = 0;
     }
-
   }
 }
-
-
 
 void stateGameCreate(void)
 {
@@ -1097,22 +1116,27 @@ void stateGameLoop(void)
   falconIdleAnimation();
   redCapacitorsAnimation();
   blueCapacitorsAnimation();
+  robboScrollUp();
+  robboScrollDown();
 
-  if(isDrawnOnce){
+  if (isDrawnOnce)
+  {
     ++redCapacitorsAnimTick;
-    if(redCapacitorsAnimTick > tickTempo){
+    if (redCapacitorsAnimTick > tickTempo)
+    {
       redCapacitorsAnimTick = 0;
     }
     ++blueCapacitorsAnimTick;
-    if(blueCapacitorsAnimTick > tickTempo){
+    if (blueCapacitorsAnimTick > tickTempo)
+    {
       blueCapacitorsAnimTick = 0;
     }
     isDrawnOnce = 0;
   }
-  else{
-    isDrawnOnce = 1; 
+  else
+  {
+    isDrawnOnce = 1;
   }
-
 
   joyProcess();
   keyProcess();
@@ -1175,7 +1199,20 @@ void stateGameLoop(void)
 
   if (doubleBufferFrameControl > 0)
   {
+    if (robboMsgCtrl == 0){
     printOnHUD();
+    }
+    else if (robboMsgCtrl == 1){
+      robboScrollUp();
+    }
+    else if (robboMsgCtrl == 2){
+      robboScrollDown();
+    }
+    
+    if (robboMsgCtrl == 3){
+      robboSays();
+    }
+  
     --doubleBufferFrameControl;
   }
 
@@ -1210,9 +1247,9 @@ void stateGameLoop(void)
     return;
   }
 
-  viewProcessManagers(s_pView);      // obliczenia niezb�dne do poprawnego dzia�ania viewport�w
-  copProcessBlocks();                // obliczenia niezb�dne do poprawnego dzia�ania coppera
-  vPortWaitForEnd(s_pVp); // r�wnowa�ne amosowemu wait vbl
+  viewProcessManagers(s_pView); // obliczenia niezb�dne do poprawnego dzia�ania viewport�w
+  copProcessBlocks();           // obliczenia niezb�dne do poprawnego dzia�ania coppera
+  vPortWaitForEnd(s_pVp);       // r�wnowa�ne amosowemu wait vbl
 }
 
 void stateGameDestroy(void)
