@@ -84,7 +84,7 @@ CONST BYTE startingCoal = 10;
 BYTE falkonIdle = 0;
 BYTE falkonIdleTempo = 4;
 BYTE redCapacitorsAnimTick = 0;
-BYTE tickTempo = 8;
+BYTE tickTempo = 2;
 BYTE redCapacitorsAnimTileCheck = 0;
 BYTE blueCapacitorsAnimTick = 0;
 BYTE blueCapacitorsAnimTileCheck = 0;
@@ -947,15 +947,15 @@ void falconIdleAnimation(void)
   }
   else if (falkonIdle == falkonIdleTempo * 6)
   {
-    idleFrame = 3;
+    idleFrame = 5;
   }
   else if (falkonIdle == falkonIdleTempo * 7)
   {
-    idleFrame = 2;
+    idleFrame = 6;
   }
   else if (falkonIdle == falkonIdleTempo * 8)
   {
-    idleFrame = 1;
+    idleFrame = 7;
     falkonIdle = 0;
   }
   blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
@@ -1077,6 +1077,7 @@ void stateGameCreate(void)
   randInit(1337);
 
   printOnHUD();
+  doubleBufferFrameControl = 2;
 
   viewProcessManagers(s_pView);
   viewLoad(s_pView);
@@ -1093,8 +1094,6 @@ void stateGameLoop(void)
 {
   // Here goes code done each game frame
   ++falkonIdle;
-  //++redCapacitorsAnimTick;
-  //++blueCapacitorsAnimTick;
   falconIdleAnimation();
   redCapacitorsAnimation();
   blueCapacitorsAnimation();
