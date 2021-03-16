@@ -83,6 +83,7 @@ CONST BYTE startingCoal = 10;
 
 BYTE falkonIdle = 0;
 BYTE falkonIdleTempo = 4;
+BYTE falkonIdleControl = 1;
 BYTE redCapacitorsAnimTick = 0;
 BYTE tickTempo = 2;
 BYTE redCapacitorsAnimTileCheck = 0;
@@ -95,6 +96,11 @@ BYTE hudScrollingTick = 0;
 BYTE portalAnimControl = 0;
 BYTE portalAnimTick = 0;
 BYTE portalFrame = 0;
+
+BYTE stonehitAnimControl = 0;
+BYTE stonehitAnimTick = 0;
+BYTE stonehitAnimFrame = 0;
+BYTE oneFrameDirection = 0;
 
 static UBYTE isDrawnOnce = 0;
 
@@ -761,104 +767,106 @@ void coalAndCollect(void)
 
 void falkonHittingStone(void)
 {
-  UWORD HitControl = 0;
-  UWORD YAnimRow = 0;
+  if (stonehitAnimControl != 1)
+  {
+    return;
+  }
+  
   uwPosX = falkonx * 32;
   uwPosY = falkony * 32;
 
-  blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE);
-  waitFrames(s_pVp, 3, uwPosY + FALCON_HEIGHT);
-  blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE);
-
-  for (BYTE i = 0; i < ANIM_FRAME_COUNT; ++i)
+  if (stonehitAnimControl == 1)
   {
-    if (falkonFace == 0)
+    if (stonehitAnimTick == falkonIdleTempo * 1)
     {
-      YAnimRow = 64;
-    }
-    else if (falkonFace == 32)
-    {
-      YAnimRow = 96;
-    }
-
-    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 33, 32, MINTERM_COOKIE); // rysuje tlo ze zmeinnej
-    switch (kierunek)
-    {
-    case 1:
-
-      if (HitControl == 0)
-      {
+      stonehitAnimFrame = 0;
+      if (oneFrameDirection == 1){
         ++uwPosX;
-        HitControl = 2;
       }
-      else if (HitControl == 1)
-      {
+      else if (oneFrameDirection == 2){
         --uwPosX;
-        HitControl = 0;
       }
-      else if (HitControl == 2)
-      {
-        HitControl = 1;
-      }
-      break;
-
-    case 2:
-
-      if (HitControl == 0)
-      {
-        ++uwPosX;
-        HitControl = 2;
-      }
-      else if (HitControl == 1)
-      {
-        --uwPosX;
-        HitControl = 0;
-      }
-      else if (HitControl == 2)
-      {
-        HitControl = 1;
-      }
-      break;
-
-    case 3:
-
-      if (HitControl == 0)
-      {
-        ++uwPosY;
-        HitControl = 2;
-      }
-      else if (HitControl == 1)
-      {
+      else if (oneFrameDirection == 3){
         --uwPosY;
-        HitControl = 0;
       }
-      else if (HitControl == 2)
-      {
-        HitControl = 1;
-      }
-      break;
-
-    case 4:
-      if (HitControl == 0)
-      {
+      else if (oneFrameDirection == 4){
         ++uwPosY;
-        HitControl = 2;
       }
-      else if (HitControl == 1)
-      {
-        --uwPosY;
-        HitControl = 0;
-      }
-      else if (HitControl == 2)
-      {
-        HitControl = 1;
-      }
-      break;
     }
+    else if (stonehitAnimTick == falkonIdleTempo * 2)
+    {
+      stonehitAnimFrame  = 1;
+    }
+    else if (stonehitAnimTick == falkonIdleTempo * 3)
+    {
+      stonehitAnimFrame  = 2;
+      if (oneFrameDirection == 1){
+        ++uwPosX;
+      }
+      else if (oneFrameDirection == 2){
+        --uwPosX;
+      }
+      else if (oneFrameDirection == 3){
+        --uwPosY;
+      }
+      else if (oneFrameDirection == 4){
+        ++uwPosY;
+      }
+    }
+    else if (stonehitAnimTick == falkonIdleTempo * 4)
+    {
+      stonehitAnimFrame  = 3;
+    }
+    else if (stonehitAnimTick == falkonIdleTempo * 5)
+    {
+      stonehitAnimFrame  = 4;
+      if (oneFrameDirection == 1){
+        ++uwPosX;
+      }
+      else if (oneFrameDirection == 2){
+        --uwPosX;
+      }
+      else if (oneFrameDirection == 3){
+        --uwPosY;
+      }
+      else if (oneFrameDirection == 4){
+        ++uwPosY;
+      }
+    }
+    else if (stonehitAnimTick == falkonIdleTempo * 6)
+    {
+      stonehitAnimFrame  = 5;
+    }
+    else if (stonehitAnimTick == falkonIdleTempo * 7)
+    {
+      stonehitAnimFrame  = 6;
+      if (oneFrameDirection == 1){
+        ++uwPosX;
+      }
+      else if (oneFrameDirection == 2){
+        --uwPosX;
+      }
+      else if (oneFrameDirection == 3){
+        --uwPosY;
+      }
+      else if (oneFrameDirection == 4){
+        ++uwPosY;
+      }
+    }
+    else if (stonehitAnimTick == falkonIdleTempo * 8)
+    {
+      stonehitAnimFrame  = 7;
+      stonehitAnimTick = 0;
+      stonehitAnimControl = 0;
+      falkonIdleControl = 1;
+    }
+    
 
-    blitCopy(s_pVpManager->pBack, uwPosX, uwPosY, s_pFalconBg, 0, 0, 48, 32, MINTERM_COOKIE);                                  // fragment tla wrzuca do zmiennej
-    blitCopyMask(s_pTiles, pAnim[i], YAnimRow, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // rysuje falkona
-    waitFrames(s_pVp, 3, uwPosY + FALCON_HEIGHT);
+    blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
+    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
+    blitCopy(s_pVpManager->pBack, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);                                  // fragment tla wrzuca do zmiennej
+    blitCopyMask(s_pTiles, pAnim[stonehitAnimFrame], 64 + falkonFace, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // rysuje falkona
+    
   }
 }
 
@@ -949,14 +957,15 @@ void falconMove(void)
       break;
     }
 
-    falkonHittingStone();
+    
     stoneHit = 0;
     return;
   }
 
   if (frameHit == 1)
   {
-    falkonHittingStone();
+    stonehitAnimControl = 1;
+    falkonIdleControl = 0;
     frameHit = 0;
     return;
   }
@@ -966,23 +975,23 @@ void falconMove(void)
 
   case 1:
     falkonFace = 0;
-    falkonFlying();
+    stonehitAnimControl = 1;
     falkonx = falkonx + 1;
     break;
 
   case 2:
     falkonFace = 32;
-    falkonFlying();
+    stonehitAnimControl = 1;
     falkonx = falkonx - 1;
     break;
 
   case 3:
-    falkonFlying();
+    stonehitAnimControl = 1;
     falkony = falkony - 1;
     break;
 
   case 4:
-    falkonFlying();
+    stonehitAnimControl = 1;
     falkony = falkony + 1;
     break;
   }
@@ -990,6 +999,9 @@ void falconMove(void)
 
 void falconIdleAnimation(void)
 {
+  if (falkonIdleControl != 1){
+    return;
+  }
 
   if (falkonIdle == falkonIdleTempo * 1)
   {
@@ -1156,8 +1168,11 @@ void stateGameCreate(void)
 void stateGameLoop(void)
 {
   // Here goes code done each game frame
+  if (falkonIdleControl == 1){
   ++falkonIdle;
+  }
   falconIdleAnimation();
+  falkonHittingStone();
   redCapacitorsAnimation();
   blueCapacitorsAnimation();
   robboScrollUp();
@@ -1169,6 +1184,9 @@ void stateGameLoop(void)
   }
   if (portalAnimControl == 1){
     ++portalAnimTick;
+  }
+  if (stonehitAnimControl == 1){
+    ++stonehitAnimTick;
   }
 
   if (isDrawnOnce)
