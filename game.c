@@ -107,7 +107,7 @@ static UBYTE isDrawnOnce = 0;
 BYTE coal = startingCoal;
 BYTE capacitors = 0;
 BYTE excesscoal = 0;
-BYTE level = 1;
+BYTE level = 16;
 
 BYTE robboMsgNr = 0;
 BYTE robboMsgCtrl = 0;
@@ -122,9 +122,9 @@ void waitFrames(tVPort *pVPort, UBYTE ubHowMany, UWORD uwPosY)
 {
   for (UBYTE i = 0; i < ubHowMany; ++i)
   {
-    viewProcessManagers(s_pView);
+    viewProcessManagers(pVPort->pView);
     copProcessBlocks();
-    vPortWaitForEnd(s_pVp);
+    vPortWaitForEnd(pVPort);
   }
 }
 
@@ -322,13 +322,17 @@ void levelScore(void)
     --coal;
     ++excesscoal;
     blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 32, 32, MINTERM_COOKIE);
+    blitCopy(s_pHUD, 32, 0, s_pVpManager->pFront, 32, 224, 32, 32, MINTERM_COOKIE);
     sprintf(szMsg, "%d", coal);
     fontFillTextBitMap(s_pFont, s_pBmText, szMsg);
     fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 231, HUDfontColor, FONT_COOKIE);
+    fontDrawTextBitMap(s_pVpManager->pFront, s_pBmText, 42, 231, HUDfontColor, FONT_COOKIE);
     blitCopy(s_pHUD, 128, 0, s_pVpManager->pBack, 128, 224, 32, 32, MINTERM_COOKIE);
+    blitCopy(s_pHUD, 128, 0, s_pVpManager->pFront, 128, 224, 32, 32, MINTERM_COOKIE);
     sprintf(szMsg3, "%d", excesscoal);
     fontFillTextBitMap(s_pFont, s_pBmText, szMsg3);
     fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 130, 232, HUDfontColor, FONT_COOKIE);
+    fontDrawTextBitMap(s_pVpManager->pFront, s_pBmText, 130, 232, HUDfontColor, FONT_COOKIE);
     waitFrames(s_pVp, 10, uwPosY + FALCON_HEIGHT);
   }
 }
@@ -744,9 +748,7 @@ void coalAndCollect(void)
     ++robboMsgCount;
     robboMsgCtrl = 1;
     hudScrollingControl = 1;
-    // robboSays();
     ++robboMsgNr;
-    return;
     break;
 
   case 12:
@@ -761,7 +763,6 @@ void coalAndCollect(void)
     blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320, 32, MINTERM_COOKIE);
     blitCopy(s_pHUD, 0, 0, s_pVpManager->pFront, 0, 224, 320, 32, MINTERM_COOKIE);
     printOnHUD();
-    return;
     break;
   }
   printOnHUD();
@@ -1113,7 +1114,7 @@ void stateGameCreate(void)
   blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, 0, 0, 33, 32, MINTERM_COOKIE);
 
   drawTiles();
-  ptplayerEnableMusic(0);
+  ptplayerEnableMusic(1);
   systemUnuse(); // system w trakcie loop nie jest nam potrzebny
 }
 
