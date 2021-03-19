@@ -30,11 +30,11 @@ static tPtplayerMod *s_pMod;
 static tFont *s_pFont;
 static tTextBitMap *s_pBmText;
 
+extern tStateManager *g_pStateMachineGame;
 extern tState g_sStateMenu;
 extern tState g_sStateGameOver;
 extern tState g_sStateScore;
 extern tState g_sStateGuruMastah;
-extern tStateManager *g_pStateMachineGame;
 extern tState g_sStateScoreAmi;
 
 #define MAP_TILE_HEIGHT 7
@@ -128,7 +128,7 @@ void waitFrames(tVPort *pVPort, UBYTE ubHowMany, UWORD uwPosY)
   }
 }
 
-void cleanUp();
+void clean();
 
 void printOnHUD(void)
 {
@@ -472,8 +472,8 @@ void portalAnim(void)
     return;
   }
 
-  UWORD uwPosX = falkonx * 32;
-  UWORD uwPosY = falkony * 32;
+  uwPosX = falkonx * 32;
+  uwPosY = falkony * 32;
 
   if (portalAnimControl == 1) {
 
@@ -508,8 +508,7 @@ void portalAnim(void)
   else if (portalAnimTick == falkonIdleTempo * 8)
   {
     portalFrame = 7;
-    portalAnimTick = 0;
-    portalAnimControl = 0;
+    
   }
       blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
       blitCopyMask(s_pTiles, portalFrame * 32, 128 + falkonFace, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
@@ -517,6 +516,9 @@ void portalAnim(void)
   
   }
     if (portalFrame == 7){
+    portalFrame = 0;
+    portalAnimTick = 0;
+    portalAnimControl = 0;  
     ++level;
     if (level == LAST_LEVEL_NUMBER + 1)
     {
@@ -872,61 +874,11 @@ void falkonHittingStone(void)
 
 void falkonFlying(void)
 {
-  UWORD YAnimRow = 0;
-  uwPosX = falkonx * 32;
-  uwPosY = falkony * 32;
   blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
-  waitFrames(s_pVp, 3, uwPosY + FALCON_HEIGHT);
-  blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
-
-  for (BYTE i = 0; i < ANIM_FRAME_COUNT; ++i)
-  {
-    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE); // rysuje tlo ze zmeinnej
-
-    switch (kierunek)
-    {
-    case 1:
-      YAnimRow = 64;
-      ++uwPosX;
-      ++uwPosX;
-      break;
-    case 2:
-      YAnimRow = 96;
-      --uwPosX;
-      --uwPosX;
-      break;
-    case 3:
-      --uwPosY;
-      --uwPosY;
-      switch (falkonFace)
-      {
-      case 0:
-        YAnimRow = 64;
-        break;
-      case 32:
-        YAnimRow = 96;
-        break;
-      }
-      break;
-    case 4:
-      ++uwPosY;
-      ++uwPosY;
-      switch (falkonFace)
-      {
-      case 0:
-        YAnimRow = 64;
-        break;
-      case 32:
-        YAnimRow = 96;
-        break;
-      }
-      break;
-    }
-
-    blitCopy(s_pVpManager->pBack, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);                                  // fragment tla wrzuca do zmiennej
-    blitCopyMask(s_pTiles, pAnim[i], YAnimRow, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // rysuje falkona
-    waitFrames(s_pVp, 3, uwPosY + FALCON_HEIGHT);
-  }
+  blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);  
+  blitCopy(s_pVpManager->pBack, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);                                  // fragment tla wrzuca do zmiennej
+  blitCopyMask(s_pTiles, pAnim[0], 64 + falkonFace, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // rysuje falkona
+  
   if (robboMsgCtrl == 3){
     robboMsgCtrl = 2;
     hudScrollingControl = 1;
@@ -975,23 +927,23 @@ void falconMove(void)
 
   case 1:
     falkonFace = 0;
-    stonehitAnimControl = 1;
+    falkonFlying();
     falkonx = falkonx + 1;
     break;
 
   case 2:
     falkonFace = 32;
-    stonehitAnimControl = 1;
+    falkonFlying();
     falkonx = falkonx - 1;
     break;
 
   case 3:
-    stonehitAnimControl = 1;
+    falkonFlying();
     falkony = falkony - 1;
     break;
 
   case 4:
-    stonehitAnimControl = 1;
+    falkonFlying();
     falkony = falkony + 1;
     break;
   }
@@ -1234,7 +1186,7 @@ void stateGameLoop(void)
   {
     ptplayerStop();
     clearTiles();
-    cleanUp();
+    clean();
     stateChange(g_pStateMachineGame, &g_sStateMenu);
     return;
   }
@@ -1293,6 +1245,15 @@ void stateGameLoop(void)
     statePush(g_pStateMachineGame, &g_sStateGuruMastah);
     return;
   }
+  if (coal == 0)
+  {
+    coal = 1;
+    youWin = 2;
+    clean();
+    ptplayerStop();
+    logWrite("\tVPort offs: %hu, pos: %hu\n", s_pVp->uwOffsY, uwPosY);
+    return;
+  }
 
   if (youWin == 1) // sprawdzenie ktore zakonczenie uruchomic
   {
@@ -1308,16 +1269,15 @@ void stateGameLoop(void)
       return;
     }
   }
-
-  if (coal == 0)
-  {
-    coal = 1;
-    ptplayerStop();
+  else if (youWin == 2){
+    youWin = 0;
     stateChange(g_pStateMachineGame, &g_sStateGameOver);
     return;
   }
 
+
   viewProcessManagers(s_pView); // obliczenia niezb�dne do poprawnego dzia�ania viewport�w
+  
   copProcessBlocks();           // obliczenia niezb�dne do poprawnego dzia�ania coppera
   vPortWaitForEnd(s_pVp);       // r�wnowa�ne amosowemu wait vbl
 }
@@ -1333,6 +1293,9 @@ void stateGameDestroy(void)
   bitmapDestroy(s_pBg);
   bitmapDestroy(s_pHUD);
   bitmapDestroy(s_pFalconBg);
+  bitmapDestroy(s_pAnimBg);
+  bitmapDestroy(s_pRobbo);
+
 
   fontDestroy(s_pFont);
   fontDestroyTextBitMap(s_pBmText);

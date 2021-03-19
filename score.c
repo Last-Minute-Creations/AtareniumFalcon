@@ -214,6 +214,8 @@ void stateScoreDestroy(void){
 	keyDestroy();
 	viewDestroy(s_pView);
 	bitmapDestroy(s_pVAM);
+  fontDestroy(s_pFont);
+  fontDestroyTextBitMap(s_pBmText);
 }
 
 

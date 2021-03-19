@@ -19,6 +19,8 @@ extern BYTE startingCoal;
 
 void waitFrames();
 
+extern BYTE youWin;
+
 extern BYTE coal;
 extern BYTE capacitors;
 extern BYTE falkonx;
@@ -27,6 +29,9 @@ extern BYTE krawedzx;
 extern BYTE krawedzy;
 extern BYTE kierunek;
 extern BYTE falkonFace; // kierunek dziobem
+
+extern UWORD uwPosX;
+extern UWORD uwPosY;
 
 extern BYTE stoneHit;
 extern BYTE frameHit;
@@ -41,12 +46,16 @@ extern BYTE amigaMode;
 void clearTiles();
 
 void clean(void){
+
 falkonx = 0;
 falkony = 0;
 krawedzx = 0;
 krawedzy = 0;
 kierunek = 0;
 falkonFace = 0; 
+
+uwPosX = 0;
+uwPosY = 0;
 
 stoneHit = 0;
 frameHit = 0;
@@ -119,8 +128,8 @@ void stateGameOverDestroy(void){
 	systemUse();
 	joyClose();
 	keyDestroy();
-	viewDestroy(s_pView);
 	bitmapDestroy(s_pGameOver);
+  viewDestroy(s_pView);
 }
 
 
