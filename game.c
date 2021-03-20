@@ -75,6 +75,8 @@ UWORD pAnim[] = {0, 32, 64, 96, 128, 160, 192, 224};
 
 UWORD uwPosX = 0;
 UWORD uwPosY = 0;
+UWORD uwPreviousX = 0;
+UWORD uwPreviousY = 0;
 
 BYTE stoneHit = 0;
 BYTE frameHit = 0;
@@ -101,6 +103,8 @@ BYTE stonehitAnimControl = 0;
 BYTE stonehitAnimTick = 0;
 BYTE stonehitAnimFrame = 0;
 BYTE oneFrameDirection = 0;
+
+BYTE flyingAnimControl = 0;
 
 static UBYTE isDrawnOnce = 0;
 
@@ -775,8 +779,8 @@ void falkonHittingStone(void)
     return;
   }
   
-  uwPosX = falkonx * 32;
-  uwPosY = falkony * 32;
+  UWORD uwPosX = falkonx * 32;
+  UWORD uwPosY = falkony * 32;
 
   if (stonehitAnimControl == 1)
   {
@@ -858,7 +862,7 @@ void falkonHittingStone(void)
     }
     else if (stonehitAnimTick == falkonIdleTempo * 8)
     {
-      stonehitAnimFrame  = 7;
+      stonehitAnimFrame = 7;
       stonehitAnimTick = 0;
       stonehitAnimControl = 0;
       falkonIdleControl = 1;
@@ -875,11 +879,21 @@ void falkonHittingStone(void)
 
 void falkonFlying(void)
 {
+  if (flyingAnimControl != 1){
+    return;
+  }
+  if (flyingAnimControl == 1){
+    falkonIdleControl = 0;
   blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
   blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);  
   blitCopy(s_pVpManager->pBack, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);                                  // fragment tla wrzuca do zmiennej
   blitCopyMask(s_pTiles, pAnim[0], 64 + falkonFace, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // rysuje falkona
-  
+  //blitCopy(s_pBg, uwPreviousX, uwPreviousY- 32, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
+  //blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPreviousX, uwPreviousY, 32, 32, MINTERM_COOKIE);  
+  //blitCopy(s_pVpManager->pBack, uwPreviousX, uwPreviousY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
+  flyingAnimControl = 0;
+  falkonIdleControl = 1;
+  }
   if (robboMsgCtrl == 3){
     robboMsgCtrl = 2;
     hudScrollingControl = 1;
@@ -894,6 +908,9 @@ void falconMove(void)
   // jesli byl kamien to brak ruchu
   if (stoneHit == 1)
   {
+    stonehitAnimControl = 1;
+    falkonIdleControl = 0;
+    
     switch (kierunek)
     {
     case 1:
@@ -928,24 +945,28 @@ void falconMove(void)
 
   case 1:
     falkonFace = 0;
-    falkonFlying();
+    flyingAnimControl = 1;
     falkonx = falkonx + 1;
+    uwPreviousX = uwPosX - 32;
     break;
 
   case 2:
     falkonFace = 32;
-    falkonFlying();
+    flyingAnimControl = 1;
     falkonx = falkonx - 1;
+    uwPreviousX = uwPosX + 32;
     break;
 
   case 3:
-    falkonFlying();
+    flyingAnimControl = 1;
     falkony = falkony - 1;
+    uwPreviousX = uwPosY + 32;
     break;
 
   case 4:
-    falkonFlying();
+    flyingAnimControl = 1;
     falkony = falkony + 1;
+    uwPreviousX = uwPosY - 32;
     break;
   }
 }
@@ -1124,7 +1145,11 @@ void stateGameLoop(void)
   if (falkonIdleControl == 1){
   ++falkonIdle;
   }
+  if (flyingAnimControl == 1){
+
+     }
   falconIdleAnimation();
+  falkonFlying();
   falkonHittingStone();
   redCapacitorsAnimation();
   blueCapacitorsAnimation();
@@ -1144,6 +1169,7 @@ void stateGameLoop(void)
 
   if (isDrawnOnce)
   {
+    falkonFlying();
     ++redCapacitorsAnimTick;
     if (redCapacitorsAnimTick > tickTempo)
     {

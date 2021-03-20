@@ -12,22 +12,29 @@
 static tView *s_pView;
 static tVPort *s_pVp;
 static tSimpleBufferManager *s_pVpManager;
-static tBitMap *s_pJMiner;
 
 extern tState g_sStateGame;
 extern tStateManager *g_pStateMachineGame;
 
-static UWORD s_pPalette[32];
 static tFont *s_pFont;
 static tTextBitMap *s_pBmText;
 
-#define MINER_LINE_COUNT 4
+#define MINER_LINE_COUNT 13
 
 const char *s_pLines2[MINER_LINE_COUNT] = {
-    "GREAT MINERs FACE GONNA BE HERE",
-    "AND SOME BULLSHIT ABOUT AMIGA SPIRIT",
-    "IN YOU, SIR. AND FANCY GFX.",
-    "ATARIs? KILLem ALL. (PRESS FIRE)"};
+    "if (leaked capacitor == 1){",
+    "amigaModeOn(); ",
+    "}",
+    "// WTF",
+    "SYSTEM INTERCEPTION COMPLETE.",
+    "HELLO THERE",
+    "CAPTAIN TRAMIEL.",
+    "STILL AMIGA SPIRIT FROM YOU I SMELL.",
+    "BACK ON OUR SIDE OF POWER I WELCOME YOU.",
+    "YOUR WICHER SPACESHIP HERE IS.",
+    "BACK TO OUR PLANET RESOURCES YOU TAKE.",
+    "LEARN THEIR LESSON THE ATARIMEN WILL.",
+    "MAY THE POWER BE WITH YOU."};
 
 void waitFrames();
 
@@ -64,7 +71,7 @@ void stateGuruMastahCreate(void)
   blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 21);
   blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 21);
 
-  for (UBYTE i = 0; i < 4; ++i)
+  for (UBYTE i = 0; i < MINER_LINE_COUNT; ++i)
   {
     fontFillTextBitMap(s_pFont, s_pBmText, s_pLines2[i]);
     fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 10, (i * 9) + 10, 23, FONT_COOKIE);
