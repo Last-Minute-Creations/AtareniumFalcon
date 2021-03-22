@@ -902,21 +902,15 @@ void falkonFlying(void)
   if (flyingAnimControl == 1)
   {
     falkonIdleControl = 0;
-    blitCopy(s_pBg, uwPreviousX, uwPreviousY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
-    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPreviousX, uwPreviousY, 32, 32, MINTERM_COOKIE);
-
-    blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
-    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
-    blitCopy(s_pVpManager->pBack, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);                                         // fragment tla wrzuca do zmiennej
+    blitCopy(s_pBg, uwPreviousX, uwPreviousY, s_pVpManager->pBack, uwPreviousX, uwPreviousY, 32, 32, MINTERM_COOKIE);
+    
+    blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
     blitCopyMask(s_pTiles, pAnim[0], 64 + falkonFace, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // rysuje falkona
   }
   else if (flyingAnimControl == 2)
     {
-      blitCopy(s_pBg, uwPreviousX, uwPreviousY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
-      blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPreviousX, uwPreviousY, 32, 32, MINTERM_COOKIE);
-    
-  
-
+      blitCopy(s_pBg, uwPreviousX, uwPreviousY, s_pVpManager->pBack, uwPreviousX, uwPreviousY, 32, 32, MINTERM_COOKIE);
+      
     flyingAnimControl = 0;
     falkonIdleControl = 1;
   }
