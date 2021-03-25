@@ -107,8 +107,8 @@ BYTE oneFrameDirection = 0;
 BYTE flyingAnimControl = 0;
 BYTE flyingTick = 0;
 BYTE flyingFrame = 0;
-UBYTE newPosX = 0;
-UBYTE newPosY = 0;
+UWORD newPosX = 0;
+UWORD newPosY = 0;
 
 static UBYTE isDrawnOnce = 0;
 
@@ -1015,7 +1015,7 @@ void falkonFlying(void)
        ++flyingFrame;
     }
 
-    blitCopy(s_pBg, uwPreviousX, uwPreviousY, s_pVpManager->pBack, uwPreviousX, uwPreviousY, 32, 32, MINTERM_COOKIE);
+      blitCopy(s_pBg, uwPreviousX, uwPreviousY, s_pVpManager->pBack, uwPreviousX, uwPreviousY, 32, 32, MINTERM_COOKIE);
       blitCopy(s_pBg, newPosX, newPosY, s_pVpManager->pBack, newPosX, newPosY, 32, 32, MINTERM_COOKIE);
       blitCopyMask(s_pTiles, pAnim[flyingFrame], 64 + falkonFace, s_pVpManager->pBack, newPosX, newPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // rysuje falkona
     
