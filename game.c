@@ -893,12 +893,68 @@ void falkonHittingStone(void)
   }
 }
 
+void prepareFalconFlying(void){
+    uwPreviousX = uwPosX;
+    uwPreviousY = uwPosY;
+    UBYTE tempX = 0;
+    UBYTE tempY = 0;
+    
+    switch (kierunekHold)
+  {
+  case 1:
+    tempX = falkonx + 1; 
+    uwPosX =  tempX * 32;
+    break;
+
+  case 2:
+    tempX = falkonx - 1;
+    uwPosX =  tempX * 32;
+    break;
+
+  case 3:
+    tempY = falkony - 1;
+    uwPosY = tempY * 32;
+    break;
+
+  case 4:
+    tempY = falkony + 1;
+    uwPosY =  tempY * 32;
+    break;
+  }
+
+    
+    
+}
+
+void endFalconFlying(void){
+  switch (kierunekHold)
+  {
+  case 1:
+    falkonx = falkonx + 1;
+    break;
+
+  case 2:
+    falkonx = falkonx - 1;
+    break;
+
+  case 3:
+    falkony = falkony - 1;
+    break;
+
+  case 4:
+    falkony = falkony + 1;
+    break;
+  }
+  
+}
+
 void falkonFlying(void)
 {
   if (flyingAnimControl == 0)
   {
     return;
   }
+
   if (flyingAnimControl == 1)
   {
     falkonIdleControl = 0;
@@ -910,7 +966,9 @@ void falkonFlying(void)
   else if (flyingAnimControl == 2)
     {
       blitCopy(s_pBg, uwPreviousX, uwPreviousY, s_pVpManager->pBack, uwPreviousX, uwPreviousY, 32, 32, MINTERM_COOKIE);
-      
+    endFalconFlying();
+    doubleBufferFrameControl = 2;
+    coalAndCollect(); 
     flyingAnimControl = 0;
     falkonIdleControl = 1;
   }
@@ -923,7 +981,7 @@ void falkonFlying(void)
   }
 }
 
-void falconMove(void)
+void falconCollisionCheck(void)
 {
 
   // jesli byl kamien to brak ruchu
@@ -959,44 +1017,9 @@ void falconMove(void)
     frameHit = 0;
     return;
   }
-
-  switch (kierunekHold)
-  {
-
-  case 1:
-    falkonFace = 0;
-    flyingAnimControl = 1;
-    falkonx = falkonx + 1;
-    uwPosX = falkonx * 32;
-    uwPreviousX = uwPosX - 32;
-    uwPreviousY = uwPosY;
-    break;
-
-  case 2:
-    falkonFace = 32;
-    flyingAnimControl = 1;
-    falkonx = falkonx - 1;
-    uwPosX = falkonx * 32;
-    uwPreviousX = uwPosX + 32;
-    uwPreviousY = uwPosY;
-    break;
-
-  case 3:
-    flyingAnimControl = 1;
-    falkony = falkony - 1;
-    uwPosY = falkony * 32;
-    uwPreviousY = uwPosY + 32;
-    uwPreviousX = uwPosX;
-    break;
-
-  case 4:
-    flyingAnimControl = 1;
-    falkony = falkony + 1;
-    uwPosY = falkony * 32;
-    uwPreviousY = uwPosY - 32;
-    uwPreviousX = uwPosX;
-    break;
-  }
+  prepareFalconFlying();
+  flyingAnimControl = 1;
+  
 }
 
 void falconIdleAnimation(void)
@@ -1181,6 +1204,14 @@ void stateGameLoop(void)
   {
     falkonFlying();
     flyingAnimControl = 0;
+    if (coal == 0)
+  {
+    coal = 1;
+    youWin = 2;
+    clean();
+    ptplayerStop();
+    return;
+  }
   }
   falconIdleAnimation();
   falkonFlying();
@@ -1276,11 +1307,11 @@ void stateGameLoop(void)
   if (kierunek != 0)
   {
     kierunekHold = kierunek;
-    doubleBufferFrameControl = 2;
+    
     isThisStone();
     czyRamka();
-    falconMove();
-    coalAndCollect();
+    falconCollisionCheck();
+    
   }
 
   if (doubleBufferFrameControl > 0)
@@ -1313,15 +1344,7 @@ void stateGameLoop(void)
     statePush(g_pStateMachineGame, &g_sStateGuruMastah);
     return;
   }
-  if (coal == 0)
-  {
-    coal = 1;
-    youWin = 2;
-    clean();
-    ptplayerStop();
-    logWrite("\tVPort offs: %hu, pos: %hu\n", s_pVp->uwOffsY, uwPosY);
-    return;
-  }
+  
 
   if (youWin == 1) // sprawdzenie ktore zakonczenie uruchomic
   {
