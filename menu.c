@@ -32,7 +32,8 @@ UBYTE starCount2 = 0;
 UBYTE starPrev1 = 0;
 UBYTE starPrev2 = 0;
 
-UWORD p1x[STAR_COUNT][5] = {    // x dla pierwszej grupy gwiazdek
+UWORD p1x[STAR_COUNT][5] = {
+	// x dla pierwszej grupy gwiazdek
 
 	{158, 153, 120, 80, 5},
 	{154, 144, 110, 84, 33},
@@ -42,15 +43,16 @@ UWORD p1x[STAR_COUNT][5] = {    // x dla pierwszej grupy gwiazdek
 	{166, 178, 193, 216, 246},
 	{170, 190, 228, 265, 310},
 
-	{164, 176, 200, 260, 315},
+	{164, 176, 200, 260, 311},
 	{160, 165, 170, 175, 180},
-	{174, 190, 228, 265, 310},
+	{174, 190, 228, 265, 299},
 
 	{158, 153, 120, 80, 5},
 	{154, 144, 110, 84, 14},
 	{152, 140, 128, 116, 100},
 };
-UWORD p1y[STAR_COUNT][5] = { // y dla pierwszej grupy gwiazdek
+UWORD p1y[STAR_COUNT][5] = {
+	// y dla pierwszej grupy gwiazdek
 	{124, 122, 120, 118, 116},
 	{120, 100, 80, 60, 40},
 	{121, 105, 96, 42, 2},
@@ -68,7 +70,8 @@ UWORD p1y[STAR_COUNT][5] = { // y dla pierwszej grupy gwiazdek
 	{148, 160, 185, 210, 240},
 };
 
-UWORD p2x[STAR_COUNT][5] = {    // x dla drugiej grupy gwiazdek
+UWORD p2x[STAR_COUNT][5] = {
+	// x dla drugiej grupy gwiazdek
 
 	{156, 125, 100, 64, 12},
 	{142, 122, 92, 52, 6},
@@ -80,14 +83,15 @@ UWORD p2x[STAR_COUNT][5] = {    // x dla drugiej grupy gwiazdek
 
 	{167, 177, 202, 263, 318},
 	{165, 169, 178, 185, 194},
-	{171, 188, 225, 261, 312},
+	{171, 188, 225, 261, 291},
 
 	{155, 140, 120, 80, 17},
 	{149, 115, 80, 57, 9},
 	{158, 138, 122, 101, 78},
 };
-UWORD p2y[STAR_COUNT][5] = { // y dla drugiej grupy gwiazdek
-	
+UWORD p2y[STAR_COUNT][5] = {
+	// y dla drugiej grupy gwiazdek
+
 	{120, 114, 110, 106, 100},
 	{127, 100, 70, 40, 10},
 	{122, 101, 65, 33, 2},
@@ -105,65 +109,44 @@ UWORD p2y[STAR_COUNT][5] = { // y dla drugiej grupy gwiazdek
 	{146, 145, 143, 141, 140},
 };
 
-
-
 void pixel1(void)
 {
 
-	if (starTick1 == 0)
+	
+	if (starTick1 == 3)
 	{
-		for (UBYTE i = 0; i < STAR_COUNT; ++i)
-		{
-			chunkyToPlanar(pxColor[0], p1x[i][0], p1y[i][0], s_pVpManager->pBack);
+		for (UBYTE i = 0; i < STAR_COUNT ; ++i){
+		chunkyToPlanar(bgColor, p1x[i][starPrev1], p1y[i][starPrev1], s_pVpManager->pBack);
+		chunkyToPlanar(pxColor[starCount1], p1x[i][starCount1], p1y[i][starCount1], s_pVpManager->pBack);
 		}
-	}
-	if (starTick1 == 7)
-	{
 		starPrev1 = starCount1;
 		++starCount1;
-
-		for (UBYTE i = 0; i < STAR_COUNT; ++i)
-		{
-			chunkyToPlanar(bgColor, p1x[i][starPrev1], p1y[i][starPrev1], s_pVpManager->pBack);
-			chunkyToPlanar(pxColor[starCount1], p1x[i][starCount1], p1y[i][starCount1], s_pVpManager->pBack);
+		if (starCount1 == 5){
+			starCount1 = 0;
 		}
-		starTick1 = 1;
+		starTick1 = 0;
+		
 	}
-	if (starCount1 == 5)
-	{
-		starTick1 = 5;
-		starCount1 = 0;
-		starPrev1 = 0;
-	}
+
+	
 }
 
 void pixel2(void)
 {
 
-	if (starTick2 == 0)
+	if (starTick2 == 4)
 	{
-		for (UBYTE i = 0; i < STAR_COUNT; ++i)
-		{
-			chunkyToPlanar(pxColor[0], p2x[i][0], p2y[i][0], s_pVpManager->pBack);
-		}
-	}
-	if (starTick2 == 11)
-	{
-		starPrev2 = starCount2;
-		++starCount2;
-
 		for (UBYTE i = 0; i < STAR_COUNT; ++i)
 		{
 			chunkyToPlanar(bgColor, p2x[i][starPrev2], p2y[i][starPrev2], s_pVpManager->pBack);
 			chunkyToPlanar(pxColor[starCount2], p2x[i][starCount2], p2y[i][starCount2], s_pVpManager->pBack);
 		}
-		starTick2 = 1;
-	}
-	if (starCount2 == 5)
-	{
-		starTick2 = 8;
-		starCount2 = 0;
-		starPrev2 = 0;
+		starPrev2 = starCount2;
+		++starCount2;
+		if (starCount2 == 5){
+			starCount2 = 0;
+		}
+		starTick2 = 0;
 	}
 }
 
