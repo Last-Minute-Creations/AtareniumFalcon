@@ -105,18 +105,23 @@ BYTE stonehitAnimFrame = 0;
 BYTE oneFrameDirection = 0;
 
 BYTE flyingAnimControl = 0;
+BYTE flyingTick = 0;
+BYTE flyingFrame = 0;
+UBYTE newPosX = 0;
+UBYTE newPosY = 0;
 
 static UBYTE isDrawnOnce = 0;
 
 BYTE coal = startingCoal;
 BYTE capacitors = 0;
 BYTE excesscoal = 0;
-BYTE level = 16;
+BYTE level = 1;
 
 BYTE robboMsgNr = 0;
 BYTE robboMsgCtrl = 0;
 BYTE robboMsgCount = 0;
 BYTE HUDfontColor = 23;
+
 
 UBYTE doubleBufferFrameControl = 2;
 UBYTE idleFrame = 0;
@@ -321,6 +326,12 @@ void clearTiles(void)
 
 void levelScore(void)
 {
+  blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
+  blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
+  blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pFront, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
+  blitCopyMask(s_pTiles, 32, 192 + falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+  blitCopyMask(s_pTiles, 32, 192 + falkonFace, s_pVpManager->pFront, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+
   BYTE thisLevelExcessCoal = coal - 1;
   for (UBYTE i = 0; i < thisLevelExcessCoal; ++i)
   {
@@ -338,7 +349,7 @@ void levelScore(void)
     fontFillTextBitMap(s_pFont, s_pBmText, szMsg3);
     fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 130, 232, HUDfontColor, FONT_COOKIE);
     fontDrawTextBitMap(s_pVpManager->pFront, s_pBmText, 130, 232, HUDfontColor, FONT_COOKIE);
-    waitFrames(s_pVp, 10, uwPosY + FALCON_HEIGHT);
+    waitFrames(s_pVp, 20, uwPosY + FALCON_HEIGHT);
   }
 }
 
@@ -621,63 +632,63 @@ void robboSays(void)
 {
   switch (robboMsgNr)
   {
-  case 0:
+  case 1:
     sprintf(szRobboMsg, "Follow the Atari portal.");
     break;
-  case 1:
+  case 2:
     sprintf(szRobboMsg, "Keep an eye on your coal supplies.");
     break;
-  case 2:
+  case 3:
     sprintf(szRobboMsg, "Don't waste our coal hitting the meteorites.");
     break;
-  case 3:
+  case 4:
     sprintf(szRobboMsg, "Try to steal some red and blue capacitors.");
     break;
-  case 4:
+  case 5:
     sprintf(szRobboMsg, "Infiltrate the Amigans territory.");
     break;
-  case 5:
+  case 6:
     sprintf(szRobboMsg, "Minister Renton is counting on you, Sir.");
     break;
-  case 6:
+  case 7:
     sprintf(szRobboMsg, "Please clean up here, I found some GermZ.");
     break;
-  case 7:
+  case 8:
     sprintf(szRobboMsg, "Take me home, this place sucks!");
     break;
-  case 8:
+  case 9:
     sprintf(szRobboMsg, "Find the coal warehouse and reclaim it.");
     break;
 
-  case 9:
+  case 10:
     sprintf(szRobboMsg, "Have you played Aminer yet?");
     break;
 
-  case 10:
+  case 11:
     sprintf(szRobboMsg, "Drop me out at LK Avalon please.");
     break;
 
-  case 11:
+  case 12:
     sprintf(szRobboMsg, "You like Paula? I love Laura!");
     break;
 
-  case 12:
+  case 13:
     sprintf(szRobboMsg, "Atari has no glitches...");
     break;
 
-  case 13:
+  case 14:
     sprintf(szRobboMsg, "..even if played in 2077.");
     break;
-  case 14:
+  case 15:
     sprintf(szRobboMsg, "Make River Raid not Bridge Strike!");
     break;
-  case 15:
+  case 16:
     sprintf(szRobboMsg, "Cytadela is better than Doom.");
     break;
-  case 16:
+  case 17:
     sprintf(szRobboMsg, "How to double the value of your Atari...?");
     break;
-  case 17:
+  case 18:
     sprintf(szRobboMsg, "...Just insert the cassette into tape drive.");
     break;
 
@@ -750,11 +761,10 @@ void coalAndCollect(void)
     break;
 
   case 11:
-
+    ++robboMsgNr;
     ++robboMsgCount;
     robboMsgCtrl = 1;
     hudScrollingControl = 1;
-    ++robboMsgNr;
     break;
 
   case 12:
@@ -893,22 +903,25 @@ void falkonHittingStone(void)
   }
 }
 
-void prepareFalconFlying(void){
-    uwPreviousX = uwPosX;
-    uwPreviousY = uwPosY;
-    UBYTE tempX = 0;
-    UBYTE tempY = 0;
-    
-    switch (kierunekHold)
+void prepareFalconFlying(void)
+{
+  uwPreviousX = uwPosX;
+  uwPreviousY = uwPosY;
+  newPosX = uwPosX;
+  newPosY = uwPosY;
+  UBYTE tempX = 0;
+  UBYTE tempY = 0;
+
+  switch (kierunekHold)
   {
   case 1:
-    tempX = falkonx + 1; 
-    uwPosX =  tempX * 32;
+    tempX = falkonx + 1;
+    uwPosX = tempX * 32;
     break;
 
   case 2:
     tempX = falkonx - 1;
-    uwPosX =  tempX * 32;
+    uwPosX = tempX * 32;
     break;
 
   case 3:
@@ -918,15 +931,13 @@ void prepareFalconFlying(void){
 
   case 4:
     tempY = falkony + 1;
-    uwPosY =  tempY * 32;
+    uwPosY = tempY * 32;
     break;
   }
-
-    
-    
 }
 
-void endFalconFlying(void){
+void endFalconFlying(void)
+{
   switch (kierunekHold)
   {
   case 1:
@@ -945,7 +956,6 @@ void endFalconFlying(void){
     falkony = falkony + 1;
     break;
   }
-  
 }
 
 void falkonFlying(void)
@@ -958,27 +968,93 @@ void falkonFlying(void)
   if (flyingAnimControl == 1)
   {
     falkonIdleControl = 0;
-    blitCopy(s_pBg, uwPreviousX, uwPreviousY, s_pVpManager->pBack, uwPreviousX, uwPreviousY, 32, 32, MINTERM_COOKIE);
-    
-    blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
-    blitCopyMask(s_pTiles, pAnim[0], 64 + falkonFace, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // rysuje falkona
-  }
-  else if (flyingAnimControl == 2)
+    flyingAnimControl = 3;
+  
+    switch (kierunekHold)
     {
+    case 1:
+      newPosX += 1;
+      break;
+    case 2:
+      newPosX -= 1;
+      break;
+    case 3:
+      newPosY -= 1;
+      break;
+    case 4:
+      newPosY += 1;
+      break;
+    }
+
+    if (flyingTick == 4)
+    {
+      flyingFrame = 0;  
+    }
+    else if (flyingTick == 8)
+    {
+      ++flyingFrame;
+    }
+    else if (flyingTick == 12)
+    {
+      ++flyingFrame;
+    }
+    if (flyingTick == 16)
+    {
+     ++flyingFrame;
+    }
+    if (flyingTick == 20)
+    {
+      ++flyingFrame;
+    }
+    if (flyingTick == 24)
+    {
+      ++flyingFrame;
+    }
+    if (flyingTick == 28)
+    {
+       ++flyingFrame;
+    }
+
+    blitCopy(s_pBg, uwPreviousX, uwPreviousY, s_pVpManager->pBack, uwPreviousX, uwPreviousY, 32, 32, MINTERM_COOKIE);
+      blitCopy(s_pBg, newPosX, newPosY, s_pVpManager->pBack, newPosX, newPosY, 32, 32, MINTERM_COOKIE);
+      blitCopyMask(s_pTiles, pAnim[flyingFrame], 64 + falkonFace, s_pVpManager->pBack, newPosX, newPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // rysuje falkona
+    
+    if (flyingTick == 32)
+    {
+      ++flyingFrame;
       blitCopy(s_pBg, uwPreviousX, uwPreviousY, s_pVpManager->pBack, uwPreviousX, uwPreviousY, 32, 32, MINTERM_COOKIE);
+      blitCopy(s_pBg, newPosX, newPosY, s_pVpManager->pBack, newPosX, newPosY, 32, 32, MINTERM_COOKIE);
+      blitCopyMask(s_pTiles, pAnim[flyingFrame], 64 + falkonFace, s_pVpManager->pBack, newPosX, newPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // rysuje falkona
+      flyingTick = 0;
+      flyingAnimControl = 2;
+      falkonIdleControl = 1;
+    }
+    
+  }
+
+  else if (flyingAnimControl == 2)
+  {
+    blitCopy(s_pBg, uwPreviousX, uwPreviousY, s_pVpManager->pBack, uwPreviousX, uwPreviousY, 32, 32, MINTERM_COOKIE);
     endFalconFlying();
     doubleBufferFrameControl = 2;
-    coalAndCollect(); 
+    coalAndCollect();
     flyingAnimControl = 0;
     falkonIdleControl = 1;
   }
-  ++flyingAnimControl;
   
+
   if (robboMsgCtrl == 3)
   {
     robboMsgCtrl = 2;
     hudScrollingControl = 1;
   }
+}
+
+void falkonFlying2Db(void){
+      flyingAnimControl = 4;
+      blitCopy(s_pBg, uwPreviousX, uwPreviousY, s_pVpManager->pBack, uwPreviousX, uwPreviousY, 32, 32, MINTERM_COOKIE);
+      blitCopy(s_pBg, newPosX, newPosY, s_pVpManager->pBack, newPosX, newPosY, 32, 32, MINTERM_COOKIE);
+      blitCopyMask(s_pTiles, pAnim[flyingFrame], 64 + falkonFace, s_pVpManager->pBack, newPosX, newPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
 }
 
 void falconCollisionCheck(void)
@@ -1019,7 +1095,6 @@ void falconCollisionCheck(void)
   }
   prepareFalconFlying();
   flyingAnimControl = 1;
-  
 }
 
 void falconIdleAnimation(void)
@@ -1198,20 +1273,30 @@ void stateGameLoop(void)
   {
     ++falkonIdle;
   }
+
+  if (flyingAnimControl == 1)
+  {
+    ++flyingTick;  
+  }
+
+  if(flyingAnimControl == 3){
+    falkonFlying2Db();
+  }
   
-  
+
   if (flyingAnimControl == 2)
   {
     falkonFlying();
     flyingAnimControl = 0;
     if (coal == 0)
-  {
-    coal = 1;
-    youWin = 2;
-    clean();
-    ptplayerStop();
-    return;
-  }
+    {
+      portalAnimControl = 0;
+      coal = 1;
+      youWin = 2;
+      clean();
+      ptplayerStop();
+      return;
+    }
   }
   falconIdleAnimation();
   falkonFlying();
@@ -1221,6 +1306,10 @@ void stateGameLoop(void)
   robboScrollUp();
   robboScrollDown();
   portalAnim();
+
+  if(flyingAnimControl == 4){
+    flyingAnimControl = 1;
+  }
 
   if (hudScrollingControl == 1)
   {
@@ -1307,11 +1396,10 @@ void stateGameLoop(void)
   if (kierunek != 0)
   {
     kierunekHold = kierunek;
-    
+
     isThisStone();
     czyRamka();
     falconCollisionCheck();
-    
   }
 
   if (doubleBufferFrameControl > 0)
@@ -1344,7 +1432,6 @@ void stateGameLoop(void)
     statePush(g_pStateMachineGame, &g_sStateGuruMastah);
     return;
   }
-  
 
   if (youWin == 1) // sprawdzenie ktore zakonczenie uruchomic
   {

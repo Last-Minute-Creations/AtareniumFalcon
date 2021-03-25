@@ -39,6 +39,7 @@ extern BYTE frameHit;
 extern BYTE level;
 extern BYTE robboMsgNr;
 extern BYTE robboMsgCount;
+extern BYTE robboMsgCtrl;
 extern BYTE excesscoal;
 
 extern BYTE amigaMode;
@@ -64,6 +65,7 @@ capacitors = 0;
 level = 1;
 robboMsgNr = 0;
 robboMsgCount = 0;
+robboMsgCtrl = 0;
 excesscoal = 0;
 
 amigaMode = 0;
