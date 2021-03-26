@@ -1035,6 +1035,7 @@ void falkonFlying(void)
   else if (flyingAnimControl == 2)
   {
     blitCopy(s_pBg, uwPreviousX, uwPreviousY, s_pVpManager->pBack, uwPreviousX, uwPreviousY, 32, 32, MINTERM_COOKIE);
+    
     endFalconFlying();
     doubleBufferFrameControl = 2;
     coalAndCollect();
@@ -1101,6 +1102,10 @@ void falconIdleAnimation(void)
 {
   if (falkonIdleControl != 1)
   {
+    return;
+  }
+
+  if (kierunek != 0 && stoneHit == 0){
     return;
   }
 
@@ -1324,6 +1329,8 @@ void stateGameLoop(void)
     ++stonehitAnimTick;
   }
 
+  
+
   if (isDrawnOnce)
   {
     ++redCapacitorsAnimTick;
@@ -1453,6 +1460,8 @@ void stateGameLoop(void)
     stateChange(g_pStateMachineGame, &g_sStateGameOver);
     return;
   }
+
+  
 
   viewProcessManagers(s_pView); // obliczenia niezb�dne do poprawnego dzia�ania viewport�w
 
