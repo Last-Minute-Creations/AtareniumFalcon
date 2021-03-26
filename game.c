@@ -122,7 +122,6 @@ BYTE robboMsgCtrl = 0;
 BYTE robboMsgCount = 0;
 BYTE HUDfontColor = 23;
 
-
 UBYTE doubleBufferFrameControl = 2;
 UBYTE idleFrame = 0;
 BYTE amigaMode = 0;
@@ -958,6 +957,14 @@ void endFalconFlying(void)
   }
 }
 
+void blitFlyingAnimFrame(void)
+{
+  blitCopy(s_pBg, uwPreviousX, uwPreviousY, s_pVpManager->pBack, uwPreviousX, uwPreviousY, 32, 32, MINTERM_COOKIE);
+  blitCopy(s_pVpManager->pBack, newPosX, newPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
+  blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, newPosX, newPosY, 32, 32, MINTERM_COOKIE);
+  blitCopyMask(s_pTiles, pAnim[flyingFrame], 64 + falkonFace, s_pVpManager->pBack, newPosX, newPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+}
+
 void falkonFlying(void)
 {
   if (flyingAnimControl == 0)
@@ -969,7 +976,7 @@ void falkonFlying(void)
   {
     falkonIdleControl = 0;
     flyingAnimControl = 3;
-  
+
     switch (kierunekHold)
     {
     case 1:
@@ -988,61 +995,34 @@ void falkonFlying(void)
 
     if (flyingTick == 4)
     {
-      flyingFrame = 0;  
+      flyingFrame = 0;
     }
-    else if (flyingTick == 8)
+    else if (flyingTick == 8 || flyingTick == 12 || flyingTick == 16 || flyingTick == 20 ||
+             flyingTick == 24 || flyingTick == 28 || flyingTick == 32)
     {
       ++flyingFrame;
-    }
-    else if (flyingTick == 12)
-    {
-      ++flyingFrame;
-    }
-    if (flyingTick == 16)
-    {
-     ++flyingFrame;
-    }
-    if (flyingTick == 20)
-    {
-      ++flyingFrame;
-    }
-    if (flyingTick == 24)
-    {
-      ++flyingFrame;
-    }
-    if (flyingTick == 28)
-    {
-       ++flyingFrame;
     }
 
-      blitCopy(s_pBg, uwPreviousX, uwPreviousY, s_pVpManager->pBack, uwPreviousX, uwPreviousY, 32, 32, MINTERM_COOKIE);
-      blitCopy(s_pBg, newPosX, newPosY, s_pVpManager->pBack, newPosX, newPosY, 32, 32, MINTERM_COOKIE);
-      blitCopyMask(s_pTiles, pAnim[flyingFrame], 64 + falkonFace, s_pVpManager->pBack, newPosX, newPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // rysuje falkona
-    
+    blitFlyingAnimFrame();
+
     if (flyingTick == 32)
     {
-      ++flyingFrame;
-      blitCopy(s_pBg, uwPreviousX, uwPreviousY, s_pVpManager->pBack, uwPreviousX, uwPreviousY, 32, 32, MINTERM_COOKIE);
-      blitCopy(s_pBg, newPosX, newPosY, s_pVpManager->pBack, newPosX, newPosY, 32, 32, MINTERM_COOKIE);
-      blitCopyMask(s_pTiles, pAnim[flyingFrame], 64 + falkonFace, s_pVpManager->pBack, newPosX, newPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // rysuje falkona
       flyingTick = 0;
       flyingAnimControl = 2;
       falkonIdleControl = 1;
     }
-    
   }
 
   else if (flyingAnimControl == 2)
   {
     blitCopy(s_pBg, uwPreviousX, uwPreviousY, s_pVpManager->pBack, uwPreviousX, uwPreviousY, 32, 32, MINTERM_COOKIE);
-    
+
     endFalconFlying();
     doubleBufferFrameControl = 2;
     coalAndCollect();
     flyingAnimControl = 0;
     falkonIdleControl = 1;
   }
-  
 
   if (robboMsgCtrl == 3)
   {
@@ -1051,11 +1031,10 @@ void falkonFlying(void)
   }
 }
 
-void falkonFlying2Db(void){
-      flyingAnimControl = 4;
-      blitCopy(s_pBg, uwPreviousX, uwPreviousY, s_pVpManager->pBack, uwPreviousX, uwPreviousY, 32, 32, MINTERM_COOKIE);
-      blitCopy(s_pBg, newPosX, newPosY, s_pVpManager->pBack, newPosX, newPosY, 32, 32, MINTERM_COOKIE);
-      blitCopyMask(s_pTiles, pAnim[flyingFrame], 64 + falkonFace, s_pVpManager->pBack, newPosX, newPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+void falkonFlying2Db(void)
+{
+  flyingAnimControl = 4;
+  blitFlyingAnimFrame();
 }
 
 void falconCollisionCheck(void)
@@ -1105,7 +1084,8 @@ void falconIdleAnimation(void)
     return;
   }
 
-  if (kierunek != 0 && stoneHit == 0){
+  if (kierunek != 0 && stoneHit == 0)
+  {
     return;
   }
 
@@ -1281,13 +1261,13 @@ void stateGameLoop(void)
 
   if (flyingAnimControl == 1)
   {
-    ++flyingTick;  
+    ++flyingTick;
   }
 
-  if(flyingAnimControl == 3){
+  if (flyingAnimControl == 3)
+  {
     falkonFlying2Db();
   }
-  
 
   if (flyingAnimControl == 2)
   {
@@ -1312,7 +1292,8 @@ void stateGameLoop(void)
   robboScrollDown();
   portalAnim();
 
-  if(flyingAnimControl == 4){
+  if (flyingAnimControl == 4)
+  {
     flyingAnimControl = 1;
   }
 
@@ -1328,8 +1309,6 @@ void stateGameLoop(void)
   {
     ++stonehitAnimTick;
   }
-
-  
 
   if (isDrawnOnce)
   {
@@ -1460,8 +1439,6 @@ void stateGameLoop(void)
     stateChange(g_pStateMachineGame, &g_sStateGameOver);
     return;
   }
-
-  
 
   viewProcessManagers(s_pView); // obliczenia niezb�dne do poprawnego dzia�ania viewport�w
 
