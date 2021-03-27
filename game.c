@@ -115,7 +115,7 @@ static UBYTE isDrawnOnce = 0;
 BYTE coal = startingCoal;
 BYTE capacitors = 0;
 BYTE excesscoal = 0;
-BYTE level = 1;
+BYTE level = 28;
 
 BYTE robboMsgNr = 0;
 BYTE robboMsgCtrl = 0;
@@ -1249,7 +1249,7 @@ void stateGameCreate(void)
   blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, 0, 0, 33, 32, MINTERM_COOKIE);
 
   drawTiles();
-  ptplayerEnableMusic(0);
+  ptplayerEnableMusic(1);
   systemUnuse(); // system w trakcie loop nie jest nam potrzebny
 }
 
@@ -1386,6 +1386,9 @@ void stateGameLoop(void)
 
   if (kierunek != 0)
   {
+    if (flyingAnimControl != 0){
+      return;
+    }
     kierunekHold = kierunek;
 
     isThisStone();

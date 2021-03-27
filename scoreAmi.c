@@ -56,8 +56,10 @@ char szScore2[80];
 void clearTiles();
 
 void vampirePage2(void){
-  blitCopy(s_pVAM2, 0, 0, s_pVpManager->pBack, 0, 0, 320, 128, MINTERM_COOKIE);
-  blitCopy(s_pVAM2, 0, 128, s_pVpManager->pBack, 0, 128, 320, 128, MINTERM_COOKIE);
+  blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 0);
+  blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 0);
+
+  blitCopy(s_pVAM2, 0, 0, s_pVpManager->pBack, 32, 0, 272, 208, MINTERM_COOKIE);
 }
 
 void cleanUp2(void){
