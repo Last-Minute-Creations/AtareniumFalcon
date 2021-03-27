@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <ace/managers/state.h>
 #include <ace/utils/chunky.h>
+#include <ace/managers/blit.h>
 
 static tView *s_pView;
 static tVPort *s_pVp;
@@ -19,6 +20,8 @@ extern tState g_sStateGame;
 extern tState g_sStateIntro;
 extern tState g_sStateCredits;
 extern tStateManager *g_pStateMachineGame;
+
+UBYTE cheatmodeEnablerWhenEqual3 = 0;
 
 UBYTE creditsControl = 0;
 
@@ -83,7 +86,7 @@ UWORD p2x[STAR_COUNT][5] = {
 
 	{167, 177, 202, 263, 318},
 	{165, 169, 178, 185, 194},
-	{171, 188, 225, 261, 291},
+	{173, 188, 225, 261, 291},
 
 	{155, 140, 120, 80, 17},
 	{149, 115, 80, 57, 9},
@@ -170,7 +173,12 @@ void stateMenuCreate(void)
 									  TAG_SIMPLEBUFFER_IS_DBLBUF, 0,
 									  TAG_END);
 
-	bitmapLoadFromFile(s_pVpManager->pBack, "data/title.bm", 0, 0);
+	//blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 0);
+  // blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 0);
+	
+	bitmapLoadFromFile(s_pVpManager->pBack, "data/title.bm", 0, 0);    
+	
+	
 	joyOpen();
 	keyCreate();
 	systemUnuse();
@@ -209,6 +217,16 @@ void stateMenuLoop(void)
 	{
 		stateChange(g_pStateMachineGame, &g_sStateCredits);
 		return;
+	}
+
+	if (keyUse(KEY_W) && cheatmodeEnablerWhenEqual3 == 0){
+		++cheatmodeEnablerWhenEqual3;
+	}
+	if (keyUse(KEY_T) && cheatmodeEnablerWhenEqual3 == 1){
+		++cheatmodeEnablerWhenEqual3;
+	}
+	if (keyUse(KEY_F) && cheatmodeEnablerWhenEqual3 == 2){
+		++cheatmodeEnablerWhenEqual3;
 	}
 
 	viewProcessManagers(s_pView);

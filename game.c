@@ -127,6 +127,8 @@ UBYTE idleFrame = 0;
 BYTE amigaMode = 0;
 BYTE kierunekHold = 0;
 
+extern UBYTE cheatmodeEnablerWhenEqual3;
+
 void waitFrames(tVPort *pVPort, UBYTE ubHowMany, UWORD uwPosY)
 {
   for (UBYTE i = 0; i < ubHowMany; ++i)
@@ -1361,6 +1363,9 @@ void stateGameLoop(void)
   }
   else if (keyUse(KEY_N))
   {
+    if (cheatmodeEnablerWhenEqual3 != 3){
+      return;
+    }
     ++level;
     nextLevel();
     return;

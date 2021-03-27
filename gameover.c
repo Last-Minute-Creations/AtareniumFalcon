@@ -6,6 +6,7 @@
 #include <ace/utils/palette.h>
 #include <stdio.h>
 #include <ace/managers/state.h>
+#include <ace/managers/blit.h>
 
 static tView *s_pView;
 static tVPort *s_pVp;
@@ -100,8 +101,10 @@ s_pVpManager = simpleBufferCreate(0,
     TAG_END
 );
 
+  blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 0);
+  blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 0);
 
-bitmapLoadFromFile(s_pVpManager->pBack, "data/gej_ower.bm", 0, 0);
+bitmapLoadFromFile(s_pVpManager->pBack, "data/gej_ower.bm", 75, 54);
 
 systemUnuse();
 joyOpen();
