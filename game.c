@@ -962,8 +962,10 @@ void endFalconFlying(void)
 void blitFlyingAnimFrame(void)
 {
   blitCopy(s_pBg, uwPreviousX, uwPreviousY, s_pVpManager->pBack, uwPreviousX, uwPreviousY, 32, 32, MINTERM_COOKIE);
-  blitCopy(s_pVpManager->pBack, newPosX, newPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
-  blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, newPosX, newPosY, 32, 32, MINTERM_COOKIE);
+  //blitCopy(s_pVpManager->pBack, newPosX, newPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
+  //blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, newPosX, newPosY, 32, 32, MINTERM_COOKIE);
+  blitCopy(s_pBg, newPosX, newPosY, s_pVpManager->pBack, newPosX, newPosY, 32, 32, MINTERM_COOKIE);
+
   blitCopyMask(s_pTiles, pAnim[flyingFrame], 64 + falkonFace, s_pVpManager->pBack, newPosX, newPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
 }
 
@@ -1256,6 +1258,20 @@ void stateGameCreate(void)
 void stateGameLoop(void)
 {
   // Here goes code done each game frame
+  
+    ++redCapacitorsAnimTick;
+    if (redCapacitorsAnimTick > tickTempo)
+    {
+     redCapacitorsAnimTick = 0;
+    }
+    ++blueCapacitorsAnimTick;
+    if (blueCapacitorsAnimTick > tickTempo)
+    {
+      blueCapacitorsAnimTick = 0;
+    }
+  
+  
+  
   if (falkonIdleControl == 1)
   {
     ++falkonIdle;
@@ -1264,11 +1280,6 @@ void stateGameLoop(void)
   if (flyingAnimControl == 1)
   {
     ++flyingTick;
-  }
-
-  if (flyingAnimControl == 3)
-  {
-    falkonFlying2Db();
   }
 
   if (flyingAnimControl == 2)
@@ -1285,14 +1296,26 @@ void stateGameLoop(void)
       return;
     }
   }
+
+  
   falconIdleAnimation();
-  falkonFlying();
+  
   falkonHittingStone();
   redCapacitorsAnimation();
   blueCapacitorsAnimation();
+  
   robboScrollUp();
   robboScrollDown();
   portalAnim();
+
+  if (flyingAnimControl == 3)
+  {
+    falkonFlying2Db();
+  }
+
+  
+
+  falkonFlying();
 
   if (flyingAnimControl == 4)
   {
@@ -1312,24 +1335,6 @@ void stateGameLoop(void)
     ++stonehitAnimTick;
   }
 
-  if (isDrawnOnce)
-  {
-    ++redCapacitorsAnimTick;
-    if (redCapacitorsAnimTick > tickTempo)
-    {
-      redCapacitorsAnimTick = 0;
-    }
-    ++blueCapacitorsAnimTick;
-    if (blueCapacitorsAnimTick > tickTempo)
-    {
-      blueCapacitorsAnimTick = 0;
-    }
-    isDrawnOnce = 0;
-  }
-  else
-  {
-    isDrawnOnce = 1;
-  }
 
   joyProcess();
   keyProcess();
