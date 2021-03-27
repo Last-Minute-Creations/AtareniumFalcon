@@ -85,7 +85,7 @@ UWORD p2x[STAR_COUNT][5] = {
 	{164, 190, 228, 265, 310},
 
 	{167, 177, 202, 263, 318},
-	{165, 169, 178, 185, 194},
+	{165, 169, 180, 185, 194},
 	{173, 188, 225, 261, 291},
 
 	{155, 140, 120, 80, 17},
@@ -104,7 +104,7 @@ UWORD p2y[STAR_COUNT][5] = {
 	{122, 101, 65, 33, 2},
 
 	{133, 157, 177, 201, 247},
-	{145, 153, 170, 198, 241},
+	{145, 153, 171, 198, 241},
 	{149, 147, 145, 144, 142},
 
 	{135, 155, 180, 214, 250},
@@ -173,10 +173,16 @@ void stateMenuCreate(void)
 									  TAG_SIMPLEBUFFER_IS_DBLBUF, 0,
 									  TAG_END);
 
-	//blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 0);
-  // blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 0);
+	blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 0);
+    blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 0);
+
+  // logo starting 80 32
+  // options       80 112
+  //  lmc          80 240
 	
-	bitmapLoadFromFile(s_pVpManager->pBack, "data/title.bm", 0, 0);    
+	bitmapLoadFromFile(s_pVpManager->pBack, "data/menulogo.bm", 80, 32); 
+	bitmapLoadFromFile(s_pVpManager->pBack, "data/menuoptions.bm", 80, 112);
+	bitmapLoadFromFile(s_pVpManager->pBack, "data/menulmc.bm", 80, 240);   
 	
 	
 	joyOpen();
