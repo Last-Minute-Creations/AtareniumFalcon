@@ -17,7 +17,7 @@ static tSimpleBufferManager *s_pVpManager;
 
 extern tState g_sStateIntro;
 extern tStateManager *g_pStateMachineGame;
-extern tState g_sStateCredits;
+extern tState g_sStateMenu;
 
 void waitFrames();
 
@@ -164,7 +164,7 @@ void stateWungielCreate(void)
 void stateWungielLoop(void)
 {
 
-    stateChange(g_pStateMachineGame, &g_sStateCredits);
+    stateChange(g_pStateMachineGame, &g_sStateMenu);
     return;
 
 }
