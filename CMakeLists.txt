@@ -43,12 +43,14 @@ convertPalette(falkon.elf ${RES_DIR}/falkon.pal ${PLT_PATH}) # z res/falkon.pal 
 convertBitmaps(
 	TARGET falkon.elf PALETTE ${PLT_PATH}
 	INTERLEAVED SOURCES
-		${RES_DIR}/title.png ${RES_DIR}/gej_ower.png ${RES_DIR}/HUD.png
+		${RES_DIR}/menulogo.png ${RES_DIR}/menuoptions.png ${RES_DIR}/menulmc.png
+		${RES_DIR}/gej_ower.png ${RES_DIR}/HUD.png
 		${RES_DIR}/tlo1.png ${RES_DIR}/tlo2.png ${RES_DIR}/tlo3.png
 		${RES_DIR}/tlo4.png ${RES_DIR}/tlo5.png ${RES_DIR}/tlo6.png
 		${RES_DIR}/vampire.png ${RES_DIR}/falkon_robbo.png ${RES_DIR}/amiHUD.png
 	DESTINATIONS
-		${DATA_DIR}/title.bm ${DATA_DIR}/gej_ower.bm ${DATA_DIR}/HUD.bm
+		${DATA_DIR}/menulogo.bm ${DATA_DIR}/menuoptions.bm  ${DATA_DIR}/menulmc.bm 
+		${DATA_DIR}/gej_ower.bm ${DATA_DIR}/HUD.bm
 		${DATA_DIR}/tlo1.bm ${DATA_DIR}/tlo2.bm ${DATA_DIR}/tlo3.bm
 		${DATA_DIR}/tlo4.bm ${DATA_DIR}/tlo5.bm ${DATA_DIR}/tlo6.bm
 		${DATA_DIR}/vampire.bm ${DATA_DIR}/falkon_robbo.bm ${DATA_DIR}/amiHUD.bm)
