@@ -115,7 +115,7 @@ static UBYTE isDrawnOnce = 0;
 BYTE coal = startingCoal;
 BYTE capacitors = 0;
 BYTE excesscoal = 0;
-BYTE level = 28;
+BYTE level = 16;
 
 BYTE robboMsgNr = 0;
 BYTE robboMsgCtrl = 0;
@@ -770,7 +770,8 @@ void coalAndCollect(void)
 
   case 12:
     amigaMode = 1;
-    portalAnimControl = 1;
+    portalAnimControl = 0;
+    ptplayerSetMasterVolume(0);
     bitmapDestroy(s_pTiles);
     bitmapDestroy(s_pTilesMask);
     s_pTiles = bitmapCreateFromFile("data/tileset2.bm", 0);
@@ -1427,7 +1428,7 @@ void stateGameLoop(void)
   if (amigaMode == 1)
   {                // jesli zebralem ami-kondka to wyswietlam ekran z plot twistem
     amigaMode = 2; // ustawiam dla sprawdzenia na koniec czy bedzie alternatywne zakonczenie
-    // ptplayerStop();
+    
     statePush(g_pStateMachineGame, &g_sStateGuruMastah);
     return;
   }

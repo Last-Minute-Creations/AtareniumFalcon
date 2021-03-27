@@ -8,6 +8,7 @@
 #include <ace/managers/state.h>
 #include <ace/managers/blit.h>
 #include <ace/utils/font.h>
+#include <ace/utils/ptplayer.h>
 
 static tView *s_pView;
 static tVPort *s_pVp;
@@ -89,6 +90,7 @@ void stateGuruMastahLoop(void)
   if (joyUse(JOY1_FIRE) || keyUse(KEY_RETURN))
   {
     statePop(g_pStateMachineGame);
+    ptplayerSetMasterVolume(64);
     return;
   }
 
