@@ -631,74 +631,82 @@ void robboScrollDown(void)
 
 void robboSays(void)
 {
-  switch (robboMsgNr)
+  if (amigaMode == 2)
   {
-  case 1:
-    sprintf(szRobboMsg, "Follow the Atari portal.");
-    break;
-  case 2:
-    sprintf(szRobboMsg, "Keep an eye on your coal supplies.");
-    break;
-  case 3:
-    sprintf(szRobboMsg, "Don't waste our coal hitting the meteorites.");
-    break;
-  case 4:
-    sprintf(szRobboMsg, "Try to steal some red and blue capacitors.");
-    break;
-  case 5:
-    sprintf(szRobboMsg, "Infiltrate the Amigans territory.");
-    break;
-  case 6:
-    sprintf(szRobboMsg, "Minister Renton is counting on you, Sir.");
-    break;
-  case 7:
-    sprintf(szRobboMsg, "Please clean up here, I found some GermZ.");
-    break;
-  case 8:
-    sprintf(szRobboMsg, "Take me home, this place sucks!");
-    break;
-  case 9:
-    sprintf(szRobboMsg, "Find the coal warehouse and reclaim it.");
-    break;
+    sprintf(szRobboMsg, "Traitor! Burn in hell!");
+  }
 
-  case 10:
-    sprintf(szRobboMsg, "Have you played Aminer yet?");
-    break;
+  else if (amigaMode != 2)
+  {
+    switch (robboMsgNr)
+    {
+    case 1:
+      sprintf(szRobboMsg, "Follow the Atari portal.");
+      break;
+    case 2:
+      sprintf(szRobboMsg, "Keep an eye on your coal supplies.");
+      break;
+    case 3:
+      sprintf(szRobboMsg, "Don't waste our coal hitting the meteorites.");
+      break;
+    case 4:
+      sprintf(szRobboMsg, "Try to steal some red and blue capacitors.");
+      break;
+    case 5:
+      sprintf(szRobboMsg, "Infiltrate the Amigans territory.");
+      break;
+    case 6:
+      sprintf(szRobboMsg, "Minister Renton is counting on you, Sir.");
+      break;
+    case 7:
+      sprintf(szRobboMsg, "Please clean up here, I found some GermZ.");
+      break;
+    case 8:
+      sprintf(szRobboMsg, "Take me home, this place sucks!");
+      break;
+    case 9:
+      sprintf(szRobboMsg, "Find the coal warehouse and reclaim it.");
+      break;
 
-  case 11:
-    sprintf(szRobboMsg, "Drop me out at LK Avalon please.");
-    break;
+    case 10:
+      sprintf(szRobboMsg, "Have you played Aminer yet?");
+      break;
 
-  case 12:
-    sprintf(szRobboMsg, "You like Paula? I love Laura!");
-    break;
+    case 11:
+      sprintf(szRobboMsg, "Drop me out at LK Avalon please.");
+      break;
 
-  case 13:
-    sprintf(szRobboMsg, "Atari has no glitches...");
-    break;
+    case 12:
+      sprintf(szRobboMsg, "You like Paula? I love Laura!");
+      break;
 
-  case 14:
-    sprintf(szRobboMsg, "..even if played in 2077.");
-    break;
-  case 15:
-    sprintf(szRobboMsg, "Make River Raid not Bridge Strike!");
-    break;
-  case 16:
-    sprintf(szRobboMsg, "Cytadela is better than Doom.");
-    break;
-  case 17:
-    sprintf(szRobboMsg, "How to double the value of your Atari...?");
-    break;
-  case 18:
-    sprintf(szRobboMsg, "...Just insert the cassette into tape drive.");
-    break;
+    case 13:
+      sprintf(szRobboMsg, "Atari has no glitches...");
+      break;
 
-  case LAST_LEVEL_NUMBER - 1:
-    sprintf(szRobboMsg, "We're close, I feel it in my DSP.");
-    break;
-  case LAST_LEVEL_NUMBER:
-    sprintf(szRobboMsg, "Well done! Now collect the coal and GTFO !!!");
-    break;
+    case 14:
+      sprintf(szRobboMsg, "..even if played in 2077.");
+      break;
+    case 15:
+      sprintf(szRobboMsg, "Make River Raid not Bridge Strike!");
+      break;
+    case 16:
+      sprintf(szRobboMsg, "Cytadela is better than Doom.");
+      break;
+    case 17:
+      sprintf(szRobboMsg, "How to double the value of your Atari...?");
+      break;
+    case 18:
+      sprintf(szRobboMsg, "...Just insert the cassette into tape drive.");
+      break;
+
+    case LAST_LEVEL_NUMBER - 1:
+      sprintf(szRobboMsg, "We're close, I feel it in my DSP.");
+      break;
+    case LAST_LEVEL_NUMBER:
+      sprintf(szRobboMsg, "Well done! Now collect the coal and GTFO !!!");
+      break;
+    }
   }
   fontFillTextBitMap(s_pFont, s_pBmText, szRobbo1stLine);
   fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 8, 230, 23, FONT_COOKIE);
@@ -1259,20 +1267,18 @@ void stateGameCreate(void)
 void stateGameLoop(void)
 {
   // Here goes code done each game frame
-  
-    ++redCapacitorsAnimTick;
-    if (redCapacitorsAnimTick > tickTempo)
-    {
-     redCapacitorsAnimTick = 0;
-    }
-    ++blueCapacitorsAnimTick;
-    if (blueCapacitorsAnimTick > tickTempo)
-    {
-      blueCapacitorsAnimTick = 0;
-    }
-  
-  
-  
+
+  ++redCapacitorsAnimTick;
+  if (redCapacitorsAnimTick > tickTempo)
+  {
+    redCapacitorsAnimTick = 0;
+  }
+  ++blueCapacitorsAnimTick;
+  if (blueCapacitorsAnimTick > tickTempo)
+  {
+    blueCapacitorsAnimTick = 0;
+  }
+
   if (falkonIdleControl == 1)
   {
     ++falkonIdle;
@@ -1298,13 +1304,12 @@ void stateGameLoop(void)
     }
   }
 
-  
   falconIdleAnimation();
-  
+
   falkonHittingStone();
   redCapacitorsAnimation();
   blueCapacitorsAnimation();
-  
+
   robboScrollUp();
   robboScrollDown();
   portalAnim();
@@ -1313,8 +1318,6 @@ void stateGameLoop(void)
   {
     falkonFlying2Db();
   }
-
-  
 
   falkonFlying();
 
@@ -1335,7 +1338,6 @@ void stateGameLoop(void)
   {
     ++stonehitAnimTick;
   }
-
 
   joyProcess();
   keyProcess();
@@ -1369,7 +1371,8 @@ void stateGameLoop(void)
   }
   else if (keyUse(KEY_N))
   {
-    if (cheatmodeEnablerWhenEqual3 != 3){
+    if (cheatmodeEnablerWhenEqual3 != 3)
+    {
       return;
     }
     ++level;
@@ -1392,7 +1395,8 @@ void stateGameLoop(void)
 
   if (kierunek != 0)
   {
-    if (flyingAnimControl != 0){
+    if (flyingAnimControl != 0)
+    {
       return;
     }
     kierunekHold = kierunek;
@@ -1428,7 +1432,7 @@ void stateGameLoop(void)
   if (amigaMode == 1)
   {                // jesli zebralem ami-kondka to wyswietlam ekran z plot twistem
     amigaMode = 2; // ustawiam dla sprawdzenia na koniec czy bedzie alternatywne zakonczenie
-    
+
     statePush(g_pStateMachineGame, &g_sStateGuruMastah);
     return;
   }
