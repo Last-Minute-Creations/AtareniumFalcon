@@ -22,6 +22,7 @@ extern tState g_sStateCredits;
 extern tStateManager *g_pStateMachineGame;
 
 UBYTE cheatmodeEnablerWhenEqual3 = 0;
+UBYTE cheatModeStarColor = 0;
 
 UBYTE creditsControl = 0;
 
@@ -120,7 +121,7 @@ void pixel1(void)
 	{
 		for (UBYTE i = 0; i < STAR_COUNT ; ++i){
 		chunkyToPlanar(bgColor, p1x[i][starPrev1], p1y[i][starPrev1], s_pVpManager->pBack);
-		chunkyToPlanar(pxColor[starCount1], p1x[i][starCount1], p1y[i][starCount1], s_pVpManager->pBack);
+		chunkyToPlanar(pxColor[starCount1 + cheatModeStarColor], p1x[i][starCount1], p1y[i][starCount1], s_pVpManager->pBack);
 		}
 		starPrev1 = starCount1;
 		++starCount1;
@@ -233,6 +234,7 @@ void stateMenuLoop(void)
 	}
 	if (keyUse(KEY_F) && cheatmodeEnablerWhenEqual3 == 2){
 		++cheatmodeEnablerWhenEqual3;
+		cheatModeStarColor = 10;
 	}
 
 	viewProcessManagers(s_pView);
