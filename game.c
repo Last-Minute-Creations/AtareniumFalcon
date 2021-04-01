@@ -85,10 +85,10 @@ BYTE frameHit = 0;
 CONST BYTE startingCoal = 10;
 
 BYTE falkonIdle = 0;
-BYTE falkonIdleTempo = 4;
+BYTE falkonIdleTempo = 8;
 BYTE falkonIdleControl = 1;
 BYTE redCapacitorsAnimTick = 0;
-BYTE tickTempo = 2;
+BYTE tickTempo = 8;
 BYTE redCapacitorsAnimTileCheck = 0;
 BYTE blueCapacitorsAnimTick = 0;
 BYTE blueCapacitorsAnimTileCheck = 0;
@@ -111,8 +111,6 @@ BYTE flyingFrame = 0;
 UWORD newPosX = 0;
 UWORD newPosY = 0;
 
-static UBYTE isDrawnOnce = 0;
-
 BYTE coal = startingCoal;
 BYTE capacitors = 0;
 BYTE excesscoal = 0;
@@ -132,6 +130,7 @@ UBYTE tempX = 0;
 UBYTE tempY = 0;
 
 extern UBYTE cheatmodeEnablerWhenEqual3;
+extern UBYTE secondCheatEnablerWhenEqual3;
 
 void waitFrames(tVPort *pVPort, UBYTE ubHowMany, UWORD uwPosY)
 {
@@ -335,6 +334,8 @@ void clearTiles(void)
     {
       kamyki[x][y] = 0;
       collectiblesAnim[x][y] = 0;
+      blitCopy(s_pBg, x * 32, y * 32, s_pBgWithTile, x * 32, y * 32, 32, 32, MINTERM_COPY);
+
     }
   }
 }
@@ -751,6 +752,10 @@ void coalAndCollect(void)
   BYTE what = kamyki[pickSthX][pickSthY];
   kamyki[pickSthX][pickSthY] = 0;
   collectiblesAnim[pickSthX][pickSthY] = 0;
+
+  if(secondCheatEnablerWhenEqual3 == 3){
+    ++coal;
+  }
 
   --coal;
 
