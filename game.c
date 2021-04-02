@@ -328,13 +328,15 @@ void drawTiles(void)
 
 void clearTiles(void)
 {
+  blitCopy(s_pBg, 0, 0, s_pBgWithTile, 0, 0, 320, 128, MINTERM_COPY);
+  blitCopy(s_pBg, 0, 128, s_pBgWithTile, 0, 128, 320, 128, MINTERM_COPY);
   for (UBYTE y = 0; y < MAP_TILE_HEIGHT; ++y)
   {
     for (UBYTE x = 0; x < MAP_TILE_WIDTH; ++x)
     {
       kamyki[x][y] = 0;
       collectiblesAnim[x][y] = 0;
-      blitCopy(s_pBg, x * 32, y * 32, s_pBgWithTile, x * 32, y * 32, 32, 32, MINTERM_COPY);
+      
 
     }
   }

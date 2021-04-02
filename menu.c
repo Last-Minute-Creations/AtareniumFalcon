@@ -33,6 +33,10 @@ UBYTE bgColor = 0;
 UBYTE starTick1 = 0;
 UBYTE starCount1 = 0;
 UBYTE starTick2 = 0;
+
+UBYTE stars1TickTempo = 4;
+UBYTE stars2TickTempo = 6;
+
 UBYTE starCount2 = 0;
 UBYTE starPrev1 = 0;
 UBYTE starPrev2 = 0;
@@ -116,44 +120,123 @@ UWORD p2y[STAR_COUNT][5] = {
 
 void pixel1(void)
 {
-
-	
-	if (starTick1 == 3)
-	{
+	// STEP 1   ONLY FIRST GROUP
+	if (starTick1 == stars1TickTempo && starCount1 == 0){
 		for (UBYTE i = 0; i < STAR_COUNT ; ++i){
-		chunkyToPlanar(bgColor, p1x[i][starPrev1], p1y[i][starPrev1], s_pVpManager->pBack);
-		chunkyToPlanar(pxColor[starCount1 + cheatModeStarColor], p1x[i][starCount1], p1y[i][starCount1], s_pVpManager->pBack);
+		chunkyToPlanar(pxColor[1 + cheatModeStarColor], p1x[i][0], p1y[i][0], s_pVpManager->pBack);
 		}
-		starPrev1 = starCount1;
 		++starCount1;
-		if (starCount1 == 5){
-			starCount1 = 0;
-		}
-		starTick1 = 0;
-		
+	starTick1 = 0;
 	}
+	// STEP 2	ONLY 2ND GROUP
+	if (starTick1 == stars1TickTempo && starCount1 == 1){
+		for (UBYTE i = 0; i < STAR_COUNT ; ++i){
+		chunkyToPlanar(bgColor, p1x[i][0], p1y[i][0], s_pVpManager->pBack);
+		chunkyToPlanar(pxColor[2 + cheatModeStarColor], p1x[i][1], p1y[i][1], s_pVpManager->pBack);
+		}
+		++starCount1;
+	starTick1 = 0;
+	}
+	// STEP 3 GROUPS 1  3
+	if (starTick1 == stars1TickTempo && starCount1 == 2){
+		for (UBYTE i = 0; i < STAR_COUNT ; ++i){
+		chunkyToPlanar(bgColor, p1x[i][1], p1y[i][1], s_pVpManager->pBack);
+		chunkyToPlanar(pxColor[1 + cheatModeStarColor], p1x[i][0], p1y[i][0], s_pVpManager->pBack);
+		chunkyToPlanar(pxColor[3 + cheatModeStarColor], p1x[i][2], p1y[i][2], s_pVpManager->pBack);
 
-	
+		}
+		++starCount1;
+	starTick1 = 0;
+	} 
+
+	// STEP 4 GROUPS 2 4
+	if (starTick1 == stars1TickTempo && starCount1 == 3){
+		for (UBYTE i = 0; i < STAR_COUNT ; ++i){
+		chunkyToPlanar(bgColor, p1x[i][0], p1y[i][0], s_pVpManager->pBack);
+		chunkyToPlanar(bgColor, p1x[i][2], p1y[i][2], s_pVpManager->pBack);
+		chunkyToPlanar(bgColor, p1x[i][4], p1y[i][4], s_pVpManager->pBack);
+		chunkyToPlanar(pxColor[2 + cheatModeStarColor], p1x[i][1], p1y[i][1], s_pVpManager->pBack);
+		chunkyToPlanar(pxColor[4 + cheatModeStarColor], p1x[i][3], p1y[i][3], s_pVpManager->pBack);
+
+		}
+		++starCount1;
+	starTick1 = 0;
+	} 
+
+	// STEP 5 GROUPS 1 3 5
+	if (starTick1 == stars1TickTempo && starCount1 == 4){
+		for (UBYTE i = 0; i < STAR_COUNT ; ++i){
+		chunkyToPlanar(bgColor, p1x[i][1], p1y[i][1], s_pVpManager->pBack);
+		chunkyToPlanar(bgColor, p1x[i][3], p1y[i][3], s_pVpManager->pBack);
+		chunkyToPlanar(pxColor[1 + cheatModeStarColor], p1x[i][0], p1y[i][0], s_pVpManager->pBack);
+		chunkyToPlanar(pxColor[3 + cheatModeStarColor], p1x[i][2], p1y[i][2], s_pVpManager->pBack);
+		chunkyToPlanar(pxColor[4 + cheatModeStarColor], p1x[i][4], p1y[i][4], s_pVpManager->pBack);
+		}
+		starCount1 = 3;
+	starTick1 = 0;
+	} 		
 }
 
 void pixel2(void)
 {
-
-	if (starTick2 == 4)
-	{
-		for (UBYTE i = 0; i < STAR_COUNT; ++i)
-		{
-			chunkyToPlanar(bgColor, p2x[i][starPrev2], p2y[i][starPrev2], s_pVpManager->pBack);
-			chunkyToPlanar(pxColor[starCount2], p2x[i][starCount2], p2y[i][starCount2], s_pVpManager->pBack);
+	// STEP 1   ONLY FIRST GROUP
+	if (starTick2 == stars2TickTempo && starCount2 == 0){
+		for (UBYTE i = 0; i < STAR_COUNT ; ++i){
+		chunkyToPlanar(pxColor[1 + cheatModeStarColor], p2x[i][0], p2y[i][0], s_pVpManager->pBack);
 		}
-		starPrev2 = starCount2;
 		++starCount2;
-		if (starCount2 == 5){
-			starCount2 = 0;
-		}
-		starTick2 = 0;
+	starTick2 = 0;
 	}
+	// STEP 2	ONLY 2ND GROUP
+	if (starTick2 == stars2TickTempo && starCount2 == 1){
+		for (UBYTE i = 0; i < STAR_COUNT ; ++i){
+		chunkyToPlanar(bgColor, p2x[i][0], p2y[i][0], s_pVpManager->pBack);
+		chunkyToPlanar(pxColor[2 + cheatModeStarColor], p2x[i][1], p2y[i][1], s_pVpManager->pBack);
+		}
+		++starCount2;
+	starTick2 = 0;
+	}
+	// STEP 3 GROUPS 1  3
+	if (starTick2 == stars2TickTempo && starCount2 == 2){
+		for (UBYTE i = 0; i < STAR_COUNT ; ++i){
+		chunkyToPlanar(bgColor, p2x[i][1], p2y[i][1], s_pVpManager->pBack);
+		chunkyToPlanar(pxColor[1 + cheatModeStarColor], p2x[i][0], p2y[i][0], s_pVpManager->pBack);
+		chunkyToPlanar(pxColor[3 + cheatModeStarColor], p2x[i][2], p2y[i][2], s_pVpManager->pBack);
+
+		}
+		++starCount2;
+	starTick2 = 0;
+	} 
+
+	// STEP 4 GROUPS 2 4
+	if (starTick2 == stars2TickTempo && starCount2 == 3){
+		for (UBYTE i = 0; i < STAR_COUNT ; ++i){
+		chunkyToPlanar(bgColor, p2x[i][0], p2y[i][0], s_pVpManager->pBack);
+		chunkyToPlanar(bgColor, p2x[i][2], p2y[i][2], s_pVpManager->pBack);
+		chunkyToPlanar(bgColor, p2x[i][4], p2y[i][4], s_pVpManager->pBack);
+		chunkyToPlanar(pxColor[2 + cheatModeStarColor], p2x[i][1], p2y[i][1], s_pVpManager->pBack);
+		chunkyToPlanar(pxColor[4 + cheatModeStarColor], p2x[i][3], p2y[i][3], s_pVpManager->pBack);
+
+		}
+		++starCount2;
+	starTick2 = 0;
+	} 
+
+	// STEP 5 GROUPS 1 3 5
+	if (starTick2 == stars2TickTempo && starCount2 == 4){
+		for (UBYTE i = 0; i < STAR_COUNT ; ++i){
+		chunkyToPlanar(bgColor, p2x[i][1], p2y[i][1], s_pVpManager->pBack);
+		chunkyToPlanar(bgColor, p2x[i][3], p2y[i][3], s_pVpManager->pBack);
+		chunkyToPlanar(pxColor[1 + cheatModeStarColor], p2x[i][0], p2y[i][0], s_pVpManager->pBack);
+		chunkyToPlanar(pxColor[3 + cheatModeStarColor], p2x[i][2], p2y[i][2], s_pVpManager->pBack);
+		chunkyToPlanar(pxColor[4 + cheatModeStarColor], p2x[i][4], p2y[i][4], s_pVpManager->pBack);
+		}
+		starCount2 = 3;
+	starTick2 = 0;
+	} 
 }
+
+
 
 void stateMenuCreate(void)
 {
