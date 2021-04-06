@@ -329,7 +329,7 @@ void drawTiles(void)
 void clearTiles(void)
 {
   blitCopy(s_pBg, 0, 0, s_pBgWithTile, 0, 0, 320, 128, MINTERM_COPY);
-  blitCopy(s_pBg, 0, 128, s_pBgWithTile, 0, 128, 320, 128, MINTERM_COPY);
+  blitCopy(s_pBg, 0, 128, s_pBgWithTile, 0, 128, 320, 96, MINTERM_COPY);
   for (UBYTE y = 0; y < MAP_TILE_HEIGHT; ++y)
   {
     for (UBYTE x = 0; x < MAP_TILE_WIDTH; ++x)

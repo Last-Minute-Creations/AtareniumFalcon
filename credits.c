@@ -57,7 +57,7 @@ const char *s_pCreditsLines[CREDITS_LINE_COUNT] = {
     "",
     "Luc3k: code & MSX",
     "Softiron: GFX",
-    "KaiN & Proxy: AFK",
+    "KaiN, Proxy & PCH: AFK",
     "",
     "Special credit goes to Saberman - ",
     "The Great Atariman of the Galaxy.",
