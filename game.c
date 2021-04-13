@@ -31,6 +31,8 @@ static tPtplayerMod *s_pMod;
 static tFont *s_pFont;
 static tTextBitMap *s_pBmText;
 
+static UWORD s_pPalette[32];
+
 extern tStateManager *g_pStateMachineGame;
 extern tState g_sStateMenu;
 extern tState g_sStateGameOver;
@@ -132,6 +134,10 @@ UBYTE tempY = 0;
 extern UBYTE cheatmodeEnablerWhenEqual3;
 extern UBYTE secondCheatEnablerWhenEqual3;
 
+UBYTE audioFadeIn = 0;
+
+
+
 void waitFrames(tVPort *pVPort, UBYTE ubHowMany, UWORD uwPosY)
 {
   for (UBYTE i = 0; i < ubHowMany; ++i)
@@ -143,6 +149,21 @@ void waitFrames(tVPort *pVPort, UBYTE ubHowMany, UWORD uwPosY)
 }
 
 void clean();
+
+void endLevelFadeOut(void){
+    UBYTE bRatioGame = 15;
+    
+    for (UBYTE i = 0; i < 16; ++i){
+    ptplayerSetMasterVolume(bRatioGame * 4);
+    paletteDim(s_pPalette, s_pVp->pPalette, 32, bRatioGame); // 0 - czarno, 15 - pe?na paleta
+    viewUpdateCLUT(s_pView);                             // we? palet? z viewporta i wrzu? j? na ekran
+    --bRatioGame;
+    waitFrames(s_pVp, 10, uwPosY + FALCON_HEIGHT);
+    }
+    paletteDim(s_pPalette, s_pVp->pPalette, 32, 15);
+    viewUpdateCLUT(s_pView);
+}
+
 
 void printOnHUD(void)
 {
@@ -374,6 +395,7 @@ void levelScore(void)
 void nextLevel(void)
 {
   coal = 1;
+  audioFadeIn = 0;
 
   switch (level)
   {
@@ -564,6 +586,7 @@ void portalAnim(void)
   }
   if (portalFrame == 7)
   {
+    endLevelFadeOut();
     portalFrame = 0;
     portalAnimTick = 0;
     portalAnimControl = 0;
@@ -1250,6 +1273,7 @@ void stateGameCreate(void)
 
   // Paleta z falkona
   paletteLoad("data/falkon.plt", s_pVp->pPalette, 32);
+  paletteLoad("data/falkon.plt", s_pPalette, 32);
 
   g_pCustom->color[0] = 0x0FFF; // zmie� kolor zero aktualnie u�ywanej palety na 15,15,15
 
@@ -1304,6 +1328,10 @@ void stateGameCreate(void)
 void stateGameLoop(void)
 {
   // Here goes code done each game frame
+  if (audioFadeIn < 64){
+  ++audioFadeIn;
+  ptplayerSetMasterVolume(audioFadeIn);
+  }
 
   ++redCapacitorsAnimTick;
   if (redCapacitorsAnimTick > tickTempo)
