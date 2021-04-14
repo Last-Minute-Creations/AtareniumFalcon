@@ -160,8 +160,6 @@ void endLevelFadeOut(void){
     --bRatioGame;
     waitFrames(s_pVp, 10, uwPosY + FALCON_HEIGHT);
     }
-    paletteDim(s_pPalette, s_pVp->pPalette, 32, 15);
-    viewUpdateCLUT(s_pView);
 }
 
 
@@ -345,6 +343,8 @@ void drawTiles(void)
   }
   fileClose(levelFile);
   systemUnuse();
+  paletteDim(s_pPalette, s_pVp->pPalette, 32, 15);
+    viewUpdateCLUT(s_pView);
 }
 
 void clearTiles(void)
@@ -1189,7 +1189,7 @@ void falconIdleAnimation(void)
   {
     idleFrame = 6;
   }
-  else if (falkonIdle == falkonIdleTempo * 8)
+  else if (falkonIdle >= falkonIdleTempo * 8)
   {
     idleFrame = 7;
     falkonIdle = 0;
@@ -1250,6 +1250,26 @@ void blueCapacitorsAnimation(void)
       blueCapacitorsAnimTileCheck = 0;
     }
   }
+}
+
+void gameOverCoalBlinkingOnHUD(void){
+  flyingAnimControl = 5;
+  for (UBYTE i = 0; i < 5; ++i){
+  blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 32, 32, MINTERM_COOKIE);
+  blitCopy(s_pHUD, 32, 0, s_pVpManager->pFront, 32, 224, 32, 32, MINTERM_COOKIE);
+  sprintf(szMsg, "%d", coal);
+  fontFillTextBitMap(s_pFont, s_pBmText, szMsg);
+  fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 232, HUDfontColor, FONT_COOKIE); 
+  fontDrawTextBitMap(s_pVpManager->pFront, s_pBmText, 42, 232, HUDfontColor, FONT_COOKIE); 
+  waitFrames(s_pVp, 50, uwPosY + FALCON_HEIGHT);
+  blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 32, 32, MINTERM_COOKIE);
+  blitCopy(s_pHUD, 32, 0, s_pVpManager->pFront, 32, 224, 32, 32, MINTERM_COOKIE);
+  sprintf(szMsg, "%d", coal);
+  fontFillTextBitMap(s_pFont, s_pBmText, szMsg);
+  fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 232, 15, FONT_COOKIE);
+  fontDrawTextBitMap(s_pVpManager->pFront, s_pBmText, 42, 232, 15, FONT_COOKIE); 
+  waitFrames(s_pVp, 50, uwPosY + FALCON_HEIGHT);
+  } 
 }
 
 void stateGameCreate(void)
@@ -1360,9 +1380,11 @@ void stateGameLoop(void)
     flyingAnimControl = 0;
     if (coal == 0)
     {
+      gameOverCoalBlinkingOnHUD();
       portalAnimControl = 0;
       coal = 1;
       youWin = 2;
+      
       clean();
       ptplayerStop();
       return;

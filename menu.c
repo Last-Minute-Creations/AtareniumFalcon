@@ -318,7 +318,7 @@ void stateMenuLoop(void)
 	}
 	if (keyUse(KEY_F) && cheatmodeEnablerWhenEqual3 == 2){
 		++cheatmodeEnablerWhenEqual3;
-		cheatModeStarColor = 10;
+		cheatModeStarColor += 6 ;
 	}
 	if (keyUse(KEY_L) && secondCheatEnablerWhenEqual3 == 0){
 		++secondCheatEnablerWhenEqual3;
@@ -328,7 +328,7 @@ void stateMenuLoop(void)
 	}
 	if (keyUse(KEY_A) && secondCheatEnablerWhenEqual3 == 2){
 		++secondCheatEnablerWhenEqual3;
-		cheatModeStarColor += 5;
+		cheatModeStarColor += 6;
 	}
 
 

@@ -42,6 +42,7 @@ extern BYTE robboMsgNr;
 extern BYTE robboMsgCount;
 extern BYTE robboMsgCtrl;
 extern BYTE excesscoal;
+extern BYTE flyingAnimControl;
 
 extern BYTE amigaMode;
 
@@ -70,6 +71,7 @@ robboMsgCtrl = 0;
 excesscoal = 0;
 
 amigaMode = 0;
+flyingAnimControl = 0;
 }
 
 
