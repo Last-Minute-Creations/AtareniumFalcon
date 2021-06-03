@@ -84,7 +84,7 @@ UWORD uwPreviousY = 0;
 BYTE stoneHit = 0;
 BYTE frameHit = 0;
 
-CONST BYTE startingCoal = 20;
+CONST BYTE startingCoal = 10;
 
 BYTE falkonIdle = 0;
 BYTE falkonIdleTempo = 8;
@@ -116,7 +116,7 @@ UWORD newPosY = 0;
 BYTE coal = startingCoal;
 BYTE capacitors = 0;
 BYTE excesscoal = 0;
-BYTE level = 11;
+BYTE level = 1;
 
 BYTE robboMsgNr = 0;
 BYTE robboMsgCtrl = 0;
@@ -154,7 +154,9 @@ void endLevelFadeOut(void){
     UBYTE bRatioGame = 15;
     
     for (UBYTE i = 0; i < 16; ++i){
-    ptplayerSetMasterVolume(bRatioGame * 4);
+      if (musicPlay == 1){
+      ptplayerSetMasterVolume(bRatioGame * 4);
+      }
     paletteDim(s_pPalette, s_pVp->pPalette, 32, bRatioGame); // 0 - czarno, 15 - pe?na paleta
     viewUpdateCLUT(s_pView);                             // we? palet? z viewporta i wrzu? j? na ekran
     --bRatioGame;
@@ -392,8 +394,14 @@ void levelScore(void)
 
   for (UBYTE i = 0; i < 8; ++i)
   {
-   blitCopyMask(s_pTiles, 32 * i, 320, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-   blitCopyMask(s_pTiles, 32 * i, 320, s_pVpManager->pFront, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
+    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pFront, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
+    blitCopyMask(s_pTiles, 32 * i, 320, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+    blitCopyMask(s_pTiles, 32 * i, 320, s_pVpManager->pFront, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+    blitCopyMask(s_pTiles, 32, 192 + falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+    blitCopyMask(s_pTiles, 32, 192 + falkonFace, s_pVpManager->pFront, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+
+   
    waitFrames(s_pVp, 10, uwPosY + FALCON_HEIGHT);
   }
 
@@ -1355,7 +1363,7 @@ void stateGameCreate(void)
 void stateGameLoop(void)
 {
   // Here goes code done each game frame
-  if (audioFadeIn < 64){
+  if (musicPlay == 1 && audioFadeIn < 64){
   ++audioFadeIn;
   ptplayerSetMasterVolume(audioFadeIn);
   }
