@@ -84,7 +84,7 @@ UWORD uwPreviousY = 0;
 BYTE stoneHit = 0;
 BYTE frameHit = 0;
 
-CONST BYTE startingCoal = 10;
+CONST BYTE startingCoal = 20;
 
 BYTE falkonIdle = 0;
 BYTE falkonIdleTempo = 8;
@@ -116,7 +116,7 @@ UWORD newPosY = 0;
 BYTE coal = startingCoal;
 BYTE capacitors = 0;
 BYTE excesscoal = 0;
-BYTE level = 12;
+BYTE level = 11;
 
 BYTE robboMsgNr = 0;
 BYTE robboMsgCtrl = 0;
@@ -163,8 +163,7 @@ void endLevelFadeOut(void){
 }
 
 
-void printOnHUD(void)
-{
+void printOnHUD(void){
 
   blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 32, 32, MINTERM_COOKIE);
   sprintf(szMsg, "%d", coal);
@@ -390,6 +389,14 @@ void levelScore(void)
     fontDrawTextBitMap(s_pVpManager->pFront, s_pBmText, 130, 232, HUDfontColor, FONT_COOKIE);
     waitFrames(s_pVp, 20, uwPosY + FALCON_HEIGHT);
   }
+
+  for (UBYTE i = 0; i < 8; ++i)
+  {
+   blitCopyMask(s_pTiles, 32 * i, 320, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+   blitCopyMask(s_pTiles, 32 * i, 320, s_pVpManager->pFront, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+   waitFrames(s_pVp, 10, uwPosY + FALCON_HEIGHT);
+  }
+
 }
 
 void nextLevel(void)
