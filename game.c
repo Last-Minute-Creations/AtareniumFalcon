@@ -164,6 +164,30 @@ void endLevelFadeOut(void){
     }
 }
 
+void amiHUDprintOnFrontOnceAfterLoad(void){
+
+  blitCopy(s_pHUD, 32, 0, s_pVpManager->pFront, 32, 224, 32, 32, MINTERM_COOKIE);
+  sprintf(szMsg, "%d", coal);
+  fontFillTextBitMap(s_pFont, s_pBmText, szMsg);
+  fontDrawTextBitMap(s_pVpManager->pFront, s_pBmText, 42, 232, HUDfontColor, FONT_COOKIE);
+  blitCopy(s_pHUD, 188, 0, s_pVpManager->pFront, 188, 224, 32, 32, MINTERM_COOKIE);
+  sprintf(szMsg2, "%d", capacitors);
+  fontFillTextBitMap(s_pFont, s_pBmText, szMsg2);
+  fontDrawTextBitMap(s_pVpManager->pFront, s_pBmText, 190, 236, HUDfontColor, FONT_COOKIE);
+  blitCopy(s_pHUD, 128, 0, s_pVpManager->pFront, 128, 224, 32, 32, MINTERM_COOKIE);
+  sprintf(szMsg3, "%d", excesscoal);
+  fontFillTextBitMap(s_pFont, s_pBmText, szMsg3);
+  fontDrawTextBitMap(s_pVpManager->pFront, s_pBmText, 130, 232, HUDfontColor, FONT_COOKIE);
+  blitCopy(s_pHUD, 248, 0, s_pVpManager->pFront, 248, 224, 32, 32, MINTERM_COOKIE);
+  sprintf(szMsg4, "%d", robboMsgCount);
+  fontFillTextBitMap(s_pFont, s_pBmText, szMsg4);
+  fontDrawTextBitMap(s_pVpManager->pFront, s_pBmText, 250, 236, HUDfontColor, FONT_COOKIE);
+  blitCopy(s_pHUD, 288, 0, s_pVpManager->pFront, 288, 224, 32, 32, MINTERM_COOKIE);
+  sprintf(szLvl, "%d", level);
+  fontFillTextBitMap(s_pFont, s_pBmText, szLvl);
+  fontDrawTextBitMap(s_pVpManager->pFront, s_pBmText, 290, 236, HUDfontColor, FONT_COOKIE);
+}
+
 
 void printOnHUD(void){
 
@@ -392,7 +416,7 @@ void levelScore(void)
     waitFrames(s_pVp, 20, uwPosY + FALCON_HEIGHT);
   }
 
-  for (UBYTE i = 0; i < 8; ++i)
+  for (UBYTE i = 0; i < 8; ++i)  // otwieranie portala 
   {
     blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
     blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pFront, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
@@ -857,6 +881,7 @@ void coalAndCollect(void)
     s_pHUD = bitmapCreateFromFile("data/amiHUD.bm", 0);
     blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320, 32, MINTERM_COOKIE);
     blitCopy(s_pHUD, 0, 0, s_pVpManager->pFront, 0, 224, 320, 32, MINTERM_COOKIE);
+    amiHUDprintOnFrontOnceAfterLoad();
     printOnHUD();
     break;
   }
