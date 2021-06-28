@@ -136,8 +136,6 @@ extern UBYTE secondCheatEnablerWhenEqual3;
 
 UBYTE audioFadeIn = 0;
 
-
-
 void waitFrames(tVPort *pVPort, UBYTE ubHowMany, UWORD uwPosY)
 {
   for (UBYTE i = 0; i < ubHowMany; ++i)
@@ -150,21 +148,42 @@ void waitFrames(tVPort *pVPort, UBYTE ubHowMany, UWORD uwPosY)
 
 void clean();
 
-void endLevelFadeOut(void){
-    UBYTE bRatioGame = 15;
-    
-    for (UBYTE i = 0; i < 16; ++i){
-      if (musicPlay == 1){
-      ptplayerSetMasterVolume(bRatioGame * 4);
-      }
-    paletteDim(s_pPalette, s_pVp->pPalette, 32, bRatioGame); // 0 - czarno, 15 - pe?na paleta
-    viewUpdateCLUT(s_pView);                             // we? palet? z viewporta i wrzu? j? na ekran
-    --bRatioGame;
-    waitFrames(s_pVp, 10, uwPosY + FALCON_HEIGHT);
-    }
+void portalCloseAnim(void){\
+  blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
+  blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
+  blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pFront, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
+  for (UBYTE i = 0; i < 8; ++i) // zamykanie portala
+  {
+    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
+    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pFront, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
+    blitCopyMask(s_pTiles, 224 - (32 * i), 320, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+    blitCopyMask(s_pTiles, 224 - (32 * i), 320, s_pVpManager->pFront, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+    //blitCopyMask(s_pTiles, 32, 192 + falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+    //blitCopyMask(s_pTiles, 32, 192 + falkonFace, s_pVpManager->pFront, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+
+    waitFrames(s_pVp, falkonIdleTempo, uwPosY + FALCON_HEIGHT);
+  }
 }
 
-void amiHUDprintOnFrontOnceAfterLoad(void){
+void endLevelFadeOut(void)
+{
+  UBYTE bRatioGame = 15;
+
+  for (UBYTE i = 0; i < 16; ++i)
+  {
+    if (musicPlay == 1)
+    {
+      ptplayerSetMasterVolume(bRatioGame * 4);
+    }
+    paletteDim(s_pPalette, s_pVp->pPalette, 32, bRatioGame); // 0 - czarno, 15 - pe?na paleta
+    viewUpdateCLUT(s_pView);                                 // we? palet? z viewporta i wrzu? j? na ekran
+    --bRatioGame;
+    waitFrames(s_pVp, 10, uwPosY + FALCON_HEIGHT);
+  }
+}
+
+void amiHUDprintOnFrontOnceAfterLoad(void)
+{
 
   blitCopy(s_pHUD, 32, 0, s_pVpManager->pFront, 32, 224, 32, 32, MINTERM_COOKIE);
   sprintf(szMsg, "%d", coal);
@@ -188,8 +207,8 @@ void amiHUDprintOnFrontOnceAfterLoad(void){
   fontDrawTextBitMap(s_pVpManager->pFront, s_pBmText, 290, 236, HUDfontColor, FONT_COOKIE);
 }
 
-
-void printOnHUD(void){
+void printOnHUD(void)
+{
 
   blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 32, 32, MINTERM_COOKIE);
   sprintf(szMsg, "%d", coal);
@@ -298,7 +317,7 @@ void drawTiles(void)
       collectiblesAnim[x][y] = 8;
       blitCopyMask(s_pTiles, 0, 256, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
       blitCopyMask(s_pTiles, 0, 256, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-     
+
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
     }
@@ -369,7 +388,7 @@ void drawTiles(void)
   fileClose(levelFile);
   systemUnuse();
   paletteDim(s_pPalette, s_pVp->pPalette, 32, 15);
-    viewUpdateCLUT(s_pView);
+  viewUpdateCLUT(s_pView);
 }
 
 void clearTiles(void)
@@ -382,8 +401,6 @@ void clearTiles(void)
     {
       kamyki[x][y] = 0;
       collectiblesAnim[x][y] = 0;
-      
-
     }
   }
 }
@@ -416,7 +433,7 @@ void levelScore(void)
     waitFrames(s_pVp, 20, uwPosY + FALCON_HEIGHT);
   }
 
-  for (UBYTE i = 0; i < 8; ++i)  // otwieranie portala 
+  for (UBYTE i = 0; i < 8; ++i) // otwieranie portala
   {
     blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
     blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pFront, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
@@ -425,10 +442,8 @@ void levelScore(void)
     blitCopyMask(s_pTiles, 32, 192 + falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
     blitCopyMask(s_pTiles, 32, 192 + falkonFace, s_pVpManager->pFront, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
 
-   
-   waitFrames(s_pVp, 10, uwPosY + FALCON_HEIGHT);
+    waitFrames(s_pVp, falkonIdleTempo, uwPosY + FALCON_HEIGHT);
   }
-
 }
 
 void nextLevel(void)
@@ -620,11 +635,14 @@ void portalAnim(void)
     {
       portalFrame = 7;
     }
-    blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
-    blitCopyMask(s_pTiles, portalFrame * 32, 128 + falkonFace, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+    else if (portalAnimTick == falkonIdleTempo * 9)
+    {
+      portalFrame = 8;
+    }
   }
-  if (portalFrame == 7)
+  if (portalFrame == 8)
   {
+    portalCloseAnim();
     endLevelFadeOut();
     portalFrame = 0;
     portalAnimTick = 0;
@@ -640,6 +658,8 @@ void portalAnim(void)
       nextLevel();
     }
   }
+  blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
+  blitCopyMask(s_pTiles, portalFrame * 32, 128 + falkonFace, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
 }
 
 void robboScrollUp(void)
@@ -817,7 +837,8 @@ void coalAndCollect(void)
   kamyki[pickSthX][pickSthY] = 0;
   collectiblesAnim[pickSthX][pickSthY] = 0;
 
-  if(secondCheatEnablerWhenEqual3 == 3){
+  if (secondCheatEnablerWhenEqual3 == 3)
+  {
     ++coal;
   }
 
@@ -1013,7 +1034,6 @@ void prepareFalconFlying(void)
   uwPreviousY = uwPosY;
   newPosX = uwPosX;
   newPosY = uwPosY;
-  
 
   switch (kierunekHold)
   {
@@ -1061,18 +1081,20 @@ void endFalconFlying(void)
     falkony = falkony + 1;
     break;
   }
- // blitCopy(s_pBg, falkonx * 32, falkony * 32, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, MINTERM_COOKIE);
+  // blitCopy(s_pBg, falkonx * 32, falkony * 32, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, MINTERM_COOKIE);
 }
 
 void blitFlyingAnimFrame(void)
 {
-  
+
   blitCopy(s_pBg, uwPreviousX, uwPreviousY, s_pVpManager->pBack, uwPreviousX, uwPreviousY, 32, 32, MINTERM_COOKIE);
-  if (kamyki[tempX][tempY] > 3){
-   blitCopy(s_pBgWithTile, newPosX, newPosY, s_pVpManager->pBack, newPosX, newPosY, 32, 32, MINTERM_COOKIE); 
+  if (kamyki[tempX][tempY] > 3)
+  {
+    blitCopy(s_pBgWithTile, newPosX, newPosY, s_pVpManager->pBack, newPosX, newPosY, 32, 32, MINTERM_COOKIE);
   }
-  else if (kamyki[tempX][tempY] < 4){
-  blitCopy(s_pBg, newPosX, newPosY, s_pVpManager->pBack, newPosX, newPosY, 32, 32, MINTERM_COOKIE);
+  else if (kamyki[tempX][tempY] < 4)
+  {
+    blitCopy(s_pBg, newPosX, newPosY, s_pVpManager->pBack, newPosX, newPosY, 32, 32, MINTERM_COOKIE);
   }
   blitCopyMask(s_pTiles, pAnim[flyingFrame], 64 + falkonFace, s_pVpManager->pBack, newPosX, newPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
 }
@@ -1292,24 +1314,26 @@ void blueCapacitorsAnimation(void)
   }
 }
 
-void gameOverCoalBlinkingOnHUD(void){
+void gameOverCoalBlinkingOnHUD(void)
+{
   flyingAnimControl = 5;
-  for (UBYTE i = 0; i < 5; ++i){
-  blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 32, 32, MINTERM_COOKIE);
-  blitCopy(s_pHUD, 32, 0, s_pVpManager->pFront, 32, 224, 32, 32, MINTERM_COOKIE);
-  sprintf(szMsg, "%d", coal);
-  fontFillTextBitMap(s_pFont, s_pBmText, szMsg);
-  fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 232, HUDfontColor, FONT_COOKIE); 
-  fontDrawTextBitMap(s_pVpManager->pFront, s_pBmText, 42, 232, HUDfontColor, FONT_COOKIE); 
-  waitFrames(s_pVp, 50, uwPosY + FALCON_HEIGHT);
-  blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 32, 32, MINTERM_COOKIE);
-  blitCopy(s_pHUD, 32, 0, s_pVpManager->pFront, 32, 224, 32, 32, MINTERM_COOKIE);
-  sprintf(szMsg, "%d", coal);
-  fontFillTextBitMap(s_pFont, s_pBmText, szMsg);
-  fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 232, 15, FONT_COOKIE);
-  fontDrawTextBitMap(s_pVpManager->pFront, s_pBmText, 42, 232, 15, FONT_COOKIE); 
-  waitFrames(s_pVp, 50, uwPosY + FALCON_HEIGHT);
-  } 
+  for (UBYTE i = 0; i < 5; ++i)
+  {
+    blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 32, 32, MINTERM_COOKIE);
+    blitCopy(s_pHUD, 32, 0, s_pVpManager->pFront, 32, 224, 32, 32, MINTERM_COOKIE);
+    sprintf(szMsg, "%d", coal);
+    fontFillTextBitMap(s_pFont, s_pBmText, szMsg);
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 232, HUDfontColor, FONT_COOKIE);
+    fontDrawTextBitMap(s_pVpManager->pFront, s_pBmText, 42, 232, HUDfontColor, FONT_COOKIE);
+    waitFrames(s_pVp, 50, uwPosY + FALCON_HEIGHT);
+    blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 32, 32, MINTERM_COOKIE);
+    blitCopy(s_pHUD, 32, 0, s_pVpManager->pFront, 32, 224, 32, 32, MINTERM_COOKIE);
+    sprintf(szMsg, "%d", coal);
+    fontFillTextBitMap(s_pFont, s_pBmText, szMsg);
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 232, 15, FONT_COOKIE);
+    fontDrawTextBitMap(s_pVpManager->pFront, s_pBmText, 42, 232, 15, FONT_COOKIE);
+    waitFrames(s_pVp, 50, uwPosY + FALCON_HEIGHT);
+  }
 }
 
 void stateGameCreate(void)
@@ -1340,7 +1364,7 @@ void stateGameCreate(void)
   s_pTiles = bitmapCreateFromFile("data/tileset.bm", 0);          // z pliku tileset.bm, nie lokuj bitmapy w pami�ci FAST
   s_pTilesMask = bitmapCreateFromFile("data/tileset_mask.bm", 0); // z pliku tileset_mask.bm, nie lokuj bitmapy w pami�ci FAST
   s_pBg = bitmapCreateFromFile("data/tlo1.bm", 0);
-  s_pBgWithTile = bitmapCreateFromFile("data/tlo1.bm", 0);                // fragmenty tla do podstawiania po ruchu
+  s_pBgWithTile = bitmapCreateFromFile("data/tlo1.bm", 0); // fragmenty tla do podstawiania po ruchu
   s_pHUD = bitmapCreateFromFile("data/HUD.bm", 0);
   s_pRobbo = bitmapCreateFromFile("data/falkon_robbo.bm", 0);
 
@@ -1388,9 +1412,10 @@ void stateGameCreate(void)
 void stateGameLoop(void)
 {
   // Here goes code done each game frame
-  if (musicPlay == 1 && audioFadeIn < 64){
-  ++audioFadeIn;
-  ptplayerSetMasterVolume(audioFadeIn);
+  if (musicPlay == 1 && audioFadeIn < 64)
+  {
+    ++audioFadeIn;
+    ptplayerSetMasterVolume(audioFadeIn);
   }
 
   ++redCapacitorsAnimTick;
@@ -1424,7 +1449,7 @@ void stateGameLoop(void)
       portalAnimControl = 0;
       coal = 1;
       youWin = 2;
-      
+
       clean();
       ptplayerStop();
       return;
