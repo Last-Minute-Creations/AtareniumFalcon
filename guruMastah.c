@@ -16,6 +16,7 @@ static tSimpleBufferManager *s_pVpManager;
 
 extern tState g_sStateGame;
 extern tStateManager *g_pStateMachineGame;
+extern BYTE musicPlay;
 
 static tFont *s_pFont;
 static tTextBitMap *s_pBmText;
@@ -90,7 +91,10 @@ void stateGuruMastahLoop(void)
   if (joyUse(JOY1_FIRE) || keyUse(KEY_RETURN))
   {
     statePop(g_pStateMachineGame);
+    if (musicPlay == 1)
+    {
     ptplayerSetMasterVolume(64);
+    }
     return;
   }
 
