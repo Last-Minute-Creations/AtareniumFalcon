@@ -21,6 +21,7 @@ static tBitMap *s_pTiles;
 static tBitMap *s_pTilesMask;
 static tBitMap *s_pBg;
 static tBitMap *s_pBgWithTile;
+static tBitMap *s_pBgPortalGlow;
 static tBitMap *s_pHUD;
 static tBitMap *s_pFalconBg;
 static tBitMap *s_pAnimBg;
@@ -95,12 +96,19 @@ BYTE redCapacitorsAnimTileCheck = 0;
 BYTE blueCapacitorsAnimTick = 0;
 BYTE blueCapacitorsAnimTileCheck = 0;
 
+BYTE portalGlowTick = 0;
+BYTE portalTickTempo = 4;
+BYTE portalGlowFrame = 0;
+
 BYTE hudScrollingControl = 0;
 BYTE hudScrollingTick = 0;
 
 BYTE portalAnimControl = 0;
 BYTE portalAnimTick = 0;
 BYTE portalFrame = 0;
+BYTE portalGlowX = 0;
+BYTE portalGlowY = 0;
+BYTE portalGlowDB  = 0;
 
 BYTE stonehitAnimControl = 0;
 BYTE stonehitAnimTick = 0;
@@ -116,7 +124,7 @@ UWORD newPosY = 0;
 BYTE coal = startingCoal;
 BYTE capacitors = 0;
 BYTE excesscoal = 0;
-BYTE level = 1;
+BYTE level = 16;
 
 BYTE robboMsgNr = 0;
 BYTE robboMsgCtrl = 0;
@@ -333,6 +341,8 @@ void drawTiles(void)
     else if (ubZmienna == 0x45)
     {
       kamyki[x][y] = 10;
+      portalGlowX = x;
+      portalGlowY = y;
       blitCopyMask(s_pTiles, 64, 32, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
       blitCopyMask(s_pTiles, 64, 32, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
 
@@ -902,6 +912,12 @@ void coalAndCollect(void)
     s_pHUD = bitmapCreateFromFile("data/amiHUD.bm", 0);
     blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320, 32, MINTERM_COOKIE);
     blitCopy(s_pHUD, 0, 0, s_pVpManager->pFront, 0, 224, 320, 32, MINTERM_COOKIE);
+    blitCopy(s_pBg, 288, 0, s_pVpManager->pBack, 288, 0, 32, 32, MINTERM_COPY);
+    blitCopy(s_pBg, 288, 0, s_pVpManager->pFront, 288, 0, 32, 32, MINTERM_COPY);
+    blitCopyMask(s_pTiles, 64, 32, s_pBgWithTile,  288, 0, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+    blitCopyMask(s_pTiles, 64, 32, s_pBgWithTile, 288, 0, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+    blitCopy(s_pBgWithTile, 288, 0, s_pVpManager->pBack, 288, 0, 32, 32, MINTERM_COPY);
+    blitCopy(s_pBgWithTile, 288, 0, s_pVpManager->pFront, 288, 0, 32, 32, MINTERM_COPY);
     amiHUDprintOnFrontOnceAfterLoad();
     printOnHUD();
     break;
@@ -1314,6 +1330,16 @@ void blueCapacitorsAnimation(void)
   }
 }
 
+void portalGlowAnim(void){
+  blitCopy(s_pBg, portalGlowX * 32, portalGlowY * 32, s_pBgPortalGlow, 0, 0, 32, 32, MINTERM_COOKIE);
+  blitCopyMask(s_pTiles, portalGlowFrame * 32, 352, s_pBgPortalGlow, 0, 0, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+  //blitCopyMask(s_pTiles, portalGlowFrame * 32, 352, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+
+  blitCopy(s_pBgPortalGlow, 0, 0, s_pVpManager->pBack, portalGlowX * 32, portalGlowY * 32, 32, 32, MINTERM_COPY);
+  //blitCopy(s_pBgWithTile, 0, 0, s_pVpManager->pFront, portalGlowX * 32, portalGlowY * 32, 32, 32, MINTERM_COPY);
+
+}
+
 void gameOverCoalBlinkingOnHUD(void)
 {
   flyingAnimControl = 5;
@@ -1370,6 +1396,7 @@ void stateGameCreate(void)
 
   s_pFalconBg = bitmapCreate(48, 32, 5, BMF_INTERLEAVED);
   s_pAnimBg = bitmapCreate(48, 32, 5, BMF_INTERLEAVED);
+  s_pBgPortalGlow = bitmapCreate(48, 32, 5, BMF_INTERLEAVED);
 
   s_pFont = fontCreate("data/topaz.fnt");
   s_pBmText = fontCreateTextBitMap(300, s_pFont->uwHeight); // bitmapa robocza długa na 200px, wysoka na jedną linię tekstu
@@ -1416,6 +1443,25 @@ void stateGameLoop(void)
   {
     ++audioFadeIn;
     ptplayerSetMasterVolume(audioFadeIn);
+  }
+
+  if (portalGlowDB == 1)
+  {
+    portalGlowAnim();
+    portalGlowDB = 0;
+  }
+
+  ++portalGlowTick;
+  if (portalGlowTick > portalTickTempo)
+  {
+    ++portalGlowFrame;
+    portalGlowAnim();
+    portalGlowTick = 0;
+    portalGlowDB = 1;
+    if (portalGlowFrame == 7)
+    {
+      portalGlowFrame = 0;
+    }
   }
 
   ++redCapacitorsAnimTick;
@@ -1629,6 +1675,7 @@ void stateGameDestroy(void)
   bitmapDestroy(s_pHUD);
   bitmapDestroy(s_pFalconBg);
   bitmapDestroy(s_pAnimBg);
+  bitmapDestroy(s_pBgPortalGlow);
   bitmapDestroy(s_pRobbo);
 
   fontDestroy(s_pFont);
