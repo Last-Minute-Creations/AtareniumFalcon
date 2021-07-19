@@ -912,12 +912,15 @@ void coalAndCollect(void)
     s_pHUD = bitmapCreateFromFile("data/amiHUD.bm", 0);
     blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320, 32, MINTERM_COOKIE);
     blitCopy(s_pHUD, 0, 0, s_pVpManager->pFront, 0, 224, 320, 32, MINTERM_COOKIE);
-    blitCopy(s_pBg, 288, 0, s_pVpManager->pBack, 288, 0, 32, 32, MINTERM_COPY);
-    blitCopy(s_pBg, 288, 0, s_pVpManager->pFront, 288, 0, 32, 32, MINTERM_COPY);
+    
+    blitCopy(s_pBg, 288, 0, s_pBgWithTile, 288, 0, 32, 32, MINTERM_COPY);
+    //blitCopy(s_pBg, 288, 0, s_pVpManager->pFront, 288, 0, 32, 32, MINTERM_COPY);
     blitCopyMask(s_pTiles, 64, 32, s_pBgWithTile,  288, 0, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-    blitCopyMask(s_pTiles, 64, 32, s_pBgWithTile, 288, 0, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+    //blitCopyMask(s_pTiles, 64, 32, s_pBgWithTile, 288, 0, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
     blitCopy(s_pBgWithTile, 288, 0, s_pVpManager->pBack, 288, 0, 32, 32, MINTERM_COPY);
     blitCopy(s_pBgWithTile, 288, 0, s_pVpManager->pFront, 288, 0, 32, 32, MINTERM_COPY);
+    portalGlowAnim();
+    //portalGlowAnim();
     amiHUDprintOnFrontOnceAfterLoad();
     printOnHUD();
     break;
