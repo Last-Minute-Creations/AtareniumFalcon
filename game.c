@@ -26,8 +26,12 @@ static tBitMap *s_pHUD;
 static tBitMap *s_pFalconBg;
 static tBitMap *s_pAnimBg;
 static tBitMap *s_pRobbo;
+static tPtplayerSfx *s_pFalkonEngineSound;
+
 
 static tPtplayerMod *s_pMod;
+static tPtplayerMod *s_pModAmbient;
+
 
 static tFont *s_pFont;
 static tTextBitMap *s_pBmText;
@@ -143,6 +147,7 @@ extern UBYTE cheatmodeEnablerWhenEqual3;
 extern UBYTE secondCheatEnablerWhenEqual3;
 
 UBYTE audioFadeIn = 0;
+UBYTE audioLoopCount = 0;
 
 void waitFrames(tVPort *pVPort, UBYTE ubHowMany, UWORD uwPosY)
 {
@@ -1382,7 +1387,12 @@ void stateGameCreate(void)
 
   ptplayerCreate(1);
   s_pMod = ptplayerModCreate("data/mod.falkon");
+  s_pModAmbient = ptplayerModCreate("data/mod.falkon-ambient2");
+  //s_pModAmbient = ptplayerModCreate("data/mod.falkon-ambient");
   ptplayerLoadMod(s_pMod, 0, 0);
+
+  s_pFalkonEngineSound = ptplayerSfxCreateFromFile("data/falkonEngine.sfx");
+  
 
  
 
@@ -1587,11 +1597,15 @@ void stateGameLoop(void)
     if (musicPlay == 1)
     {
       musicPlay = 0;
-      ptplayerSetMasterVolume(0);
+      ptplayerEnableMusic(0);
+      ptplayerLoadMod(s_pModAmbient, 0, 0);
+      ptplayerSetMasterVolume(32);
+      ptplayerEnableMusic(1);
     }
     else if (musicPlay == 0)
     {
       musicPlay = 1;
+      ptplayerEnableMusic(1);
       ptplayerSetMasterVolume(64);
     }
   }
@@ -1603,6 +1617,10 @@ void stateGameLoop(void)
       return;
     }
     kierunekHold = kierunek;
+
+    if (musicPlay == 0){
+    ptplayerSfxPlay(s_pFalkonEngineSound, 3, 64, 100);
+    }
 
     isThisStone();
     czyRamka();

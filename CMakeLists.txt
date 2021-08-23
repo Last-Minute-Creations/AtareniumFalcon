@@ -65,8 +65,13 @@ convertBitmaps(
 
 )
 
+convertAudio(
+    TARGET falkon.elf 	SOURCE ${RES_DIR}/falkonEngine.wav
+    DESTINATION ${DATA_DIR}/falkonEngine.sfx 
+)
+
 file(
-	COPY ${RES_DIR}/topaz.fnt ${RES_DIR}/mod.falkon
+	COPY ${RES_DIR}/topaz.fnt ${RES_DIR}/mod.falkon ${RES_DIR}/mod.falkon-ambient2
 	${RES_DIR}/Morse_LMC8000.sfx ${RES_DIR}/Atari.sfx
 	${RES_DIR}/AceSample.sfx
 	${RES_DIR}/1.txt
