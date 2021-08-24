@@ -28,6 +28,7 @@ static tBitMap *s_pAnimBg;
 static tBitMap *s_pRobbo;
 
 static tPtplayerMod *s_pMod;
+static tPtplayerSfx *s_pFalkonEngineSound; 
 
 static tFont *s_pFont;
 static tTextBitMap *s_pBmText;
@@ -1383,6 +1384,7 @@ void stateGameCreate(void)
   ptplayerCreate(1);
   s_pMod = ptplayerModCreate("data/mod.falkon");
   ptplayerLoadMod(s_pMod, 0, 0);
+  s_pFalkonEngineSound = ptplayerSfxCreateFromFile("data/falkonEngine.sfx"); 
 
  
 
@@ -1603,6 +1605,11 @@ void stateGameLoop(void)
       return;
     }
     kierunekHold = kierunek;
+
+    if (musicPlay == 0){ 
+    ptplayerSfxPlay(s_pFalkonEngineSound, -1, 64, 100); 
+    } 
+ 
 
     isThisStone();
     czyRamka();
