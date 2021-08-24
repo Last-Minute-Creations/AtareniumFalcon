@@ -1592,21 +1592,23 @@ void stateGameLoop(void)
     nextLevel();
     return;
   }
-  else if (keyUse(KEY_M))
+  else if (keyUse(KEY_M))  // wczesniej wlaczony jest modek i gra
   {
-    if (musicPlay == 1)
+    if (musicPlay == 1)   // stan domyslny
     {
-      musicPlay = 0;
-      ptplayerEnableMusic(0);
-      ptplayerLoadMod(s_pModAmbient, 0, 0);
+      musicPlay = 0; 
+      ptplayerEnableMusic(0);   
+      ptplayerLoadMod(s_pModAmbient, 0, 0);  // chce nowy modek
       ptplayerSetMasterVolume(32);
       ptplayerEnableMusic(1);
     }
-    else if (musicPlay == 0)
+    else if (musicPlay == 0)  // teraz wracam do pierwszego modka
     {
       musicPlay = 1;
+      ptplayerEnableMusic(0);
+      ptplayerLoadMod(s_pMod, 0, 0);
       ptplayerEnableMusic(1);
-      ptplayerSetMasterVolume(64);
+      ptplayerSetMasterVolume(64);  // modek gra tak na ucho w 2x szybszym tempie
     }
   }
 
