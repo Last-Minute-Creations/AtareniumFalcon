@@ -284,8 +284,8 @@ void stateMenuLoop(void)
 	keyProcess();
 	++starTick1;
 	++starTick2;
-	pixel1();
-	pixel2();
+	//pixel1();
+	//pixel2();
 
 	if (keyUse(KEY_ESCAPE))
 	{

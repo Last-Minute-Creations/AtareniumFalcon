@@ -1596,10 +1596,10 @@ void stateGameLoop(void)
   {
     if (musicPlay == 1)   // stan domyslny
     {
-      musicPlay = 0; 
+      musicPlay = 2; 
       ptplayerEnableMusic(0);   
       ptplayerLoadMod(s_pModAmbient, 0, 0);  // chce nowy modek
-      ptplayerSetMasterVolume(32);
+      ptplayerSetMasterVolume(20);
       ptplayerEnableMusic(1);
     }
     else if (musicPlay == 0)  // teraz wracam do pierwszego modka
@@ -1609,6 +1609,13 @@ void stateGameLoop(void)
       ptplayerLoadMod(s_pMod, 0, 0);
       ptplayerEnableMusic(1);
       ptplayerSetMasterVolume(64);  // modek gra tak na ucho w 2x szybszym tempie
+    }
+    else if (musicPlay == 2)  // teraz wracam do pierwszego modka
+    {
+      musicPlay = 0;
+      ptplayerSetMasterVolume(0); // cisza
+      ptplayerEnableMusic(0);
+      
     }
   }
 
@@ -1620,9 +1627,9 @@ void stateGameLoop(void)
     }
     kierunekHold = kierunek;
 
-    if (musicPlay == 0){
-    ptplayerSfxPlay(s_pFalkonEngineSound, 3, 64, 100);
-    }
+    //if (musicPlay == 0){
+    //ptplayerSfxPlay(s_pFalkonEngineSound, 3, 64, 100);
+    //}
 
     isThisStone();
     czyRamka();
@@ -1692,6 +1699,8 @@ void stateGameDestroy(void)
   // Here goes your cleanup code
   systemUse(); // w��cz grzecznie system
   ptplayerModDestroy(s_pMod);
+  ptplayerModDestroy(s_pModAmbient);
+  ptplayerSfxDestroy(s_pFalkonEngineSound);
   ptplayerDestroy();
   bitmapDestroy(s_pTiles);
   bitmapDestroy(s_pTilesMask);
