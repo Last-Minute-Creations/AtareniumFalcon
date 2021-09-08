@@ -28,10 +28,8 @@ static tBitMap *s_pAnimBg;
 static tBitMap *s_pRobbo;
 static tPtplayerSfx *s_pFalkonEngineSound;
 
-
 static tPtplayerMod *s_pMod;
 static tPtplayerMod *s_pModAmbient;
-
 
 static tFont *s_pFont;
 static tTextBitMap *s_pBmText;
@@ -89,7 +87,7 @@ UWORD uwPreviousY = 0;
 BYTE stoneHit = 0;
 BYTE frameHit = 0;
 
-CONST BYTE startingCoal = 10;
+CONST BYTE startingCoal = 2;
 
 BYTE falkonIdle = 0;
 BYTE falkonIdleTempo = 8;
@@ -112,7 +110,7 @@ BYTE portalAnimTick = 0;
 BYTE portalFrame = 0;
 BYTE portalGlowX = 0;
 BYTE portalGlowY = 0;
-BYTE portalGlowDB  = 0;
+BYTE portalGlowDB = 0;
 
 BYTE stonehitAnimControl = 0;
 BYTE stonehitAnimTick = 0;
@@ -128,7 +126,7 @@ UWORD newPosY = 0;
 BYTE coal = startingCoal;
 BYTE capacitors = 0;
 BYTE excesscoal = 0;
-BYTE level = 16;
+BYTE level = 1;
 
 BYTE robboMsgNr = 0;
 BYTE robboMsgCtrl = 0;
@@ -149,6 +147,8 @@ extern UBYTE secondCheatEnablerWhenEqual3;
 UBYTE audioFadeIn = 0;
 UBYTE audioLoopCount = 0;
 
+UBYTE isIgnoreNextFrame = 0; // zmienna do naprawienia glicza graficznego !
+
 void waitFrames(tVPort *pVPort, UBYTE ubHowMany, UWORD uwPosY)
 {
   for (UBYTE i = 0; i < ubHowMany; ++i)
@@ -161,17 +161,18 @@ void waitFrames(tVPort *pVPort, UBYTE ubHowMany, UWORD uwPosY)
 
 void clean();
 
-void portalGlowAnim(void){
+void portalGlowAnim(void)
+{
   blitCopy(s_pBg, portalGlowX * 32, portalGlowY * 32, s_pBgPortalGlow, 0, 0, 32, 32, MINTERM_COOKIE);
   blitCopyMask(s_pTiles, portalGlowFrame * 32, 352, s_pBgPortalGlow, 0, 0, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
   //blitCopyMask(s_pTiles, portalGlowFrame * 32, 352, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
 
   blitCopy(s_pBgPortalGlow, 0, 0, s_pVpManager->pBack, portalGlowX * 32, portalGlowY * 32, 32, 32, MINTERM_COPY);
   //blitCopy(s_pBgWithTile, 0, 0, s_pVpManager->pFront, portalGlowX * 32, portalGlowY * 32, 32, 32, MINTERM_COPY);
-
 }
 
-void portalCloseAnim(void){\
+void portalCloseAnim(void)
+{
   blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
   blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
   blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pFront, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
@@ -927,10 +928,10 @@ void coalAndCollect(void)
     s_pHUD = bitmapCreateFromFile("data/amiHUD.bm", 0);
     blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320, 32, MINTERM_COOKIE);
     blitCopy(s_pHUD, 0, 0, s_pVpManager->pFront, 0, 224, 320, 32, MINTERM_COOKIE);
-    
+
     blitCopy(s_pBg, 288, 0, s_pBgWithTile, 288, 0, 32, 32, MINTERM_COPY);
     //blitCopy(s_pBg, 288, 0, s_pVpManager->pFront, 288, 0, 32, 32, MINTERM_COPY);
-    blitCopyMask(s_pTiles, 64, 32, s_pBgWithTile,  288, 0, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+    blitCopyMask(s_pTiles, 64, 32, s_pBgWithTile, 288, 0, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
     //blitCopyMask(s_pTiles, 64, 32, s_pBgWithTile, 288, 0, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
     blitCopy(s_pBgWithTile, 288, 0, s_pVpManager->pBack, 288, 0, 32, 32, MINTERM_COPY);
     blitCopy(s_pBgWithTile, 288, 0, s_pVpManager->pFront, 288, 0, 32, 32, MINTERM_COPY);
@@ -1095,6 +1096,7 @@ void prepareFalconFlying(void)
 
 void endFalconFlying(void)
 {
+  
   blitCopy(s_pBg, newPosX, newPosY, s_pBgWithTile, newPosX, newPosY, 32, 32, MINTERM_COOKIE);
 
   switch (kierunekHold)
@@ -1120,7 +1122,6 @@ void endFalconFlying(void)
 
 void blitFlyingAnimFrame(void)
 {
-
   blitCopy(s_pBg, uwPreviousX, uwPreviousY, s_pVpManager->pBack, uwPreviousX, uwPreviousY, 32, 32, MINTERM_COOKIE);
   if (kamyki[tempX][tempY] > 3)
   {
@@ -1128,75 +1129,32 @@ void blitFlyingAnimFrame(void)
   }
   else if (kamyki[tempX][tempY] < 4)
   {
+    UWORD uwPrevPosX = uwPosX;
+  UWORD uwPrevPosY = uwPosY;
+  switch (kierunekHold){
+    case 1:
+    --uwPrevPosX;
+    --uwPrevPosX;
+    break;
+    case 2:
+    ++uwPrevPosX;
+    ++uwPrevPosX;
+    break;
+    case 3:
+    ++uwPrevPosY;
+    ++uwPrevPosY;
+    break;
+    case 4:
+    --uwPrevPosY;
+    --uwPrevPosY;
+    break;
+  }
+  blitCopy(s_pBg, uwPrevPosX, uwPrevPosY, s_pVpManager->pBack, uwPrevPosX, uwPrevPosY, 32, 32, MINTERM_COOKIE);
+  //blitCopy(s_pBg, uwPrevPosX, uwPrevPosY, s_pVpManager->pFront, uwPrevPosX, uwPrevPosY, 32, 32, MINTERM_COOKIE);
+  
     blitCopy(s_pBg, newPosX, newPosY, s_pVpManager->pBack, newPosX, newPosY, 32, 32, MINTERM_COOKIE);
   }
   blitCopyMask(s_pTiles, pAnim[flyingFrame], 64 + falkonFace, s_pVpManager->pBack, newPosX, newPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-}
-
-void falkonFlying(void)
-{
-  if (flyingAnimControl == 0)
-  {
-    return;
-  }
-
-  if (flyingAnimControl == 1)
-  {
-    falkonIdleControl = 0;
-    flyingAnimControl = 3;
-
-    switch (kierunekHold)
-    {
-    case 1:
-      newPosX += 1;
-      break;
-    case 2:
-      newPosX -= 1;
-      break;
-    case 3:
-      newPosY -= 1;
-      break;
-    case 4:
-      newPosY += 1;
-      break;
-    }
-
-    if (flyingTick == 4)
-    {
-      flyingFrame = 0;
-    }
-    else if (flyingTick == 8 || flyingTick == 12 || flyingTick == 16 || flyingTick == 20 ||
-             flyingTick == 24 || flyingTick == 28 || flyingTick == 32)
-    {
-      ++flyingFrame;
-    }
-
-    blitFlyingAnimFrame();
-
-    if (flyingTick == 32)
-    {
-      flyingTick = 0;
-      flyingAnimControl = 2;
-      falkonIdleControl = 1;
-    }
-  }
-
-  else if (flyingAnimControl == 2)
-  {
-    blitCopy(s_pBg, uwPreviousX, uwPreviousY, s_pVpManager->pBack, uwPreviousX, uwPreviousY, 32, 32, MINTERM_COOKIE);
-
-    endFalconFlying();
-    doubleBufferFrameControl = 2;
-    coalAndCollect();
-    flyingAnimControl = 0;
-    falkonIdleControl = 1;
-  }
-
-  if (robboMsgCtrl == 3)
-  {
-    robboMsgCtrl = 2;
-    hudScrollingControl = 1;
-  }
 }
 
 void falkonFlying2Db(void)
@@ -1290,9 +1248,97 @@ void falconIdleAnimation(void)
     idleFrame = 7;
     falkonIdle = 0;
   }
+  UWORD uwPrevPosX = uwPosX;
+  UWORD uwPrevPosY = uwPosY;
+  switch (kierunekHold){
+    case 1:
+    --uwPrevPosX;
+    --uwPrevPosX;
+    break;
+    case 2:
+    ++uwPrevPosX;
+    ++uwPrevPosX;
+    break;
+    case 3:
+    ++uwPrevPosY;
+    ++uwPrevPosY;
+    break;
+    case 4:
+    --uwPrevPosY;
+    --uwPrevPosY;
+    break;
+  }
+  blitCopy(s_pBg, uwPrevPosX, uwPrevPosY, s_pVpManager->pBack, uwPrevPosX, uwPrevPosY, 32, 32, MINTERM_COOKIE);
+  //blitCopy(s_pBg, uwPrevPosX, uwPrevPosY, s_pVpManager->pFront, uwPrevPosX, uwPrevPosY, 32, 32, MINTERM_COOKIE);
   blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
   blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
   blitCopyMask(s_pTiles, idleFrame * 32, 192 + falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+}
+
+void falkonFlying(void)
+{
+  if (flyingAnimControl == 0)
+  {
+    return;
+  }
+
+  if (flyingAnimControl == 1)
+  {
+    falkonIdleControl = 0;
+    flyingAnimControl = 3;
+
+    switch (kierunekHold)
+    {
+    case 1:
+      newPosX += 1;
+      break;
+    case 2:
+      newPosX -= 1;
+      break;
+    case 3:
+      newPosY -= 1;
+      break;
+    case 4:
+      newPosY += 1;
+      break;
+    }
+
+    if (flyingTick == 4)
+    {
+      flyingFrame = 0;
+    }
+    else if (flyingTick == 8 || flyingTick == 12 || flyingTick == 16 || flyingTick == 20 ||
+             flyingTick == 24 || flyingTick == 28 || flyingTick == 32)
+    {
+      ++flyingFrame;
+    }
+
+    blitFlyingAnimFrame();
+
+    if (flyingTick >= 32)
+    {
+      flyingTick = 0;
+      flyingAnimControl = 2;
+      //falkonIdleControl = 1;
+    }
+  }
+
+  else if (flyingAnimControl == 2)
+  {
+    blitCopy(s_pBg, uwPreviousX, uwPreviousY, s_pVpManager->pBack, uwPreviousX, uwPreviousY, 32, 32, MINTERM_COOKIE);
+    isIgnoreNextFrame = 2;
+    endFalconFlying();
+    doubleBufferFrameControl = 2;
+    coalAndCollect();
+    flyingAnimControl = 0;
+    falkonIdleControl = 1;
+  }
+
+  if (robboMsgCtrl == 3)
+  {
+    robboMsgCtrl = 2;
+    hudScrollingControl = 1;
+  }
 }
 
 void redCapacitorsAnimation(void)
@@ -1392,9 +1438,6 @@ void stateGameCreate(void)
   ptplayerLoadMod(s_pMod, 0, 0);
 
   s_pFalkonEngineSound = ptplayerSfxCreateFromFile("data/falkonEngine.sfx");
-  
-
- 
 
   // Paleta z falkona
   paletteLoad("data/falkon.plt", s_pVp->pPalette, 32);
@@ -1453,6 +1496,18 @@ void stateGameCreate(void)
 
 void stateGameLoop(void)
 {
+  if (coal == 0)
+  {
+    gameOverCoalBlinkingOnHUD();
+    portalAnimControl = 0;
+    coal = 1;
+    youWin = 2;
+
+    clean();
+    ptplayerStop();
+    return;
+  }
+
   // Here goes code done each game frame
   if (musicPlay == 1 && audioFadeIn < 64)
   {
@@ -1504,20 +1559,9 @@ void stateGameLoop(void)
   {
     falkonFlying();
     flyingAnimControl = 0;
-    if (coal == 0)
-    {
-      gameOverCoalBlinkingOnHUD();
-      portalAnimControl = 0;
-      coal = 1;
-      youWin = 2;
-
-      clean();
-      ptplayerStop();
-      return;
-    }
   }
 
-  falconIdleAnimation();
+  
 
   falkonHittingStone();
   redCapacitorsAnimation();
@@ -1533,6 +1577,7 @@ void stateGameLoop(void)
   }
 
   falkonFlying();
+  falconIdleAnimation();
 
   if (flyingAnimControl == 4)
   {
@@ -1552,70 +1597,80 @@ void stateGameLoop(void)
     ++stonehitAnimTick;
   }
 
-  joyProcess();
-  keyProcess();
-
   kierunek = 0;
-  if (joyUse(JOY1_RIGHT) || keyUse(KEY_D) || keyUse(KEY_RIGHT))
+
+  if (isIgnoreNextFrame > 0)
   {
-    kierunek = 1;
-    falkonFace = 0;
+    falconIdleAnimation();
+    --isIgnoreNextFrame;
   }
-  else if (joyUse(JOY1_LEFT) || keyUse(KEY_A) || keyUse(KEY_LEFT))
+  else if(isIgnoreNextFrame == 0)
   {
-    kierunek = 2;
-    falkonFace = 32;
-  }
-  else if (joyUse(JOY1_UP) || keyUse(KEY_W) || keyUse(KEY_UP))
-  {
-    kierunek = 3;
-  }
-  else if (joyUse(JOY1_DOWN) || keyUse(KEY_S) || keyUse(KEY_DOWN))
-  {
-    kierunek = 4;
-  }
-  else if (keyUse(KEY_ESCAPE))
-  {
-    ptplayerStop();
-    clearTiles();
-    clean();
-    stateChange(g_pStateMachineGame, &g_sStateMenu);
-    return;
-  }
-  else if (keyUse(KEY_N))
-  {
-    if (cheatmodeEnablerWhenEqual3 != 3)
+    joyProcess();
+    keyProcess();
+
+    
+
+    if (joyUse(JOY1_RIGHT) || keyUse(KEY_D) || keyUse(KEY_RIGHT))
     {
+      kierunek = 1;
+      falkonFace = 0;
+    }
+    else if (joyUse(JOY1_LEFT) || keyUse(KEY_A) || keyUse(KEY_LEFT))
+    {
+      kierunek = 2;
+      falkonFace = 32;
+    }
+    else if (joyUse(JOY1_UP) || keyUse(KEY_W) || keyUse(KEY_UP))
+    {
+      kierunek = 3;
+    }
+    else if (joyUse(JOY1_DOWN) || keyUse(KEY_S) || keyUse(KEY_DOWN))
+    {
+      kierunek = 4;
+    }
+    else if (keyUse(KEY_ESCAPE))
+    {
+      ptplayerStop();
+      clearTiles();
+      clean();
+      stateChange(g_pStateMachineGame, &g_sStateMenu);
       return;
     }
-    ++level;
-    nextLevel();
-    return;
-  }
-  else if (keyUse(KEY_M))  // wczesniej wlaczony jest modek i gra
-  {
-    if (musicPlay == 1)   // stan domyslny
+    else if (keyUse(KEY_N))
     {
-      musicPlay = 2; 
-      ptplayerEnableMusic(0);   
-      ptplayerLoadMod(s_pModAmbient, 0, 0);  // chce nowy modek
-      ptplayerSetMasterVolume(20);
-      ptplayerEnableMusic(1);
+      if (cheatmodeEnablerWhenEqual3 != 3)
+      {
+        return;
+      }
+      ++level;
+      nextLevel();
+      return;
     }
-    else if (musicPlay == 0)  // teraz wracam do pierwszego modka
+    else if (keyUse(KEY_M)) // wczesniej wlaczony jest modek i gra
     {
-      musicPlay = 1;
-      ptplayerEnableMusic(0);
-      ptplayerLoadMod(s_pMod, 0, 0);
-      ptplayerEnableMusic(1);
-      ptplayerSetMasterVolume(64);  // modek gra tak na ucho w 2x szybszym tempie
-    }
-    else if (musicPlay == 2)  // teraz wracam do pierwszego modka
-    {
-      musicPlay = 0;
-      ptplayerSetMasterVolume(0); // cisza
-      ptplayerEnableMusic(0);
-      
+      if (musicPlay == 1) // stan domyslny
+      {
+        musicPlay = 2;
+        ptplayerEnableMusic(0);
+        ptplayerLoadMod(s_pModAmbient, 0, 0); // chce nowy modek
+        ptplayerSetMasterVolume(20);
+        ptplayerEnableMusic(1);
+      }
+      else if (musicPlay == 0) // teraz wracam do pierwszego modka
+      {
+        musicPlay = 1;
+        ptplayerEnableMusic(0);
+        ptplayerLoadMod(s_pMod, 0, 0);
+        ptplayerEnableMusic(1);
+        ptplayerSetMasterVolume(64); // modek gra tak na ucho w 2x szybszym tempie
+      }
+      else if (musicPlay == 2) // teraz wracam do pierwszego modka
+      {
+        musicPlay = 0;
+        ptplayerSetMasterVolume(0); // cisza
+        ptplayerEnableMusic(0);
+      }
     }
   }
 
