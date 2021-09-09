@@ -143,6 +143,7 @@ UBYTE tempY = 0;
 
 extern UBYTE cheatmodeEnablerWhenEqual3;
 extern UBYTE secondCheatEnablerWhenEqual3;
+extern UBYTE thirdCheatEnablerWhenEqual3;
 
 UBYTE audioFadeIn = 0;
 UBYTE audioLoopCount = 0;
@@ -431,47 +432,6 @@ void clearTiles(void)
   }
 }
 
-void levelScore(void)
-{
-  blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
-  blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
-  blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pFront, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
-  blitCopyMask(s_pTiles, 32, 192 + falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-  blitCopyMask(s_pTiles, 32, 192 + falkonFace, s_pVpManager->pFront, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-
-  BYTE thisLevelExcessCoal = coal - 1;
-  for (UBYTE i = 0; i < thisLevelExcessCoal; ++i)
-  {
-    --coal;
-    ++excesscoal;
-    blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 32, 32, MINTERM_COOKIE);
-    blitCopy(s_pHUD, 32, 0, s_pVpManager->pFront, 32, 224, 32, 32, MINTERM_COOKIE);
-    sprintf(szMsg, "%d", coal);
-    fontFillTextBitMap(s_pFont, s_pBmText, szMsg);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 231, HUDfontColor, FONT_COOKIE);
-    fontDrawTextBitMap(s_pVpManager->pFront, s_pBmText, 42, 231, HUDfontColor, FONT_COOKIE);
-    blitCopy(s_pHUD, 128, 0, s_pVpManager->pBack, 128, 224, 32, 32, MINTERM_COOKIE);
-    blitCopy(s_pHUD, 128, 0, s_pVpManager->pFront, 128, 224, 32, 32, MINTERM_COOKIE);
-    sprintf(szMsg3, "%d", excesscoal);
-    fontFillTextBitMap(s_pFont, s_pBmText, szMsg3);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 130, 232, HUDfontColor, FONT_COOKIE);
-    fontDrawTextBitMap(s_pVpManager->pFront, s_pBmText, 130, 232, HUDfontColor, FONT_COOKIE);
-    waitFrames(s_pVp, 20, uwPosY + FALCON_HEIGHT);
-  }
-
-  for (UBYTE i = 0; i < 8; ++i) // otwieranie portala
-  {
-    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
-    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pFront, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
-    blitCopyMask(s_pTiles, 32 * i, 320, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-    blitCopyMask(s_pTiles, 32 * i, 320, s_pVpManager->pFront, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-    blitCopyMask(s_pTiles, 32, 192 + falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-    blitCopyMask(s_pTiles, 32, 192 + falkonFace, s_pVpManager->pFront, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-
-    waitFrames(s_pVp, falkonIdleTempo, uwPosY + FALCON_HEIGHT);
-  }
-}
-
 void nextLevel(void)
 {
   coal = 1;
@@ -530,6 +490,74 @@ void nextLevel(void)
   printOnHUD();
   doubleBufferFrameControl = 2;
   drawTiles();
+}
+
+
+void levelScore(void) // WITH PORTAL OPEN AND FALKON IN PORTAL ANIM !!!
+{
+  blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
+  blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
+  blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pFront, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
+  blitCopyMask(s_pTiles, 32, 192 + falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+  blitCopyMask(s_pTiles, 32, 192 + falkonFace, s_pVpManager->pFront, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+
+  BYTE thisLevelExcessCoal = coal - 1;
+  for (UBYTE i = 0; i < thisLevelExcessCoal; ++i)
+  {
+    --coal;
+    ++excesscoal;
+    blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 32, 32, MINTERM_COOKIE);
+    blitCopy(s_pHUD, 32, 0, s_pVpManager->pFront, 32, 224, 32, 32, MINTERM_COOKIE);
+    sprintf(szMsg, "%d", coal);
+    fontFillTextBitMap(s_pFont, s_pBmText, szMsg);
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 231, HUDfontColor, FONT_COOKIE);
+    fontDrawTextBitMap(s_pVpManager->pFront, s_pBmText, 42, 231, HUDfontColor, FONT_COOKIE);
+    blitCopy(s_pHUD, 128, 0, s_pVpManager->pBack, 128, 224, 32, 32, MINTERM_COOKIE);
+    blitCopy(s_pHUD, 128, 0, s_pVpManager->pFront, 128, 224, 32, 32, MINTERM_COOKIE);
+    sprintf(szMsg3, "%d", excesscoal);
+    fontFillTextBitMap(s_pFont, s_pBmText, szMsg3);
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 130, 232, HUDfontColor, FONT_COOKIE);
+    fontDrawTextBitMap(s_pVpManager->pFront, s_pBmText, 130, 232, HUDfontColor, FONT_COOKIE);
+    waitFrames(s_pVp, 20, uwPosY + FALCON_HEIGHT);
+  }
+
+  for (UBYTE i = 0; i < 8; ++i) // otwieranie portala
+  {
+    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
+    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pFront, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
+    blitCopyMask(s_pTiles, 32 * i, 320, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+    blitCopyMask(s_pTiles, 32 * i, 320, s_pVpManager->pFront, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+    blitCopyMask(s_pTiles, 32, 192 + falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+    blitCopyMask(s_pTiles, 32, 192 + falkonFace, s_pVpManager->pFront, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+
+    waitFrames(s_pVp, falkonIdleTempo, uwPosY + FALCON_HEIGHT);
+  }
+
+  for (UBYTE i = 0; i < 8; ++i) // animka
+  {
+  blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
+  blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pFront, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
+  blitCopyMask(s_pTiles, i * 32, 128 + falkonFace, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+  blitCopyMask(s_pTiles, i * 32, 128 + falkonFace, s_pVpManager->pFront, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+  waitFrames(s_pVp, falkonIdleTempo, uwPosY + FALCON_HEIGHT);
+  }
+  portalCloseAnim();
+    endLevelFadeOut();
+    portalFrame = 0;
+    portalAnimTick = 0;
+    portalAnimControl = 0;
+    ++level;
+    if (level == LAST_LEVEL_NUMBER + 1)
+    {
+      ptplayerStop();
+      youWin = 1;
+    }
+    else
+    {
+      nextLevel();
+    }
+
+
 }
 
 void czyRamka(void)
@@ -616,7 +644,7 @@ void isThisStone(void)
   }
 }
 
-void portalAnim(void)
+void portalAnim(void) // UNUSED FOR NOW
 {
   if (portalAnimControl != 1)
   {
@@ -907,6 +935,7 @@ void coalAndCollect(void)
 
   case 10:
     levelScore();
+    falkonIdleControl = 0;
     portalAnimControl = 1;
     break;
 
@@ -918,6 +947,7 @@ void coalAndCollect(void)
     break;
 
   case 12:
+    if (thirdCheatEnablerWhenEqual3 != 3){
     amigaMode = 1;
     HUDfontColor = 27;
     portalAnimControl = 0;
@@ -944,6 +974,7 @@ void coalAndCollect(void)
     break;
   }
   printOnHUD();
+  }
 }
 
 void falkonHittingStone(void)
@@ -1205,7 +1236,7 @@ void falconCollisionCheck(void)
   flyingAnimControl = 1;
 }
 
-void falconIdleAnimation(void)
+void falconIdleAnimation(void)  
 {
   if (falkonIdleControl != 1)
   {
@@ -1254,20 +1285,28 @@ void falconIdleAnimation(void)
   UWORD uwPrevPosY = uwPosY;
   switch (kierunekHold){
     case 1:
+    if (uwPrevPosX >= 2){
     --uwPrevPosX;
     --uwPrevPosX;
+    }
     break;
     case 2:
+    if (uwPrevPosX <= 318){
     ++uwPrevPosX;
     ++uwPrevPosX;
+    }
     break;
     case 3:
+    if (uwPrevPosY <= 222){
     ++uwPrevPosY;
     ++uwPrevPosY;
+    }
     break;
     case 4:
+    if (uwPrevPosY >= 2){ 
     --uwPrevPosY;
     --uwPrevPosY;
+    }
     break;
   }
   blitCopy(s_pBg, uwPrevPosX, uwPrevPosY, s_pVpManager->pBack, uwPrevPosX, uwPrevPosY, 32, 32, MINTERM_COOKIE);
@@ -1447,19 +1486,30 @@ void stateGameCreate(void)
 
   g_pCustom->color[0] = 0x0FFF; // zmie� kolor zero aktualnie u�ywanej palety na 15,15,15
 
+  if (thirdCheatEnablerWhenEqual3 != 3){
   s_pTiles = bitmapCreateFromFile("data/tileset.bm", 0);          // z pliku tileset.bm, nie lokuj bitmapy w pami�ci FAST
   s_pTilesMask = bitmapCreateFromFile("data/tileset_mask.bm", 0); // z pliku tileset_mask.bm, nie lokuj bitmapy w pami�ci FAST
+  s_pHUD = bitmapCreateFromFile("data/HUD.bm", 0);
+  }
+  else if (thirdCheatEnablerWhenEqual3 == 3){
+  amigaMode = 1;
+  HUDfontColor = 27;
+  s_pTiles = bitmapCreateFromFile("data/tileset2.bm", 0);
+  s_pTilesMask = bitmapCreateFromFile("data/tileset_mask2.bm", 0);
+  s_pHUD = bitmapCreateFromFile("data/amiHUD.bm", 0);
+  }
+ 
   s_pBg = bitmapCreateFromFile("data/tlo1.bm", 0);
   s_pBgWithTile = bitmapCreateFromFile("data/tlo1.bm", 0); // fragmenty tla do podstawiania po ruchu
-  s_pHUD = bitmapCreateFromFile("data/HUD.bm", 0);
   s_pRobbo = bitmapCreateFromFile("data/falkon_robbo.bm", 0);
-
   s_pFalconBg = bitmapCreate(48, 32, 5, BMF_INTERLEAVED);
   s_pAnimBg = bitmapCreate(48, 32, 5, BMF_INTERLEAVED);
   s_pBgPortalGlow = bitmapCreate(48, 32, 5, BMF_INTERLEAVED);
-
   s_pFont = fontCreate("data/topaz.fnt");
   s_pBmText = fontCreateTextBitMap(300, s_pFont->uwHeight); // bitmapa robocza długa na 200px, wysoka na jedną linię tekstu
+  
+  
+
 
   // proste wy�wietlanie bitmapy na viewporcie
   s_pVpManager = simpleBufferCreate(0,
@@ -1559,7 +1609,7 @@ void stateGameLoop(void)
 
   robboScrollUp();
   robboScrollDown();
-  portalAnim();
+  //portalAnim();
 
   if (flyingAnimControl == 3)
   {
@@ -1589,13 +1639,13 @@ void stateGameLoop(void)
 
   kierunek = 0;
 
-  if (isIgnoreNextFrame > 0)
-  {
-    falconIdleAnimation();
-    --isIgnoreNextFrame;
-  }
-  else if(isIgnoreNextFrame == 0)
-  {
+  //if (isIgnoreNextFrame > 0)
+  //{
+  //  falconIdleAnimation();
+  //  --isIgnoreNextFrame;
+  //}
+  //else if(isIgnoreNextFrame == 0)
+  //{
     if (coal == 0)
   {
     gameOverCoalBlinkingOnHUD();
@@ -1673,7 +1723,7 @@ void stateGameLoop(void)
         ptplayerSetMasterVolume(0); // cisza
         ptplayerEnableMusic(0);
       }
-    }
+    //}
   }
 
   if (kierunek != 0)

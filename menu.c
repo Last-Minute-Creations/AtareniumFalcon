@@ -23,6 +23,7 @@ extern tStateManager *g_pStateMachineGame;
 
 UBYTE cheatmodeEnablerWhenEqual3 = 0;
 UBYTE secondCheatEnablerWhenEqual3 = 0;
+UBYTE thirdCheatEnablerWhenEqual3 = 0;
 UBYTE cheatModeStarColor = 0;
 
 UBYTE creditsControl = 0;
@@ -329,6 +330,15 @@ void stateMenuLoop(void)
 	if (keyUse(KEY_A) && secondCheatEnablerWhenEqual3 == 2){
 		++secondCheatEnablerWhenEqual3;
 		cheatModeStarColor += 6;
+	}
+	if (keyUse(KEY_V) && thirdCheatEnablerWhenEqual3 == 0){
+		++thirdCheatEnablerWhenEqual3;
+	}
+	if (keyUse(KEY_P) && thirdCheatEnablerWhenEqual3 == 1){
+		++thirdCheatEnablerWhenEqual3;
+	}
+	if (keyUse(KEY_R) && thirdCheatEnablerWhenEqual3 == 2){
+		++thirdCheatEnablerWhenEqual3;
 	}
 
 
