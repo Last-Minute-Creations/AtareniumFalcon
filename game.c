@@ -87,7 +87,7 @@ UWORD uwPreviousY = 0;
 BYTE stoneHit = 0;
 BYTE frameHit = 0;
 
-CONST BYTE startingCoal = 2;
+CONST BYTE startingCoal = 10;
 
 BYTE falkonIdle = 0;
 BYTE falkonIdleTempo = 8;
@@ -126,12 +126,12 @@ UWORD newPosY = 0;
 BYTE coal = startingCoal;
 BYTE capacitors = 0;
 BYTE excesscoal = 0;
-BYTE level = 1;
+BYTE level = 16;
 
 BYTE robboMsgNr = 0;
 BYTE robboMsgCtrl = 0;
 BYTE robboMsgCount = 0;
-BYTE HUDfontColor = 23;
+BYTE HUDfontColor = 23; //23
 
 UBYTE doubleBufferFrameControl = 2;
 UBYTE idleFrame = 0;
@@ -685,6 +685,7 @@ void portalAnim(void)
     }
   }
   blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
+  
   blitCopyMask(s_pTiles, portalFrame * 32, 128 + falkonFace, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
 }
 
@@ -918,6 +919,7 @@ void coalAndCollect(void)
 
   case 12:
     amigaMode = 1;
+    HUDfontColor = 27;
     portalAnimControl = 0;
     ptplayerSetMasterVolume(0);
     bitmapDestroy(s_pTiles);
@@ -1496,18 +1498,6 @@ void stateGameCreate(void)
 
 void stateGameLoop(void)
 {
-  if (coal == 0)
-  {
-    gameOverCoalBlinkingOnHUD();
-    portalAnimControl = 0;
-    coal = 1;
-    youWin = 2;
-
-    clean();
-    ptplayerStop();
-    return;
-  }
-
   // Here goes code done each game frame
   if (musicPlay == 1 && audioFadeIn < 64)
   {
@@ -1606,6 +1596,18 @@ void stateGameLoop(void)
   }
   else if(isIgnoreNextFrame == 0)
   {
+    if (coal == 0)
+  {
+    gameOverCoalBlinkingOnHUD();
+    portalAnimControl = 0;
+    coal = 1;
+    youWin = 2;
+
+    clean();
+    ptplayerStop();
+    return;
+  }
+
     joyProcess();
     keyProcess();
 
