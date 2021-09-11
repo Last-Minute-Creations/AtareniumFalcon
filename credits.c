@@ -119,7 +119,7 @@ void stateCreditsLoop(void)
       paletteDim(s_pPalette, s_pVp->pPalette, 32, 0); // 0 - czarno, 15 - pe�na paleta
       viewUpdateCLUT(s_pView);
 
-      ptplayerSfxPlay(s_pLMCsfx, 3, 64, 100);
+      ptplayerSfxPlay(s_pLMCsfx, -1, 64, 100);
       blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 0);
       blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 0);
       blitCopy(s_pLMC, 0, 0, s_pVpManager->pBack, 104, 40, 112, 160, MINTERM_COOKIE);
@@ -160,7 +160,7 @@ void stateCreditsLoop(void)
       paletteDim(s_pPalette, s_pVp->pPalette, 32, 0); // 0 - czarno, 15 - pe�na paleta
       viewUpdateCLUT(s_pView);
 
-      ptplayerSfxPlay(s_pACEsfx, 3, 64, 100);
+      ptplayerSfxPlay(s_pACEsfx, -1, 64, 100);
       blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 0);
       blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 0);
       blitCopy(s_pACE, 0, 0, s_pVpManager->pBack, 80, 95, 155, 70, MINTERM_COOKIE);

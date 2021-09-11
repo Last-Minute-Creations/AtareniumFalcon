@@ -102,6 +102,11 @@ BYTE portalGlowTick = 0;
 BYTE portalTickTempo = 4;
 BYTE portalGlowFrame = 0;
 
+BYTE hudAnimTick = 0;
+BYTE hudTickTempo = 60;
+BYTE hudTickFrame = 0;
+BYTE hudAnimDB = 0;
+
 BYTE hudScrollingControl = 0;
 BYTE hudScrollingTick = 0;
 
@@ -124,13 +129,13 @@ UWORD newPosX = 0;
 UWORD newPosY = 0;
 
 BYTE coal = startingCoal;
-BYTE capacitors = 0;
-BYTE excesscoal = 0;
-BYTE level = 16;
+BYTE capacitors = 2;
+BYTE excesscoal = 4;
+BYTE level = 1;
 
 BYTE robboMsgNr = 0;
 BYTE robboMsgCtrl = 0;
-BYTE robboMsgCount = 0;
+BYTE robboMsgCount = 6;
 BYTE HUDfontColor = 23; //23
 
 UBYTE doubleBufferFrameControl = 2;
@@ -234,6 +239,9 @@ void amiHUDprintOnFrontOnceAfterLoad(void)
 
 void printOnHUD(void)
 {
+  if (amigaMode > 0){
+    return;
+  }
 
   blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 32, 32, MINTERM_COOKIE);
   sprintf(szMsg, "%d", coal);
@@ -1457,6 +1465,58 @@ void gameOverCoalBlinkingOnHUD(void)
   }
 }
 
+void hudAnim (void){
+  BYTE msgType;
+
+  if (hudScrollingControl > 0 || robboMsgCtrl > 0){
+    return;
+  }
+
+  switch (hudTickFrame){
+    case 1: 
+      msgType = coal;
+      blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 32, 32, MINTERM_COOKIE);
+      sprintf(szMsg, "%d", msgType);
+      fontFillTextBitMap(s_pFont, s_pBmText, szMsg);
+      fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 232, HUDfontColor, FONT_COOKIE);
+      break;
+    case 2:
+      blitCopy(s_pHUD, 188, 0, s_pVpManager->pBack, 32, 224, 32, 32, MINTERM_COOKIE);  
+      break;
+    case 3: 
+      msgType = capacitors;
+      blitCopy(s_pHUD, 188, 0, s_pVpManager->pBack, 32, 224, 32, 32, MINTERM_COOKIE);
+      sprintf(szMsg, "%d", msgType);
+      fontFillTextBitMap(s_pFont, s_pBmText, szMsg);
+      fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 232, HUDfontColor, FONT_COOKIE);
+      break;
+     case 4:
+      blitCopy(s_pHUD, 128, 0, s_pVpManager->pBack, 32, 224, 32, 32, MINTERM_COOKIE);
+      break;
+     case 5:
+      msgType = excesscoal;
+      blitCopy(s_pHUD, 128, 0, s_pVpManager->pBack, 32, 224, 32, 32, MINTERM_COOKIE);
+      sprintf(szMsg, "%d", msgType);
+      fontFillTextBitMap(s_pFont, s_pBmText, szMsg);
+      fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 232, HUDfontColor, FONT_COOKIE);
+      break;
+    case 6:
+      blitCopy(s_pHUD, 248, 0, s_pVpManager->pBack, 32, 224, 32, 32, MINTERM_COOKIE);
+      break;
+    case 7:
+      msgType = robboMsgCount;
+      blitCopy(s_pHUD, 248, 0, s_pVpManager->pBack, 32, 224, 32, 32, MINTERM_COOKIE);
+      sprintf(szMsg, "%d", msgType);
+      fontFillTextBitMap(s_pFont, s_pBmText, szMsg);
+      fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 232, HUDfontColor, FONT_COOKIE);
+      break;  
+    case 8:
+      blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 32, 32, MINTERM_COOKIE);
+      break;
+  }
+
+}
+
 void stateGameCreate(void)
 {
   // Here goes your startup code
@@ -1554,6 +1614,27 @@ void stateGameLoop(void)
     ++audioFadeIn;
     ptplayerSetMasterVolume(audioFadeIn);
   }
+  if (amigaMode > 0){
+  if (hudAnimDB == 1){
+    hudAnim();
+    hudAnimDB = 0;
+    if (hudTickFrame == 8)
+    {
+      hudTickFrame = 0;
+    }
+  }
+
+  ++hudAnimTick;
+  if (hudAnimTick > hudTickTempo)
+  {
+    ++hudTickFrame;
+    hudAnim();
+    hudAnimTick = 0;
+    hudAnimDB = 1; 
+  }
+  }
+
+  
 
   if (portalGlowDB == 1)
   {
@@ -1717,7 +1798,7 @@ void stateGameLoop(void)
         ptplayerEnableMusic(1);
         ptplayerSetMasterVolume(64); // modek gra tak na ucho w 2x szybszym tempie
       }
-      else if (musicPlay == 2) // teraz wracam do pierwszego modka
+      else if (musicPlay == 2) 
       {
         musicPlay = 0;
         ptplayerSetMasterVolume(0); // cisza
@@ -1734,9 +1815,9 @@ void stateGameLoop(void)
     }
     kierunekHold = kierunek;
 
-    //if (musicPlay == 0){
-    //ptplayerSfxPlay(s_pFalkonEngineSound, 3, 64, 100);
-    //}
+    if (musicPlay == 2){
+    ptplayerSfxPlay(s_pFalkonEngineSound, 3, 64, 100);
+    }
 
     isThisStone();
     czyRamka();
