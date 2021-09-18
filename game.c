@@ -27,6 +27,7 @@ static tBitMap *s_pFalconBg;
 static tBitMap *s_pAnimBg;
 static tBitMap *s_pRobbo;
 static tPtplayerSfx *s_pFalkonEngineSound;
+static tCopBlock *copBlockBeforeHud, *copBlockAfterHud;
 
 static tPtplayerMod *s_pMod;
 static tPtplayerMod *s_pModAmbient;
@@ -88,7 +89,7 @@ UWORD uwPreviousY = 0;
 BYTE stoneHit = 0;
 BYTE frameHit = 0;
 
-CONST BYTE startingCoal = 20;
+CONST BYTE startingCoal = 10;
 
 BYTE falkonIdle = 0;
 BYTE falkonIdleTempo = 8;
@@ -130,9 +131,9 @@ UWORD newPosX = 0;
 UWORD newPosY = 0;
 
 BYTE coal = startingCoal;
-BYTE capacitors = 2;
-BYTE excesscoal = 4;
-BYTE level = 1;
+BYTE capacitors = 0;
+BYTE excesscoal = 0;
+BYTE level = 16;
 
 BYTE robboMsgNr = 0;
 BYTE robboMsgCtrl = 0;
@@ -500,7 +501,6 @@ void nextLevel(void)
   doubleBufferFrameControl = 2;
   drawTiles();
 }
-
 
 void levelScore(void) // WITH PORTAL OPEN AND FALKON IN PORTAL ANIM !!!
 {
@@ -1010,8 +1010,11 @@ void coalAndCollect(void)
     blitCopy(s_pBgWithTile, 288, 0, s_pVpManager->pFront, 288, 0, 32, 32, MINTERM_COPY);
     portalGlowAnim();
     //portalGlowAnim();
-    amiHUDprintOnFrontOnceAfterLoad();
-    printOnHUD();
+    //amiHUDprintOnFrontOnceAfterLoad();
+    //printOnHUD();
+    copBlockEnable(s_pView->pCopList, copBlockBeforeHud);
+    copBlockEnable(s_pView->pCopList, copBlockAfterHud);
+    copProcessBlocks(); 
     break;
   }
   printOnHUD();
@@ -1565,6 +1568,38 @@ void stateGameCreate(void)
                       TAG_VPORT_BPP, 5,        // bits per pixel: 4bpp = 16col, 5pp = 32col, etc.
                       TAG_END);
 
+  // kolory do zmiany nowy hud
+// 102  85  51 Index 6    0x653   
+//  119 102  68 Index 7   0x764
+//  136 119  85 Index 8   0x875
+//  170 153 119 Index 9   0xA97
+//  187 170 136 Index 10  0xBA8
+
+  copBlockBeforeHud = copBlockCreate(s_pView->pCopList, 5, 0xE2, s_pView->ubPosY + 224 - 1);
+  copBlockAfterHud = copBlockCreate(s_pView->pCopList, 5, 0xE2, s_pView->ubPosY + 256 - 1);
+
+  copMove(s_pView->pCopList, copBlockBeforeHud, &g_pCustom->color[6], 0x653); 
+  copMove(s_pView->pCopList, copBlockBeforeHud, &g_pCustom->color[7], 0x764); 
+  copMove(s_pView->pCopList, copBlockBeforeHud, &g_pCustom->color[8], 0x875); 
+  copMove(s_pView->pCopList, copBlockBeforeHud, &g_pCustom->color[9], 0xA97);
+  copMove(s_pView->pCopList, copBlockBeforeHud, &g_pCustom->color[10], 0xBA8);
+
+// kolory do zmiany bazowe
+//  153  34   0 Index 6   0x920
+//  187  51   0 Index 7   0xB30
+//  204  68  17 Index 8   0xC41
+//  238 102  34 Index 9   0xE62
+//  255 119  51 Index 10  0xF73
+
+  copMove(s_pView->pCopList, copBlockAfterHud, &g_pCustom->color[6], 0x920); 
+  copMove(s_pView->pCopList, copBlockAfterHud, &g_pCustom->color[7], 0xB30);
+  copMove(s_pView->pCopList, copBlockAfterHud, &g_pCustom->color[8], 0xC41);
+  copMove(s_pView->pCopList, copBlockAfterHud, &g_pCustom->color[9], 0xE62);
+  copMove(s_pView->pCopList, copBlockAfterHud, &g_pCustom->color[10], 0xF73);
+
+  copBlockDisable(s_pView->pCopList, copBlockBeforeHud);
+  copBlockDisable(s_pView->pCopList, copBlockAfterHud);                    
+
   ptplayerCreate(1);
   s_pMod = ptplayerModCreate("data/mod.falkon");
   s_pModAmbient = ptplayerModCreate("data/mod.falkon-ambient2");
@@ -1583,6 +1618,7 @@ void stateGameCreate(void)
   s_pTiles = bitmapCreateFromFile("data/tileset.bm", 0);          // z pliku tileset.bm, nie lokuj bitmapy w pami�ci FAST
   s_pTilesMask = bitmapCreateFromFile("data/tileset_mask.bm", 0); // z pliku tileset_mask.bm, nie lokuj bitmapy w pami�ci FAST
   s_pHUD = bitmapCreateFromFile("data/HUD.bm", 0);
+  copProcessBlocks(); 
   }
   else if (thirdCheatEnablerWhenEqual3 == 3){
   amigaMode = 1;
@@ -1590,6 +1626,8 @@ void stateGameCreate(void)
   s_pTiles = bitmapCreateFromFile("data/tileset2.bm", 0);
   s_pTilesMask = bitmapCreateFromFile("data/tileset_mask2.bm", 0);
   s_pHUD = bitmapCreateFromFile("data/amiHUD.bm", 0);
+  copBlockEnable(s_pView->pCopList, copBlockBeforeHud);
+  copBlockEnable(s_pView->pCopList, copBlockAfterHud);
   }
  
   s_pBg = bitmapCreateFromFile("data/tlo1.bm", 0);
