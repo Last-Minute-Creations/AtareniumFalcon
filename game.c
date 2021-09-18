@@ -32,6 +32,7 @@ static tPtplayerMod *s_pMod;
 static tPtplayerMod *s_pModAmbient;
 
 static tFont *s_pFont;
+static tFont *s_pGotekFont;
 static tTextBitMap *s_pBmText;
 
 static UWORD s_pPalette[32];
@@ -87,7 +88,7 @@ UWORD uwPreviousY = 0;
 BYTE stoneHit = 0;
 BYTE frameHit = 0;
 
-CONST BYTE startingCoal = 10;
+CONST BYTE startingCoal = 20;
 
 BYTE falkonIdle = 0;
 BYTE falkonIdleTempo = 8;
@@ -503,6 +504,7 @@ void nextLevel(void)
 
 void levelScore(void) // WITH PORTAL OPEN AND FALKON IN PORTAL ANIM !!!
 {
+  if (amigaMode == 0){
   blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
   blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
   blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pFront, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
@@ -527,6 +529,37 @@ void levelScore(void) // WITH PORTAL OPEN AND FALKON IN PORTAL ANIM !!!
     fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 130, 232, HUDfontColor, FONT_COOKIE);
     fontDrawTextBitMap(s_pVpManager->pFront, s_pBmText, 130, 232, HUDfontColor, FONT_COOKIE);
     waitFrames(s_pVp, 20, uwPosY + FALCON_HEIGHT);
+  }
+  }
+
+  if (amigaMode > 0){
+  blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
+  blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
+  blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pFront, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
+  blitCopyMask(s_pTiles, 32, 192 + falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+  blitCopyMask(s_pTiles, 32, 192 + falkonFace, s_pVpManager->pFront, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+
+  BYTE thisLevelExcessCoal = coal - 1;
+  for (UBYTE i = 0; i < thisLevelExcessCoal; ++i)
+  {
+    --coal;
+    ++excesscoal;
+    blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 96, 32, MINTERM_COOKIE);
+    blitCopy(s_pHUD, 32, 0, s_pVpManager->pFront, 32, 224, 96, 32, MINTERM_COOKIE);
+    sprintf(szMsg, "COAL %d", coal);
+    fontFillTextBitMap(s_pGotekFont, s_pBmText, szMsg);
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 239, HUDfontColor, FONT_COOKIE);
+    fontDrawTextBitMap(s_pVpManager->pFront, s_pBmText, 42, 239, HUDfontColor, FONT_COOKIE);
+    waitFrames(s_pVp, 10, uwPosY + FALCON_HEIGHT);
+
+    blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 96, 32, MINTERM_COOKIE);
+    blitCopy(s_pHUD, 32, 0, s_pVpManager->pFront, 32, 224, 96, 32, MINTERM_COOKIE);
+    sprintf(szMsg3, "RESERVE %d", excesscoal);
+    fontFillTextBitMap(s_pGotekFont, s_pBmText, szMsg3);
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 239, HUDfontColor, FONT_COOKIE);
+    fontDrawTextBitMap(s_pVpManager->pFront, s_pBmText, 42, 239, HUDfontColor, FONT_COOKIE);
+    waitFrames(s_pVp, 10, uwPosY + FALCON_HEIGHT);
+  }
   }
 
   for (UBYTE i = 0; i < 8; ++i) // otwieranie portala
@@ -1475,43 +1508,43 @@ void hudAnim (void){
   switch (hudTickFrame){
     case 1: 
       msgType = coal;
-      blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 32, 32, MINTERM_COOKIE);
-      sprintf(szMsg, "%d", msgType);
-      fontFillTextBitMap(s_pFont, s_pBmText, szMsg);
-      fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 232, HUDfontColor, FONT_COOKIE);
+      blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 96, 32, MINTERM_COOKIE);
+      sprintf(szMsg, "COAL %d", msgType);
+      fontFillTextBitMap(s_pGotekFont, s_pBmText, szMsg);
+      fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 239, HUDfontColor, FONT_COOKIE);
       break;
     case 2:
-      blitCopy(s_pHUD, 188, 0, s_pVpManager->pBack, 32, 224, 32, 32, MINTERM_COOKIE);  
+      blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 96, 32, MINTERM_COOKIE);  
       break;
     case 3: 
       msgType = capacitors;
-      blitCopy(s_pHUD, 188, 0, s_pVpManager->pBack, 32, 224, 32, 32, MINTERM_COOKIE);
-      sprintf(szMsg, "%d", msgType);
-      fontFillTextBitMap(s_pFont, s_pBmText, szMsg);
-      fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 232, HUDfontColor, FONT_COOKIE);
+      blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 96, 32, MINTERM_COOKIE);
+      sprintf(szMsg, "CAPACITORS %d", msgType);
+      fontFillTextBitMap(s_pGotekFont, s_pBmText, szMsg);
+      fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 239, HUDfontColor, FONT_COOKIE);
       break;
      case 4:
-      blitCopy(s_pHUD, 128, 0, s_pVpManager->pBack, 32, 224, 32, 32, MINTERM_COOKIE);
+      blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 96, 32, MINTERM_COOKIE);
       break;
      case 5:
       msgType = excesscoal;
-      blitCopy(s_pHUD, 128, 0, s_pVpManager->pBack, 32, 224, 32, 32, MINTERM_COOKIE);
-      sprintf(szMsg, "%d", msgType);
-      fontFillTextBitMap(s_pFont, s_pBmText, szMsg);
-      fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 232, HUDfontColor, FONT_COOKIE);
+      blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 96, 32, MINTERM_COOKIE);
+      sprintf(szMsg, "RESERVE %d", msgType);
+      fontFillTextBitMap(s_pGotekFont, s_pBmText, szMsg);
+      fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 239, HUDfontColor, FONT_COOKIE);
       break;
     case 6:
-      blitCopy(s_pHUD, 248, 0, s_pVpManager->pBack, 32, 224, 32, 32, MINTERM_COOKIE);
+      blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 96, 32, MINTERM_COOKIE);
       break;
     case 7:
       msgType = robboMsgCount;
-      blitCopy(s_pHUD, 248, 0, s_pVpManager->pBack, 32, 224, 32, 32, MINTERM_COOKIE);
-      sprintf(szMsg, "%d", msgType);
-      fontFillTextBitMap(s_pFont, s_pBmText, szMsg);
-      fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 232, HUDfontColor, FONT_COOKIE);
+      blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 96, 32, MINTERM_COOKIE);
+      sprintf(szMsg, "ROBBO %d", msgType);
+      fontFillTextBitMap(s_pGotekFont, s_pBmText, szMsg);
+      fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 239, HUDfontColor, FONT_COOKIE);
       break;  
     case 8:
-      blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 32, 32, MINTERM_COOKIE);
+      blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 96, 32, MINTERM_COOKIE);
       break;
   }
 
@@ -1566,6 +1599,8 @@ void stateGameCreate(void)
   s_pAnimBg = bitmapCreate(48, 32, 5, BMF_INTERLEAVED);
   s_pBgPortalGlow = bitmapCreate(48, 32, 5, BMF_INTERLEAVED);
   s_pFont = fontCreate("data/topaz.fnt");
+  s_pGotekFont = fontCreate("data/gotekFont.fnt");
+  
   s_pBmText = fontCreateTextBitMap(300, s_pFont->uwHeight); // bitmapa robocza długa na 200px, wysoka na jedną linię tekstu
   
   
@@ -1901,6 +1936,7 @@ void stateGameDestroy(void)
   bitmapDestroy(s_pRobbo);
 
   fontDestroy(s_pFont);
+  fontDestroy(s_pGotekFont);
   fontDestroyTextBitMap(s_pBmText);
 
   viewDestroy(s_pView); // zwolnij z pami�ci view, wszystkie do��czone do niego viewporty i wszystkie do��czone do nich mened�ery

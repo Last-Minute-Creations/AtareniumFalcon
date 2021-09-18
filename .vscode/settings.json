@@ -6,6 +6,7 @@
         "file.h": "c",
         "stdio.h": "c",
         "stddef.h": "c",
-        "stdarg.h": "c"
+        "stdarg.h": "c",
+        "copper.h": "c"
     }
 }
