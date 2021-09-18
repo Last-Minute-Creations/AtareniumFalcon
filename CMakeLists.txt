@@ -6,7 +6,7 @@ add_subdirectory(ACE ace)
 
 add_executable(
 	falkon.elf
-	main.c game.c menu.c gameover.c intro.c credits.c score.c wungiel.c guruMastah.c scoreAmi.c
+	main.c game.c menu.c gameover.c intro.c credits.c score.c wungiel.c guruMastah.c scoreAmi.c leakedGameOver.c
 ) # Compiler emits .elf file, we need hunk for Amiga
 
 target_compile_options(falkon.elf PRIVATE -Wall -Wextra)
@@ -83,14 +83,12 @@ convertBitmaps(
 )
 
 convertAudio(
-    TARGET falkon.elf 	SOURCE ${RES_DIR}/falkonEngine.wav
-    DESTINATION ${DATA_DIR}/falkonEngine.sfx 
+    TARGET falkon.elf 	SOURCE ${RES_DIR}/falkonEngine.wav  ${RES_DIR}/AceSample.wav
+    DESTINATION ${DATA_DIR}/falkonEngine.sfx ${DATA_DIR}/AceSample.sfx
 )
 
 file(
 	COPY ${RES_DIR}/topaz.fnt ${RES_DIR}/mod.falkon ${RES_DIR}/mod.falkon-ambient2
-	${RES_DIR}/Morse_LMC8000.sfx ${RES_DIR}/Atari.sfx
-	${RES_DIR}/AceSample.sfx
 	${RES_DIR}/1.txt
 	${RES_DIR}/2.txt
 	${RES_DIR}/3.txt

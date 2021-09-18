@@ -44,6 +44,7 @@ extern tState g_sStateGameOver;
 extern tState g_sStateScore;
 extern tState g_sStateGuruMastah;
 extern tState g_sStateScoreAmi;
+extern tState g_sStateLeakedGameOver;
 
 #define MAP_TILE_HEIGHT 7
 #define MAP_TILE_WIDTH 10
@@ -133,11 +134,11 @@ UWORD newPosY = 0;
 BYTE coal = startingCoal;
 BYTE capacitors = 0;
 BYTE excesscoal = 0;
-BYTE level = 16;
+BYTE level = 1;
 
 BYTE robboMsgNr = 0;
 BYTE robboMsgCtrl = 0;
-BYTE robboMsgCount = 6;
+BYTE robboMsgCount = 0;
 BYTE HUDfontColor = 23; //23
 
 UBYTE doubleBufferFrameControl = 2;
@@ -988,9 +989,13 @@ void coalAndCollect(void)
     break;
 
   case 12:
+    if (thirdCheatEnablerWhenEqual3 == 3){
+      youWin = 3;
+      return;
+    }
     if (thirdCheatEnablerWhenEqual3 != 3){
     amigaMode = 1;
-    HUDfontColor = 27;
+    HUDfontColor = 5;
     portalAnimControl = 0;
     ptplayerSetMasterVolume(0);
     bitmapDestroy(s_pTiles);
@@ -1621,8 +1626,8 @@ void stateGameCreate(void)
   copProcessBlocks(); 
   }
   else if (thirdCheatEnablerWhenEqual3 == 3){
-  amigaMode = 1;
-  HUDfontColor = 27;
+  amigaMode = 2;
+  HUDfontColor = 5;
   s_pTiles = bitmapCreateFromFile("data/tileset2.bm", 0);
   s_pTilesMask = bitmapCreateFromFile("data/tileset_mask2.bm", 0);
   s_pHUD = bitmapCreateFromFile("data/amiHUD.bm", 0);
@@ -1946,6 +1951,12 @@ void stateGameLoop(void)
   {
     youWin = 0;
     stateChange(g_pStateMachineGame, &g_sStateGameOver);
+    return;
+  }
+  else if (youWin == 3)
+  {
+    youWin = 0;
+    stateChange(g_pStateMachineGame, &g_sStateLeakedGameOver);
     return;
   }
 

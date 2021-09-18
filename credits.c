@@ -51,8 +51,8 @@ UBYTE waitTime = 0;
 UBYTE drawOnce = 0;
 
 const char *s_pCreditsLines[CREDITS_LINE_COUNT] = {
-    "ATARENIUM FALCON  v0.91 (Demo)",
-    "Updated 30.12.2020, first release at",
+    "ATARENIUM FALCON  v0.97 (RC)",
+    "Updated 18.09.2021, first release at",
     "Decrunch 2020 gamedev compo (2nd place).",
     "",
     "Luc3k: code & MSX",

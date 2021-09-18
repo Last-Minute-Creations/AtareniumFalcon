@@ -7,16 +7,32 @@
 #include <stdio.h>
 #include <ace/managers/state.h>
 #include <ace/managers/blit.h>
+#include <ace/utils/font.h>
 
 static tView *s_pView;
 static tVPort *s_pVp;
 static tSimpleBufferManager *s_pVpManager;
-static tBitMap *s_pGameOver;
 
 extern tState g_sStateMenu;
 extern tStateManager *g_pStateMachineGame;
 
 extern BYTE startingCoal;
+
+static tFont *s_pFont;
+static tTextBitMap *s_pBmText;
+
+#define TXT_LINE_COUNT 9
+
+const char *s_pLines3[TXT_LINE_COUNT] = {
+    "if (leaked capacitor == 2){",
+    "amigaModeDestroy(); ",
+    "}",
+    "// WTF",
+    "NO AMIGA SPIRIT FROM YOU I SMELL.",
+    "LEAKED CAPACITOR NO GOOD IMPROVEMENT IS.",
+    "SPACESHIP WICHER OF OURS YOU DESTROYED.",
+    "MAY THE WEAKNESS OF ATARI BE WITH YOU.",
+    "CHEATER. EAT COAL."};
 
 void waitFrames();
 
@@ -53,7 +69,7 @@ extern UBYTE thirdCheatEnablerWhenEqual3;
 
 void clearTiles();
 
-void clean(void){
+void clean2(void){
 
 falkonx = 0;
 falkony = 0;
@@ -87,7 +103,7 @@ thirdCheatEnablerWhenEqual3 = 0;
 
 
 
-void stateGameOverCreate(void){
+void stateLeakedGameOverCreate(void){
 
 s_pView = viewCreate(0,
     TAG_VIEW_COPLIST_MODE, COPPER_MODE_BLOCK,
@@ -104,8 +120,6 @@ s_pVp = vPortCreate(0,
 paletteLoad("data/falkon.plt", s_pVp->pPalette, 32);
 
 
-s_pGameOver = bitmapCreateFromFile("data/gej_ower.bm", 0);
-
 s_pVpManager = simpleBufferCreate(0,
     TAG_SIMPLEBUFFER_VPORT, s_pVp,
     TAG_SIMPLEBUFFER_BITMAP_FLAGS, BMF_CLEAR | BMF_INTERLEAVED,
@@ -113,25 +127,34 @@ s_pVpManager = simpleBufferCreate(0,
     TAG_END
 );
 
-  blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 0);
-  blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 0);
+s_pFont = fontCreate("data/topaz.fnt");
+s_pBmText = fontCreateTextBitMap(300, s_pFont->uwHeight);
 
-bitmapLoadFromFile(s_pVpManager->pBack, "data/gej_ower.bm", 75, 54);
 
 systemUnuse();
 joyOpen();
 keyCreate();
+
+blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 21);
+blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 21);
+
+  for (UBYTE i = 0; i < TXT_LINE_COUNT; ++i)
+  {
+    fontFillTextBitMap(s_pFont, s_pBmText, s_pLines3[i]);
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 10, (i * 9) + 10, 23, FONT_COOKIE);
+  }
+
 viewLoad(s_pView);
 
 }
 
-void stateGameOverLoop(void){
+void stateLeakedGameOverLoop(void){
 	joyProcess();
 	keyProcess();
 
 	if(joyUse(JOY1_FIRE) || keyUse(KEY_RETURN)) {
     clearTiles();
-    clean();
+    clean2();
 		stateChange(g_pStateMachineGame, &g_sStateMenu);
 		return;
   }
@@ -141,19 +164,19 @@ void stateGameOverLoop(void){
 	waitFrames(s_pVp, 1, 200);
 }
 
-void stateGameOverDestroy(void){
+void stateLeakedGameOverDestroy(void){
 	systemUse();
 	joyClose();
 	keyDestroy();
-	bitmapDestroy(s_pGameOver);
+	
   viewDestroy(s_pView);
 }
 
 
-tState g_sStateGameOver = {
-  .cbCreate = stateGameOverCreate,
-  .cbLoop = stateGameOverLoop,
-  .cbDestroy = stateGameOverDestroy,
+tState g_sStateLeakedGameOver = {
+  .cbCreate = stateLeakedGameOverCreate,
+  .cbLoop = stateLeakedGameOverLoop,
+  .cbDestroy = stateLeakedGameOverDestroy,
   .cbSuspend = 0,
   .cbResume = 0,
   .pPrev = 0

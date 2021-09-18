@@ -30,6 +30,7 @@ extern BYTE krawedzx;
 extern BYTE krawedzy;
 extern BYTE kierunek;
 extern BYTE falkonFace; // kierunek dziobem
+extern BYTE HUDfontColor;
 
 extern UWORD uwPosY;
 
@@ -44,6 +45,9 @@ extern BYTE robboMsgCount;
 
 extern BYTE amigaMode;
 
+extern UBYTE cheatmodeEnablerWhenEqual3;
+extern UBYTE secondCheatEnablerWhenEqual3;
+extern UBYTE thirdCheatEnablerWhenEqual3;
 
 static tFont *s_pFont;
 static tTextBitMap *s_pBmText;
@@ -80,6 +84,11 @@ robboMsgCount = 0;
 excesscoal = 0;
 
 amigaMode = 0;
+HUDfontColor = 23;
+
+cheatmodeEnablerWhenEqual3 = 0;
+secondCheatEnablerWhenEqual3 = 0;
+thirdCheatEnablerWhenEqual3 = 0;
 }
 
 void stateScoreAmiCreate(void){
