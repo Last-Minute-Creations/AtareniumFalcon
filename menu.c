@@ -59,12 +59,10 @@ static void starInit(void) {
 
 static void starUpdate(tStar *pStar) {
 	pStar->ubStep += 1;
-	if(pStar->ubStep < STAR_STEPS) {
-		pStar->uwScreenX = 160 + (pStar->wX * pStar->ubStep) / STAR_STEPS;
-		pStar->uwScreenY = 128 + (pStar->wY * pStar->ubStep) / STAR_STEPS;
-		if(pStar->uwScreenX <= 320 && pStar->uwScreenY <= 256) {
-			return;
-		}
+	pStar->uwScreenX = 160 + (pStar->wX * pStar->ubStep) / STAR_STEPS;
+	pStar->uwScreenY = 128 + (pStar->wY * pStar->ubStep) / STAR_STEPS;
+	if(pStar->uwScreenX < 320 && pStar->uwScreenY <= 238) {
+		return;
 	}
 	pStar->ubStep = uwRandMax(STAR_STEPS - 1);
 	pStar->uwScreenX = 160 + (pStar->wX * pStar->ubStep) / STAR_STEPS;
