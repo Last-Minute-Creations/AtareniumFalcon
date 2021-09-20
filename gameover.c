@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <ace/managers/state.h>
 #include <ace/managers/blit.h>
+#include "enum.h"
 
 static tView *s_pView;
 static tVPort *s_pVp;
@@ -45,7 +46,7 @@ extern BYTE robboMsgCtrl;
 extern BYTE excesscoal;
 extern BYTE flyingAnimControl;
 
-extern BYTE amigaMode;
+extern tAmigaMode amigaMode;
 
 extern UBYTE cheatmodeEnablerWhenEqual3;
 extern UBYTE secondCheatEnablerWhenEqual3;
