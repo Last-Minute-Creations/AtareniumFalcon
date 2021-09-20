@@ -1,3 +1,10 @@
+/* 
+THIS FILE IS UNUSED SINCE 18-09-2021
+DUE TO CODE CLEANUP
+90% WAS COPY_PASTED FROM score.c
+SO I JUST COPIED KEY FRAGMENTS THERE
+AND SAVED HUGE DISK SPACE - 2kb !!!!1111one
+*/
 #include <ace/managers/viewport/simplebuffer.h>
 #include <ace/managers/joy.h>
 #include <ace/managers/key.h>

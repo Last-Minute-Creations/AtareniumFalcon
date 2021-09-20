@@ -1936,16 +1936,7 @@ void stateGameLoop(void)
   if (youWin == 1) // sprawdzenie ktore zakonczenie uruchomic
   {
     youWin = 0;
-    if (amigaMode == 0)
-    {
-      stateChange(g_pStateMachineGame, &g_sStateScore); // atari ending
-      return;
-    }
-    else if (amigaMode == 2)
-    {
-      stateChange(g_pStateMachineGame, &g_sStateScoreAmi); // amiga ending
-      return;
-    }
+    stateChange(g_pStateMachineGame, &g_sStateScore); // atari ending 
   }
   else if (youWin == 2)
   {

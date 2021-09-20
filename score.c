@@ -57,6 +57,7 @@ BYTE vampire = 0;
 
 
 char szScore[80];
+char szScore2[80];
 
 void clearTiles();
 
@@ -130,6 +131,7 @@ s_pBmText = fontCreateTextBitMap(300, s_pFont->uwHeight);
 blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 21);
 blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 21);
 
+if (amigaMode == 0){
 for(BYTE i = 0 ; i < 17 ; ++i){
 
   switch (i){
@@ -190,6 +192,69 @@ for(BYTE i = 0 ; i < 17 ; ++i){
       fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText,  10, (i * 9) + 10, 23, FONT_COOKIE);
       waitFrames(s_pVp, 50, 0);
   }
+}
+else if (amigaMode == 2){
+for(BYTE i = 0 ; i < 17 ; ++i){
+
+  switch (i){
+    case 0:
+    sprintf(szScore2, "MISSION COMPLETE !");
+    break;
+    case 1:
+    sprintf(szScore2, " ");
+    break;
+    case 2:
+    sprintf(szScore2, "The ATARI tribe got serious hit.");
+    break;
+    case 3:
+    sprintf(szScore2, "Now go get some rest.");
+    break;
+    case 4:
+    sprintf(szScore2, " ");
+    break;
+    case 5:
+    sprintf(szScore2, "You intercepted %d tons of Atarimen's coal.", excesscoal);
+    break;
+    case 6:
+    sprintf(szScore2, " ");
+    break;
+    case 7:
+    sprintf(szScore2, "You saved %d capacitors for our Amigas. ", capacitors);
+    break;
+    case 8:
+    sprintf(szScore2, " ");
+    break;
+    case 9:
+    sprintf(szScore2, " ");
+    break;
+    case 10:
+    sprintf(szScore2, "%d tons of coal x 100 = %d pts.", excesscoal, excesscoal * 100);
+    break;
+    case 11:
+    sprintf(szScore2, "%d sets of capacitors x 500 = %d pts.", capacitors, capacitors * 500);
+    break;
+    case 12:
+    sprintf(szScore2, "Total score = %d pts.", (excesscoal * 100) + (capacitors * 500));
+    break;
+    case 13:
+    sprintf(szScore2, " ");
+    break;
+    case 14:
+    sprintf(szScore2, "... and all they accomplished in that amateur");
+    break;
+    case 15:
+    sprintf(szScore2, "attack is awakening of our sleeping giant.");
+    break;
+    case 16:
+    sprintf(szScore2, "We, the Amigans will crush them in...");
+    break; 
+    }
+    
+      fontFillTextBitMap(s_pFont, s_pBmText, szScore2);
+      fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText,  10, (i * 9) + 10, 23, FONT_COOKIE);
+      waitFrames(s_pVp, 50, 0);
+  }  
+}
 logWrite("vp height: %hu\n", s_pVp->uwHeight);
 }
 
