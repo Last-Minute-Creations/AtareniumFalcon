@@ -9,6 +9,7 @@
 #include <ace/managers/blit.h>
 #include <ace/utils/font.h>
 #include <ace/utils/ptplayer.h>
+#include "enum.h"
 
 static tView *s_pView;
 static tVPort *s_pVp;
@@ -16,7 +17,7 @@ static tSimpleBufferManager *s_pVpManager;
 
 extern tState g_sStateGame;
 extern tStateManager *g_pStateMachineGame;
-extern BYTE musicPlay;
+extern tMusicState musicPlay;
 
 static tFont *s_pFont;
 static tTextBitMap *s_pBmText;
@@ -91,9 +92,12 @@ void stateGuruMastahLoop(void)
   if (joyUse(JOY1_FIRE) || keyUse(KEY_RETURN))
   {
     statePop(g_pStateMachineGame);
-    if (musicPlay == 1)
+    if (musicPlay == MUSIC_HEAVY)
     {
     ptplayerSetMasterVolume(64);
+    }
+    else if (musicPlay == MUSIC_AMBIENT_SFX){
+    ptplayerSetMasterVolume(20);  
     }
     return;
   }
