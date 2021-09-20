@@ -122,7 +122,7 @@ BYTE hudAnimDB = 0;
 BYTE hudScrollingControl = 0;
 BYTE hudScrollingTick = 0;
 
-BYTE portalAnimControl = 0;
+//BYTE portalAnimControl = 0;
 BYTE portalAnimTick = 0;
 
 BYTE portalGlowX = 0;
@@ -161,8 +161,6 @@ extern UBYTE cheatmodeEnablerWhenEqual3;
 extern UBYTE secondCheatEnablerWhenEqual3;
 extern UBYTE thirdCheatEnablerWhenEqual3;
 
-UBYTE portalFrame = 0; // potem wyjebac
-
 UBYTE audioFadeIn = 0;
 UBYTE audioLoopCount = 0;
 
@@ -188,24 +186,6 @@ void portalGlowAnim(void)
 
   blitCopy(s_pBgPortalGlow, 0, 0, s_pVpManager->pBack, portalGlowX * 32, portalGlowY * 32, 32, 32, MINTERM_COPY);
   //blitCopy(s_pBgWithTile, 0, 0, s_pVpManager->pFront, portalGlowX * 32, portalGlowY * 32, 32, 32, MINTERM_COPY);
-}
-
-void portalCloseAnim(void)
-{
-  blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
-  blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
-  blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pFront, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
-  for (UBYTE i = 0; i < 8; ++i) // zamykanie portala
-  {
-    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
-    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pFront, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
-    blitCopyMask(s_pTiles, 224 - (32 * i), 320, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-    blitCopyMask(s_pTiles, 224 - (32 * i), 320, s_pVpManager->pFront, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-    //blitCopyMask(s_pTiles, 32, 192 + falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-    //blitCopyMask(s_pTiles, 32, 192 + falkonFace, s_pVpManager->pFront, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-
-    waitFrames(s_pVp, falkonIdleTempo, uwPosY + FALCON_HEIGHT);
-  }
 }
 
 void endLevelFadeOut(void)
@@ -641,38 +621,12 @@ void levelScore(void) // WITH PORTAL OPEN AND FALKON IN PORTAL ANIM !!!
       levelScoreControl = LEVEL_SCORE_END;
     }
   }
- 
-  /*
-
-  for (UBYTE i = 0; i < 8; ++i) // otwieranie portala
-  {
-    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
-    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pFront, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
-    blitCopyMask(s_pTiles, 32 * i, 320, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-    blitCopyMask(s_pTiles, 32 * i, 320, s_pVpManager->pFront, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-    blitCopyMask(s_pTiles, 32, 192 + falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-    blitCopyMask(s_pTiles, 32, 192 + falkonFace, s_pVpManager->pFront, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-
-    waitFrames(s_pVp, falkonIdleTempo, 0);
-  }
-
-  for (UBYTE i = 0; i < 8; ++i) // animka
-  {
-    blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
-    blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pFront, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
-    blitCopyMask(s_pTiles, i * 32, 128 + falkonFace, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-    blitCopyMask(s_pTiles, i * 32, 128 + falkonFace, s_pVpManager->pFront, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-    waitFrames(s_pVp, falkonIdleTempo, 0); //uwPosY + FALCON_HEIGHT);
-  }
-  portalCloseAnim();
-  */
 
   if (levelScoreControl == LEVEL_SCORE_END)
   {
     levelScoreControl = LEVEL_SCORE_OFF;
     endLevelFadeOut();
     falkonIdleControl = 1;
-    portalFrame = 0;
     portalAnimTick = 0;
 
     ++level;
@@ -770,80 +724,7 @@ void isThisStone(void)
     }
     break;
   }
-}
-
-void portalAnim(void) // UNUSED FOR NOW
-{
-  if (portalAnimControl != 1)
-  {
-    return;
-  }
-
-  uwPosX = falkonx * 32;
-  uwPosY = falkony * 32;
-
-  if (portalAnimControl == 1)
-  {
-
-    if (portalAnimTick == falkonIdleTempo * 1)
-    {
-      portalFrame = 0;
-    }
-    else if (portalAnimTick == falkonIdleTempo * 2)
-    {
-      portalFrame = 1;
-    }
-    else if (portalAnimTick == falkonIdleTempo * 3)
-    {
-      portalFrame = 2;
-    }
-    else if (portalAnimTick == falkonIdleTempo * 4)
-    {
-      portalFrame = 3;
-    }
-    else if (portalAnimTick == falkonIdleTempo * 5)
-    {
-      portalFrame = 4;
-    }
-    else if (portalAnimTick == falkonIdleTempo * 6)
-    {
-      portalFrame = 5;
-    }
-    else if (portalAnimTick == falkonIdleTempo * 7)
-    {
-      portalFrame = 6;
-    }
-    else if (portalAnimTick == falkonIdleTempo * 8)
-    {
-      portalFrame = 7;
-    }
-    else if (portalAnimTick == falkonIdleTempo * 9)
-    {
-      portalFrame = 8;
-    }
-  }
-  if (portalFrame == 8)
-  {
-    portalCloseAnim();
-    endLevelFadeOut();
-    portalFrame = 0;
-    portalAnimTick = 0;
-    portalAnimControl = 0;
-    ++level;
-    if (level == LAST_LEVEL_NUMBER + 1)
-    {
-      ptplayerStop();
-      youWin = 1;
-    }
-    else
-    {
-      nextLevel();
-    }
-  }
-  blitCopy(s_pBg, uwPosX, uwPosY, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
-
-  blitCopyMask(s_pTiles, portalFrame * 32, 128 + falkonFace, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-}
+} 
 
 void robboScrollUp(void)
 {
@@ -1092,7 +973,6 @@ void coalAndCollect(void)
       }
 
       HUDfontColor = 5;
-      portalAnimControl = 0;
 
       bitmapDestroy(s_pTiles);
       bitmapDestroy(s_pTilesMask);
@@ -1900,10 +1780,7 @@ void stateGameLoop(void)
   {
     ++hudScrollingTick;
   }
-  if (portalAnimControl == 1)
-  {
-    ++portalAnimTick;
-  }
+
   if (stonehitAnimControl == 1)
   {
     ++stonehitAnimTick;
@@ -1921,8 +1798,7 @@ void stateGameLoop(void)
   if (coal == 0)
   {
     gameOverCoalBlinkingOnHUD();
-    portalAnimControl = 0;
-    coal = 1;
+    coal = 10;
     youWin = 2;
 
     clean();
