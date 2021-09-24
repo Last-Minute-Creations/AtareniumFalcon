@@ -28,7 +28,7 @@ const char *s_pLines2[MINER_LINE_COUNT] = {
     "if (leaked capacitor == 1){",
     "amigaModeOn(); ",
     "}",
-    "// WTF",
+    "// WTF  <-- <-- N",
     "SYSTEM INTERCEPTION COMPLETE.",
     "HELLO THERE",
     "CAPTAIN TRAMIEL.",

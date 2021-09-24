@@ -841,35 +841,42 @@ void robboSays(void)
       sprintf(szRobboMsg, "Find the coal warehouse and reclaim it.");
       break;
 
-    case 10:
+    case 10: 
+      sprintf(szRobboMsg,"Try new economic LSA 68090 engine in menu.");
+      break;
+    case 11:
       sprintf(szRobboMsg, "Have you played Aminer yet?");
       break;
 
-    case 11:
-      sprintf(szRobboMsg, "Drop me out at LK Avalon please.");
-      break;
-
     case 12:
-      sprintf(szRobboMsg, "You like Paula? I love Laura!");
+      sprintf(szRobboMsg, "Beware of VamPiRes, or you become one!");
       break;
 
     case 13:
-      sprintf(szRobboMsg, "Atari has no glitches...");
+      sprintf(szRobboMsg, "Drop me out at LK Avalon please.");
       break;
 
     case 14:
+      sprintf(szRobboMsg, "You like Paula? I love Laura!");
+      break;
+
+    case 15:
+      sprintf(szRobboMsg, "Atari has no glitches...");
+      break;
+
+    case 16:
       sprintf(szRobboMsg, "..even if played in 2077.");
       break;
-    case 15:
+    case 17:
       sprintf(szRobboMsg, "Make River Raid not Bridge Strike!");
       break;
-    case 16:
+    case 18:
       sprintf(szRobboMsg, "Cytadela is better than Doom.");
       break;
-    case 17:
+    case 19:
       sprintf(szRobboMsg, "How to double the value of your Atari...?");
       break;
-    case 18:
+    case 20:
       sprintf(szRobboMsg, "...Just insert the cassette into tape drive.");
       break;
 

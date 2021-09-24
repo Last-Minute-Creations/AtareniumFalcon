@@ -10,7 +10,7 @@
 #include <ace/utils/font.h>
 #include <ace/utils/ptplayer.h>
 
-#define CREDITS_LINE_COUNT 13
+#define CREDITS_LINE_COUNT 23
 
 enum StatesCredits
 {
@@ -61,6 +61,16 @@ const char *s_pCreditsLines[CREDITS_LINE_COUNT] = {
     "",
     "Special credit goes to Saberman - ",
     "The Great Atariman of the Galaxy.",
+    "",
+    "Navigate your ship using",
+    "WSAD, arrows or Joy.",
+    "M - toggle music/sfx/mute in play.",
+    "",
+    "Look for 3-letter cheatcodes here ",
+    "and there and try typing them in menu.", 
+    "There is one for unlimited coal,", 
+    "one for great-looking ship, and one",
+    "for skipping levels by N in play.",
     "",
     "(Fire or Return to continue)"};
 
