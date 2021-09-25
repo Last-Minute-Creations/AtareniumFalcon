@@ -85,6 +85,7 @@ convertAudio(
 
 file(
 	COPY ${RES_DIR}/topaz.fnt ${RES_DIR}/mod.falkon ${RES_DIR}/mod.falkon-ambient2
+	${RES_DIR}/LadujWegiel.sfx
 	${RES_DIR}/1.txt
 	${RES_DIR}/2.txt
 	${RES_DIR}/3.txt

@@ -28,6 +28,7 @@ static tBitMap *s_pFalconBg;
 static tBitMap *s_pAnimBg;
 static tBitMap *s_pRobbo;
 static tPtplayerSfx *s_pFalkonEngineSound;
+static tPtplayerSfx *s_pLadujWegiel;
 static tCopBlock *copBlockBeforeHud, *copBlockAfterHud;
 
 static tPtplayerMod *s_pMod;
@@ -919,18 +920,34 @@ void coalAndCollect(void)
   {
   case 4:
     coal = coal + 2;
+    if (musicPlay == MUSIC_AMBIENT_SFX)
+    {
+      ptplayerSfxPlay(s_pLadujWegiel, 3, 64, 100);
+    }
     break;
 
   case 5:
     coal = coal + 3;
+    if (musicPlay == MUSIC_AMBIENT_SFX)
+    {
+      ptplayerSfxPlay(s_pLadujWegiel, 3, 64, 100);
+    }
     break;
 
   case 6:
     coal = coal + 4;
+    if (musicPlay == MUSIC_AMBIENT_SFX)
+    {
+      ptplayerSfxPlay(s_pLadujWegiel, 3, 64, 100);
+    }
     break;
 
   case 7:
     coal = coal + 5;
+    if (musicPlay == MUSIC_AMBIENT_SFX)
+    {
+      ptplayerSfxPlay(s_pLadujWegiel, 3, 64, 100);
+    }
     break;
 
   case 8:
@@ -1188,10 +1205,11 @@ void endFalconFlying(void)
 void blitFlyingAnimFrame(void)
 {
   blitCopy(s_pBg, uwPreviousX, uwPreviousY, s_pVpManager->pBack, uwPreviousX, uwPreviousY, 32, 32, MINTERM_COOKIE);
-  if (kamyki[tempX][tempY] > 3)
+  if (kamyki[tempX][tempY] > 3 && kamyki[tempX][tempY] != 10)
   {
     blitCopy(s_pBgWithTile, newPosX, newPosY, s_pVpManager->pBack, newPosX, newPosY, 32, 32, MINTERM_COOKIE);
   }
+ 
   else if (kamyki[tempX][tempY] < 4)
   {
     UWORD uwPrevPosX = uwPosX;
@@ -1217,7 +1235,6 @@ void blitFlyingAnimFrame(void)
     }
     blitCopy(s_pBg, uwPrevPosX, uwPrevPosY, s_pVpManager->pBack, uwPrevPosX, uwPrevPosY, 32, 32, MINTERM_COOKIE);
     //blitCopy(s_pBg, uwPrevPosX, uwPrevPosY, s_pVpManager->pFront, uwPrevPosX, uwPrevPosY, 32, 32, MINTERM_COOKIE);
-
     blitCopy(s_pBg, newPosX, newPosY, s_pVpManager->pBack, newPosX, newPosY, 32, 32, MINTERM_COOKIE);
   }
   blitCopyMask(s_pTiles, pAnim[flyingFrame], 64 + falkonFace, s_pVpManager->pBack, newPosX, newPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
@@ -1603,6 +1620,7 @@ void stateGameCreate(void)
   ptplayerLoadMod(s_pMod, 0, 0);
 
   s_pFalkonEngineSound = ptplayerSfxCreateFromFile("data/falkonEngine.sfx");
+  s_pLadujWegiel = ptplayerSfxCreateFromFile("data/LadujWegiel.sfx");
 
   // Paleta z falkona
   paletteLoad("data/falkon.plt", s_pVp->pPalette, 32);
@@ -1951,6 +1969,7 @@ void stateGameDestroy(void)
   ptplayerModDestroy(s_pMod);
   ptplayerModDestroy(s_pModAmbient);
   ptplayerSfxDestroy(s_pFalkonEngineSound);
+  ptplayerSfxDestroy(s_pLadujWegiel);
   ptplayerDestroy();
   bitmapDestroy(s_pTiles);
   bitmapDestroy(s_pTilesMask);
