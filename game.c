@@ -29,6 +29,8 @@ static tBitMap *s_pAnimBg;
 static tBitMap *s_pRobbo;
 static tPtplayerSfx *s_pFalkonEngineSound;
 static tPtplayerSfx *s_pLadujWegiel;
+static tPtplayerSfx *s_pRobbo8000;
+static tPtplayerSfx *s_pCapacitorSFX;
 static tCopBlock *copBlockBeforeHud, *copBlockAfterHud;
 
 static tPtplayerMod *s_pMod;
@@ -952,6 +954,10 @@ void coalAndCollect(void)
 
   case 8:
     capacitors = capacitors + 2;
+    if (musicPlay == MUSIC_AMBIENT_SFX)
+    {
+      ptplayerSfxPlay(s_pCapacitorSFX, 3, 64, 100);
+    }
     blitCopy(s_pHUD, 188, 0, s_pVpManager->pBack, 188, 224, 32, 32, MINTERM_COOKIE);
     sprintf(szMsg2, "%d", capacitors);
     fontFillTextBitMap(s_pFont, s_pBmText, szMsg2);
@@ -960,6 +966,10 @@ void coalAndCollect(void)
 
   case 9:
     capacitors = capacitors + 4;
+    if (musicPlay == MUSIC_AMBIENT_SFX)
+    {
+      ptplayerSfxPlay(s_pCapacitorSFX, 3, 64, 100);
+    }
     blitCopy(s_pHUD, 188, 0, s_pVpManager->pBack, 188, 224, 32, 32, MINTERM_COOKIE);
     sprintf(szMsg2, "%d", capacitors);
     fontFillTextBitMap(s_pFont, s_pBmText, szMsg2);
@@ -975,6 +985,10 @@ void coalAndCollect(void)
   case 11:
     ++robboMsgNr;
     ++robboMsgCount;
+    if (musicPlay == MUSIC_AMBIENT_SFX)
+    {
+      ptplayerSfxPlay(s_pRobbo8000, 3, 32, 100);
+    }
     robboMsgCtrl = 1;
     hudScrollingControl = 1;
     break;
@@ -1621,6 +1635,8 @@ void stateGameCreate(void)
 
   s_pFalkonEngineSound = ptplayerSfxCreateFromFile("data/falkonEngine.sfx");
   s_pLadujWegiel = ptplayerSfxCreateFromFile("data/LadujWegiel.sfx");
+  s_pRobbo8000 = ptplayerSfxCreateFromFile("data/robbo8000.sfx");
+  s_pCapacitorSFX = ptplayerSfxCreateFromFile("data/cap11025.sfx");
 
   // Paleta z falkona
   paletteLoad("data/falkon.plt", s_pVp->pPalette, 32);
@@ -1970,6 +1986,8 @@ void stateGameDestroy(void)
   ptplayerModDestroy(s_pModAmbient);
   ptplayerSfxDestroy(s_pFalkonEngineSound);
   ptplayerSfxDestroy(s_pLadujWegiel);
+  ptplayerSfxDestroy(s_pRobbo8000);
+  ptplayerSfxDestroy(s_pCapacitorSFX);
   ptplayerDestroy();
   bitmapDestroy(s_pTiles);
   bitmapDestroy(s_pTilesMask);

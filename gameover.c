@@ -47,6 +47,7 @@ extern BYTE excesscoal;
 extern BYTE flyingAnimControl;
 
 extern tAmigaMode amigaMode;
+extern tMusicState musicPlay;
 
 extern UBYTE cheatmodeEnablerWhenEqual3;
 extern UBYTE secondCheatEnablerWhenEqual3;
@@ -77,8 +78,9 @@ robboMsgCtrl = 0;
 excesscoal = 0;
 HUDfontColor = 23;
 
-amigaMode = 0;
+amigaMode = AMIGA_MODE_OFF;
 flyingAnimControl = 0;
+musicPlay = MUSIC_HEAVY;
 
 cheatmodeEnablerWhenEqual3 = 0;
 secondCheatEnablerWhenEqual3 = 0;
