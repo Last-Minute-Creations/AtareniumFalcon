@@ -146,7 +146,7 @@ UWORD newPosY = 0;
 BYTE coal = startingCoal;
 BYTE capacitors = 0;
 BYTE excesscoal = 0;
-BYTE level = 28;
+BYTE level = 1;
 
 BYTE robboMsgNr = 0;
 BYTE robboMsgCtrl = 0;
