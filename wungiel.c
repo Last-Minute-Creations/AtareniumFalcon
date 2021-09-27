@@ -15,7 +15,7 @@ static tView *s_pView;
 static tVPort *s_pVp;
 static tSimpleBufferManager *s_pVpManager;
 
-extern tState g_sStateIntro;
+//extern tState g_sStateIntro;
 extern tStateManager *g_pStateMachineGame;
 extern tState g_sStateMenu;
 

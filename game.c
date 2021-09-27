@@ -146,7 +146,7 @@ UWORD newPosY = 0;
 BYTE coal = startingCoal;
 BYTE capacitors = 0;
 BYTE excesscoal = 0;
-BYTE level = 1;
+BYTE level = 28;
 
 BYTE robboMsgNr = 0;
 BYTE robboMsgCtrl = 0;
@@ -425,8 +425,8 @@ void drawTiles(void)
 
 void clearTiles(void)
 {
-  blitCopy(s_pBg, 0, 0, s_pBgWithTile, 0, 0, 320, 128, MINTERM_COPY);
-  blitCopy(s_pBg, 0, 128, s_pBgWithTile, 0, 128, 320, 96, MINTERM_COPY);
+  //blitCopy(s_pBg, 0, 0, s_pBgWithTile, 0, 0, 320, 128, MINTERM_COPY);
+  //blitCopy(s_pBg, 0, 128, s_pBgWithTile, 0, 128, 320, 96, MINTERM_COPY);
   for (UBYTE y = 0; y < MAP_TILE_HEIGHT; ++y)
   {
     for (UBYTE x = 0; x < MAP_TILE_WIDTH; ++x)
@@ -540,14 +540,21 @@ void levelScoreDBredraw(void)
     blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
     blitCopyMask(s_pTiles, 224 - (32 * levelAnimFrame), 320, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
   }
-  if (levelScoreControl == LEVEL_SCORE_NOCOAL)
+  if (amigaMode == AMIGA_MODE_OFF && levelScoreControl == LEVEL_SCORE_NOCOAL)
   {
       blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 32, 32, MINTERM_COOKIE);
       sprintf(szMsg, "%d", coal);
       fontFillTextBitMap(s_pFont, s_pBmText, szMsg);
       fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 232, HUDfontColor, FONT_COOKIE);
       --HUDfontColor;
-  }  
+  } 
+  if (amigaMode != AMIGA_MODE_OFF && levelScoreControl == LEVEL_SCORE_NOCOAL){
+       blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 96, 32, MINTERM_COOKIE);
+    sprintf(szMsg3, "NO COAL");
+    fontFillTextBitMap(s_pGotekFont, s_pBmText, szMsg3);
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 239, HUDfontColor, FONT_COOKIE);
+    --HUDfontColor;
+  } 
   
 }
 
@@ -641,6 +648,27 @@ void levelScore(void) // WITH PORTAL OPEN AND FALKON IN PORTAL ANIM !!!
       sprintf(szMsg, "%d", coal);
       fontFillTextBitMap(s_pFont, s_pBmText, szMsg);
       fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 232, HUDfontColor, FONT_COOKIE);
+     ++levelAnimFrame; 
+    
+    
+    if (levelAnimFrame == 2)
+    {
+      youWin = 2;
+      HUDfontColor = 23;
+      levelAnimFrame = 0;
+      levelScoreControl = LEVEL_SCORE_OFF;
+      clean();
+      ptplayerStop();
+    }
+  }
+
+  if (amigaMode != AMIGA_MODE_OFF && levelScoreTick == 64 && levelScoreControl == LEVEL_SCORE_NOCOAL)
+  {
+    levelScoreTick = 0;
+    blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 96, 32, MINTERM_COOKIE);
+    sprintf(szMsg3, "NO COAL");
+    fontFillTextBitMap(s_pGotekFont, s_pBmText, szMsg3);
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 239, HUDfontColor, FONT_COOKIE);
      ++levelAnimFrame; 
     
     
@@ -988,10 +1016,10 @@ void coalAndCollect(void)
     {
       ptplayerSfxPlay(s_pCapacitorSFX, 3, 64, 100);
     }
-    blitCopy(s_pHUD, 188, 0, s_pVpManager->pBack, 188, 224, 32, 32, MINTERM_COOKIE);
-    sprintf(szMsg2, "%d", capacitors);
-    fontFillTextBitMap(s_pFont, s_pBmText, szMsg2);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 190, 236, HUDfontColor, FONT_COOKIE);
+    //blitCopy(s_pHUD, 188, 0, s_pVpManager->pBack, 188, 224, 32, 32, MINTERM_COOKIE);
+    //sprintf(szMsg2, "%d", capacitors);
+    //fontFillTextBitMap(s_pFont, s_pBmText, szMsg2);
+    //fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 190, 236, HUDfontColor, FONT_COOKIE);
     break;
 
   case 9:
@@ -1000,10 +1028,10 @@ void coalAndCollect(void)
     {
       ptplayerSfxPlay(s_pCapacitorSFX, 3, 64, 100);
     }
-    blitCopy(s_pHUD, 188, 0, s_pVpManager->pBack, 188, 224, 32, 32, MINTERM_COOKIE);
-    sprintf(szMsg2, "%d", capacitors);
-    fontFillTextBitMap(s_pFont, s_pBmText, szMsg2);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 190, 236, HUDfontColor, FONT_COOKIE);
+    //blitCopy(s_pHUD, 188, 0, s_pVpManager->pBack, 188, 224, 32, 32, MINTERM_COOKIE);
+    //sprintf(szMsg2, "%d", capacitors);
+    //fontFillTextBitMap(s_pFont, s_pBmText, szMsg2);
+    //fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 190, 236, HUDfontColor, FONT_COOKIE);
     break;
 
   case 10:
@@ -1531,28 +1559,6 @@ void blueCapacitorsAnimation(void)
     {
       blueCapacitorsAnimTileCheck = 0;
     }
-  }
-}
-
-void gameOverCoalBlinkingOnHUD(void)
-{
-  flyingAnimControl = 5;
-  for (UBYTE i = 0; i < 5; ++i)
-  {
-    blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 32, 32, MINTERM_COOKIE);
-    blitCopy(s_pHUD, 32, 0, s_pVpManager->pFront, 32, 224, 32, 32, MINTERM_COOKIE);
-    sprintf(szMsg, "%d", coal);
-    fontFillTextBitMap(s_pFont, s_pBmText, szMsg);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 232, HUDfontColor, FONT_COOKIE);
-    fontDrawTextBitMap(s_pVpManager->pFront, s_pBmText, 42, 232, HUDfontColor, FONT_COOKIE);
-    waitFrames(s_pVp, 50, uwPosY + FALCON_HEIGHT);
-    blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 32, 32, MINTERM_COOKIE);
-    blitCopy(s_pHUD, 32, 0, s_pVpManager->pFront, 32, 224, 32, 32, MINTERM_COOKIE);
-    sprintf(szMsg, "%d", coal);
-    fontFillTextBitMap(s_pFont, s_pBmText, szMsg);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 232, 15, FONT_COOKIE);
-    fontDrawTextBitMap(s_pVpManager->pFront, s_pBmText, 42, 232, 15, FONT_COOKIE);
-    waitFrames(s_pVp, 50, uwPosY + FALCON_HEIGHT);
   }
 }
 

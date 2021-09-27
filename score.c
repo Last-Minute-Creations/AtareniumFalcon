@@ -66,7 +66,7 @@ void vampirePage(void){
   blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 0);
   blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 0);
 
-  blitCopy(s_pVAM, 0, 0, s_pVpManager->pBack, 32, 0, 272, 208, MINTERM_COOKIE);
+  blitCopy(s_pVAM, 0, 0, s_pVpManager->pBack, 24, 12, 272, 192, MINTERM_COOKIE);
  // blitCopy(s_pVAM, 0, 128, s_pVpManager->pBack, 0, 128, 304, 208, MINTERM_COOKIE);
 }
 
