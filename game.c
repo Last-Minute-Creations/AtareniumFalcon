@@ -540,6 +540,15 @@ void levelScoreDBredraw(void)
     blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
     blitCopyMask(s_pTiles, 224 - (32 * levelAnimFrame), 320, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
   }
+  if (levelScoreControl == LEVEL_SCORE_NOCOAL)
+  {
+      blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 32, 32, MINTERM_COOKIE);
+      sprintf(szMsg, "%d", coal);
+      fontFillTextBitMap(s_pFont, s_pBmText, szMsg);
+      fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 232, HUDfontColor, FONT_COOKIE);
+      --HUDfontColor;
+  }  
+  
 }
 
 void levelScore(void) // WITH PORTAL OPEN AND FALKON IN PORTAL ANIM !!!
@@ -622,6 +631,27 @@ void levelScore(void) // WITH PORTAL OPEN AND FALKON IN PORTAL ANIM !!!
     {
       levelAnimFrame = 0;
       levelScoreControl = LEVEL_SCORE_END;
+    }
+  }
+
+  if (amigaMode == AMIGA_MODE_OFF && levelScoreTick == 64 && levelScoreControl == LEVEL_SCORE_NOCOAL)
+  {
+    levelScoreTick = 0;
+      blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 32, 32, MINTERM_COOKIE);
+      sprintf(szMsg, "%d", coal);
+      fontFillTextBitMap(s_pFont, s_pBmText, szMsg);
+      fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 232, HUDfontColor, FONT_COOKIE);
+     ++levelAnimFrame; 
+    
+    
+    if (levelAnimFrame == 2)
+    {
+      youWin = 2;
+      HUDfontColor = 23;
+      levelAnimFrame = 0;
+      levelScoreControl = LEVEL_SCORE_OFF;
+      clean();
+      ptplayerStop();
     }
   }
 
@@ -727,7 +757,7 @@ void isThisStone(void)
     }
     break;
   }
-} 
+}
 
 void robboScrollUp(void)
 {
@@ -844,8 +874,8 @@ void robboSays(void)
       sprintf(szRobboMsg, "Find the coal warehouse and reclaim it.");
       break;
 
-    case 10: 
-      sprintf(szRobboMsg,"Try new economic LSA 68090 engine in menu.");
+    case 10:
+      sprintf(szRobboMsg, "Try new economic LSA 68090 engine in menu.");
       break;
     case 11:
       sprintf(szRobboMsg, "Have you played Aminer yet?");
@@ -977,7 +1007,7 @@ void coalAndCollect(void)
     break;
 
   case 10:
-    levelScoreControl = 1;
+    levelScoreControl = LEVEL_SCORE_COUNT;
     falkonIdleControl = 1;
     //portalAnimControl = 1;
     break;
@@ -1223,7 +1253,7 @@ void blitFlyingAnimFrame(void)
   {
     blitCopy(s_pBgWithTile, newPosX, newPosY, s_pVpManager->pBack, newPosX, newPosY, 32, 32, MINTERM_COOKIE);
   }
- 
+
   else if (kamyki[tempX][tempY] < 4)
   {
     UWORD uwPrevPosX = uwPosX;
@@ -1836,15 +1866,16 @@ void stateGameLoop(void)
   //}
   //else if(isIgnoreNextFrame == 0)
   //{
-  if (coal == 0)
+  if (coal == 0 && levelScoreControl != LEVEL_SCORE_NOCOAL)
   {
-    gameOverCoalBlinkingOnHUD();
-    coal = 10;
-    youWin = 2;
+    levelScoreControl = LEVEL_SCORE_NOCOAL;
+    //gameOverCoalBlinkingOnHUD();
+    //coal = 10;
+    //youWin = 2;
 
-    clean();
-    ptplayerStop();
-    return;
+    //clean();
+    //ptplayerStop();
+    //return;
   }
 
   joyProcess();
