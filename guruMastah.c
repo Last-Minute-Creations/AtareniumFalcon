@@ -8,7 +8,7 @@
 #include <ace/managers/state.h>
 #include <ace/managers/blit.h>
 #include <ace/utils/font.h>
-#include <ace/utils/ptplayer.h>
+#include <ace/managers/ptplayer.h>
 #include "enum.h"
 
 static tView *s_pView;
