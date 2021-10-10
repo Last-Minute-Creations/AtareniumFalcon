@@ -181,56 +181,28 @@ void waitFrames(tVPort *pVPort, UBYTE ubHowMany, UWORD uwPosY)
 
 void clean();
 
-void portalGlowAnim(void)
+void portalGlowAnim(void)  // animacja portalu na planszy
 {
-  blitCopy(s_pBg, portalGlowX * 32, portalGlowY * 32, s_pBgPortalGlow, 0, 0, 32, 32, MINTERM_COOKIE);
-  blitCopyMask(s_pTiles, portalGlowFrame * 32, 352, s_pBgPortalGlow, 0, 0, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-  //blitCopyMask(s_pTiles, portalGlowFrame * 32, 352, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-
-  blitCopy(s_pBgPortalGlow, 0, 0, s_pVpManager->pBack, portalGlowX * 32, portalGlowY * 32, 32, 32, MINTERM_COPY);
-  //blitCopy(s_pBgWithTile, 0, 0, s_pVpManager->pFront, portalGlowX * 32, portalGlowY * 32, 32, 32, MINTERM_COPY);
+  blitCopy(s_pBg, portalGlowX * 32, portalGlowY * 32, s_pBgPortalGlow, 0, 0, 32, 32, MINTERM_COOKIE);  // wytnij tlo w miejscu gdzie jest portal do s_pBgPortalGlow
+  blitCopyMask(s_pTiles, portalGlowFrame * 32, 352, s_pBgPortalGlow, 0, 0, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // wytnij klatke tile'a i doklej do s_pBgPortalGlow z zachowaniem transparentnosci - maska
+  blitCopy(s_pBgPortalGlow, 0, 0, s_pVpManager->pBack, portalGlowX * 32, portalGlowY * 32, 32, 32, MINTERM_COPY); // wrzuc gotowe s_pBgPortalGlow na ekran pBack
 }
 
 void endLevelFadeOut(void)
 {
-  UBYTE bRatioGame = 15;
+  UBYTE bRatioGame = 15;  // zmienna do krokowego przyciszania muzyki i wygaszania ekranu 
 
-  for (UBYTE i = 0; i < 16; ++i)
+  for (UBYTE i = 0; i < 16; ++i)   // 16 razy:
   {
-    if (musicPlay == MUSIC_HEAVY)
+    if (musicPlay == MUSIC_HEAVY)  // jesli gra muzyka
     {
-      ptplayerSetMasterVolume(bRatioGame * 4);
+      ptplayerSetMasterVolume(bRatioGame * 4);  // ustaw volume na wyliczony - zmienna bedzie sie zmiejszac wiec bedzie coraz ciszej
     }
-    paletteDim(s_pPalette, s_pVp->pPalette, 32, bRatioGame); // 0 - czarno, 15 - pe?na paleta
-    viewUpdateCLUT(s_pView);                                 // we? palet? z viewporta i wrzu? j? na ekran
-    --bRatioGame;
-    waitFrames(s_pVp, 10, uwPosY + FALCON_HEIGHT);
+    paletteDim(s_pPalette, s_pVp->pPalette, 32, bRatioGame); // przyciemnij palete o wartosc zmiennej
+    viewUpdateCLUT(s_pView);                                 // aktualizuj ekran 
+    --bRatioGame;                                            // zmiejsz zmienna 
+    waitFrames(s_pVp, 10, uwPosY + FALCON_HEIGHT);            // zaczekaj 10 klatek
   }
-}
-
-void amiHUDprintOnFrontOnceAfterLoad(void)
-{
-
-  blitCopy(s_pHUD, 32, 0, s_pVpManager->pFront, 32, 224, 32, 32, MINTERM_COOKIE);
-  sprintf(szMsg, "%d", coal);
-  fontFillTextBitMap(s_pFont, s_pBmText, szMsg);
-  fontDrawTextBitMap(s_pVpManager->pFront, s_pBmText, 42, 232, HUDfontColor, FONT_COOKIE);
-  blitCopy(s_pHUD, 188, 0, s_pVpManager->pFront, 188, 224, 32, 32, MINTERM_COOKIE);
-  sprintf(szMsg2, "%d", capacitors);
-  fontFillTextBitMap(s_pFont, s_pBmText, szMsg2);
-  fontDrawTextBitMap(s_pVpManager->pFront, s_pBmText, 190, 236, HUDfontColor, FONT_COOKIE);
-  blitCopy(s_pHUD, 128, 0, s_pVpManager->pFront, 128, 224, 32, 32, MINTERM_COOKIE);
-  sprintf(szMsg3, "%d", excesscoal);
-  fontFillTextBitMap(s_pFont, s_pBmText, szMsg3);
-  fontDrawTextBitMap(s_pVpManager->pFront, s_pBmText, 130, 232, HUDfontColor, FONT_COOKIE);
-  blitCopy(s_pHUD, 248, 0, s_pVpManager->pFront, 248, 224, 32, 32, MINTERM_COOKIE);
-  sprintf(szMsg4, "%d", robboMsgCount);
-  fontFillTextBitMap(s_pFont, s_pBmText, szMsg4);
-  fontDrawTextBitMap(s_pVpManager->pFront, s_pBmText, 250, 236, HUDfontColor, FONT_COOKIE);
-  blitCopy(s_pHUD, 288, 0, s_pVpManager->pFront, 288, 224, 32, 32, MINTERM_COOKIE);
-  sprintf(szLvl, "%d", level);
-  fontFillTextBitMap(s_pFont, s_pBmText, szLvl);
-  fontDrawTextBitMap(s_pVpManager->pFront, s_pBmText, 290, 236, HUDfontColor, FONT_COOKIE);
 }
 
 void printOnHUD(void)
@@ -400,14 +372,6 @@ void drawTiles(void)
       uwPosY = falkony * 32;
       tempX = falkonx;
       tempY = falkony;
-      //if (falkonFace == 0)
-      //{
-      //  blitCopyMask(s_pTiles, 128, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-      //}
-      //else if (falkonFace == 32)
-      //{
-      //  blitCopyMask(s_pTiles, 160, 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-      //}
     }
 
     ++x;
@@ -423,81 +387,81 @@ void drawTiles(void)
   viewUpdateCLUT(s_pView);
 }
 
-void clearTiles(void)
+void clearTiles(void)  // czyszczenie planszy z tile'ow na koniec kazdego etapu zeby nie zostaly smieci
 {
-  //blitCopy(s_pBg, 0, 0, s_pBgWithTile, 0, 0, 320, 128, MINTERM_COPY);
-  //blitCopy(s_pBg, 0, 128, s_pBgWithTile, 0, 128, 320, 96, MINTERM_COPY);
-  for (UBYTE y = 0; y < MAP_TILE_HEIGHT; ++y)
+  blitCopy(s_pBg, 0, 0, s_pBgWithTile, 0, 0, 320, 128, MINTERM_COPY);  // podlozenie defaultowego tla do zmiennej
+  blitCopy(s_pBg, 0, 128, s_pBgWithTile, 0, 128, 320, 96, MINTERM_COPY);  // gdzie wklejam potem tile  -NIE KASOWAC KURWA !1
+  for (UBYTE y = 0; y < MAP_TILE_HEIGHT; ++y) // w kazdym kolejnym rzedzie poziomym od gory
   {
-    for (UBYTE x = 0; x < MAP_TILE_WIDTH; ++x)
+    for (UBYTE x = 0; x < MAP_TILE_WIDTH; ++x) // na kazdej kolejnej pozycji od lewej do prawej
     {
-      kamyki[x][y] = 0;
-      collectiblesAnim[x][y] = 0;
+      kamyki[x][y] = 0;     // wyczysc (wyzeruj) miejsce w tablicy trzymajace dana pozycje
+      collectiblesAnim[x][y] = 0; // J.W. miejsce w tablicy kontrolujacej czy i jaki element jest animowany
     }
   }
 }
 
-void nextLevel(void)
+void nextLevel(void)  // ladowanie kolejnego levela
 {
-  coal = 1;
-  audioFadeIn = 0;
+  coal = 1;   // wegiel na start 
+  audioFadeIn = 0; // zmienna do wlaczenia muzyki po wyciszeniu
 
   switch (level)
   {
 
-  case 4:
-    bitmapDestroy(s_pBg);
-    bitmapDestroy(s_pBgWithTile);
-    s_pBg = bitmapCreateFromFile("data/tlo2.bm", 0);
-    s_pBgWithTile = bitmapCreateFromFile("data/tlo2.bm", 0);
+  case 4:   // na 4 levelu:
+    bitmapDestroy(s_pBg);  // usun dotychczasowe tlo
+    bitmapDestroy(s_pBgWithTile); // JW. tlo z doklejonymi tile'ami
+    s_pBg = bitmapCreateFromFile("data/tlo2.bm", 0); // wczytaj nowe tlo
+    s_pBgWithTile = bitmapCreateFromFile("data/tlo2.bm", 0); // JW dla zmiennej gdzie beda doklejane tile
     break;
 
-  case 8:
+  case 8:  // calosc JW na 8 levelu
     bitmapDestroy(s_pBg);
     bitmapDestroy(s_pBgWithTile);
     s_pBg = bitmapCreateFromFile("data/tlo3.bm", 0);
     s_pBgWithTile = bitmapCreateFromFile("data/tlo3.bm", 0);
     break;
 
-  case 12:
+  case 12: // calosc JW na 12 levelu
     bitmapDestroy(s_pBg);
     bitmapDestroy(s_pBgWithTile);
     s_pBg = bitmapCreateFromFile("data/tlo4.bm", 0);
     s_pBgWithTile = bitmapCreateFromFile("data/tlo4.bm", 0);
     break;
 
-  case 17:
+  case 17: // calosc JW na 17 levelu
     bitmapDestroy(s_pBg);
     bitmapDestroy(s_pBgWithTile);
     s_pBg = bitmapCreateFromFile("data/tlo5.bm", 0);
     s_pBgWithTile = bitmapCreateFromFile("data/tlo5.bm", 0);
     break;
-  case 22:
+  case 22: // calosc JW na 22 levelu
     bitmapDestroy(s_pBg);
     bitmapDestroy(s_pBgWithTile);
     s_pBg = bitmapCreateFromFile("data/tlo6.bm", 0);
     s_pBgWithTile = bitmapCreateFromFile("data/tlo6.bm", 0);
     break;
 
-  case LAST_LEVEL_NUMBER - 1: // ta ma byc przedostatnia
+  case LAST_LEVEL_NUMBER - 1: // jesli level jest przedostatni
 
-    robboMsgNr = LAST_LEVEL_NUMBER - 1;
+    robboMsgNr = LAST_LEVEL_NUMBER - 1;   // robbo ma dac konkretna, przedostantnia informacje
     break;
 
-  case LAST_LEVEL_NUMBER: // ta ma byc ostatnia
+  case LAST_LEVEL_NUMBER: // jesli level jest ostatni
 
-    robboMsgNr = LAST_LEVEL_NUMBER;
+    robboMsgNr = LAST_LEVEL_NUMBER; // robbo ma dac ostatnia informacje
     break;
   }
-  clearTiles();
-  blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320, 32, MINTERM_COPY);
-  blitCopy(s_pHUD, 0, 0, s_pVpManager->pFront, 0, 224, 320, 32, MINTERM_COPY);
-  printOnHUD();
+  clearTiles();   // czyszczenie planszy z tajli
+  blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320, 32, MINTERM_COPY);  // narysowanie huda
+  blitCopy(s_pHUD, 0, 0, s_pVpManager->pFront, 0, 224, 320, 32, MINTERM_COPY); // jw drugi raz zeby nie mrygalo
+  printOnHUD();  // wyswietlenie cyfr na hudzie
   doubleBufferFrameControl = 2;
-  drawTiles();
+  drawTiles(); // narysowanie tile'ow na planszy
 }
 
-void levelScoreDBredraw(void)
+void levelScoreDBredraw(void)  // odrysowanie tego co w levelScore ale bez obliczen, tylko dla podwojnego buforowania
 {
   if (amigaMode == AMIGA_MODE_OFF && levelScoreControl == LEVEL_SCORE_COUNT)
   {
@@ -512,12 +476,6 @@ void levelScoreDBredraw(void)
   }
   if (amigaMode != AMIGA_MODE_OFF && levelScoreControl == LEVEL_SCORE_COUNT)
   {
-    //blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 96, 32, MINTERM_COOKIE);
-    // sprintf(szMsg, "COAL %d", coal);
-    //fontFillTextBitMap(s_pGotekFont, s_pBmText, szMsg);
-    //fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 239, HUDfontColor, FONT_COOKIE);
-    //waitFrames(s_pVp, 10, uwPosY + FALCON_HEIGHT);
-
     blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 96, 32, MINTERM_COOKIE);
     sprintf(szMsg3, "RESERVE %d", excesscoal);
     fontFillTextBitMap(s_pGotekFont, s_pBmText, szMsg3);
@@ -708,16 +666,16 @@ void czyRamka(void)
   // tu jest funkcja sprawdzajaca czy sie chcemy wypierdolic za ekran i nie pozwalajaca na to
   switch (kierunek)
   {
-  case 1:
-    krawedzx = krawedzx + 1;
-    if (krawedzx == 10)
+  case 1: // gdy w prawo
+    krawedzx = krawedzx + 1; // pole docelowe
+    if (krawedzx == 10) // jesli za ekranem (bo fruwamy od 0 do 9)
     {
-      krawedzx = 9;
-      falkonx = 9;
-      frameHit = 1;
+      krawedzx = 9; // ustaw znow na 9
+      falkonx = 9;  // zatrzymaj falkona tez na 9
+      frameHit = 1; // oznacz ze chciales walnac w ramke dla dalszego procesowania, animka i tak dalej
     }
     break;
-  case 2:
+  case 2: // JW w lewo
     krawedzx = krawedzx - 1;
     if (krawedzx == -1)
     {
@@ -726,7 +684,7 @@ void czyRamka(void)
       frameHit = 1;
     }
     break;
-  case 3:
+  case 3: // JW w gore
     krawedzy = krawedzy - 1;
     if (krawedzy == -1)
     {
@@ -735,7 +693,7 @@ void czyRamka(void)
       frameHit = 1;
     }
     break;
-  case 4:
+  case 4: // JW w dol
     krawedzy = krawedzy + 1;
     if (krawedzy == 7)
     {
@@ -751,19 +709,19 @@ void isThisStone(void)
 {
   // funkcja sprawdzajaca przed wykonaniem ruchu czy chcemy wleciec w kamien
 
-  BYTE stoneX = 0;
-  BYTE stoneY = 0;
+  BYTE stoneX = 0; // tu utrzymamy wspolrzedne docelowe 
+  BYTE stoneY = 0; // i porownamy czy jest na nich kamien
 
   switch (kierunek)
   {
-  case 1:
-    stoneX = falkonx + 1;
-    if (kamyki[stoneX][falkony] == 3)
+  case 1: // gdy w prawo
+    stoneX = falkonx + 1; // przypisz do stoneX docelowa wspolrzedna
+    if (kamyki[stoneX][falkony] == 3) // jesli pole docelowe to 3 (kamien)
     {
-      stoneHit = 1;
+      stoneHit = 1; // oznacz ze chciales walnac w kamyk dla dalszego procesowania
     }
     break;
-  case 2:
+  case 2: // i tak dalej dla reszty kierunkow
     stoneX = falkonx - 1;
     if (kamyki[stoneX][falkony] == 3)
     {
@@ -1087,7 +1045,6 @@ void coalAndCollect(void)
       blitCopy(s_pBgWithTile, 288, 0, s_pVpManager->pFront, 288, 0, 32, 32, MINTERM_COPY);
       portalGlowAnim();
       //portalGlowAnim();
-      //amiHUDprintOnFrontOnceAfterLoad();
       //printOnHUD();
       copBlockEnable(s_pView->pCopList, copBlockBeforeHud);
       copBlockEnable(s_pView->pCopList, copBlockAfterHud);
