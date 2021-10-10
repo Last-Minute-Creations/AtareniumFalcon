@@ -42,7 +42,8 @@ extern tState g_sStateIntro;
 static tFont *s_pFont;
 static tTextBitMap *s_pBmText;
 
-static UWORD s_pPalette[32];
+static UWORD s_pPaletteLMC_ACE[32];
+static UWORD s_pPaletteAtariBasic[32];
 
 extern UBYTE creditsControl;
 
@@ -107,7 +108,8 @@ void stateCreditsCreate(void)
 
   s_pFont = fontCreate("data/topaz.fnt");
   s_pBmText = fontCreateTextBitMap(300, s_pFont->uwHeight);
-  paletteLoad("data/lmcpalette.plt", s_pPalette, 32);
+  paletteLoad("data/lmcpalette.plt", s_pPaletteLMC_ACE, 32);
+  paletteLoad("data/falkon.plt", s_pPaletteAtariBasic, 32);
   s_pLMC = bitmapCreateFromFile("data/LMC.bm", 0);
   s_pACE = bitmapCreateFromFile("data/ACE.bm", 0);
 
@@ -126,7 +128,7 @@ void stateCreditsLoop(void)
     if (drawOnce == 0)
     {
       ++drawOnce;
-      paletteDim(s_pPalette, s_pVp->pPalette, 32, 0); // 0 - czarno, 15 - pe�na paleta
+      paletteDim(s_pPaletteLMC_ACE, s_pVp->pPalette, 32, 0); // 0 - czarno, 15 - pe�na paleta
       viewUpdateCLUT(s_pView);
 
       ptplayerSfxPlay(s_pLMCsfx, -1, 64, 100);
@@ -135,7 +137,7 @@ void stateCreditsLoop(void)
       blitCopy(s_pLMC, 0, 0, s_pVpManager->pBack, 104, 40, 112, 160, MINTERM_COOKIE);
     }
 
-    paletteDim(s_pPalette, s_pVp->pPalette, 32, bRatio); // 0 - czarno, 15 - pe?na paleta
+    paletteDim(s_pPaletteLMC_ACE, s_pVp->pPalette, 32, bRatio); // 0 - czarno, 15 - pe?na paleta
     viewUpdateCLUT(s_pView);                             // we? palet? z viewporta i wrzu? j? na ekran
     ++bRatio;
     if (bRatio == 15)
@@ -154,7 +156,7 @@ void stateCreditsLoop(void)
     break;
 
   case STATE_LMC_FADE_OUT:
-    paletteDim(s_pPalette, s_pVp->pPalette, 32, bRatio); // 0 - czarno, 15 - pe?na paleta
+    paletteDim(s_pPaletteLMC_ACE, s_pVp->pPalette, 32, bRatio); // 0 - czarno, 15 - pe?na paleta
     viewUpdateCLUT(s_pView);                             // we? palet? z viewporta i wrzu? j? na ekran
     --bRatio;
     if (bRatio == 0)
@@ -167,7 +169,7 @@ void stateCreditsLoop(void)
     if (drawOnce == 1)
     {
       ++drawOnce;
-      paletteDim(s_pPalette, s_pVp->pPalette, 32, 0); // 0 - czarno, 15 - pe�na paleta
+      paletteDim(s_pPaletteLMC_ACE, s_pVp->pPalette, 32, 0); // 0 - czarno, 15 - pe�na paleta
       viewUpdateCLUT(s_pView);
 
       ptplayerSfxPlay(s_pACEsfx, -1, 64, 100);
@@ -176,7 +178,7 @@ void stateCreditsLoop(void)
       blitCopy(s_pACE, 0, 0, s_pVpManager->pBack, 80, 95, 155, 70, MINTERM_COOKIE);
     }
 
-    paletteDim(s_pPalette, s_pVp->pPalette, 32, bRatio); // 0 - czarno, 15 - pe?na paleta
+    paletteDim(s_pPaletteLMC_ACE, s_pVp->pPalette, 32, bRatio); // 0 - czarno, 15 - pe?na paleta
     viewUpdateCLUT(s_pView);                             // we? palet? z viewporta i wrzu? j? na ekran
     ++bRatio;
     if (bRatio == 15)
@@ -194,11 +196,13 @@ void stateCreditsLoop(void)
     break;
 
   case STATE_ACE_FADE_OUT:
-    paletteDim(s_pPalette, s_pVp->pPalette, 32, bRatio); // 0 - czarno, 15 - pe?na paleta
+    paletteDim(s_pPaletteLMC_ACE, s_pVp->pPalette, 32, bRatio); // 0 - czarno, 15 - pe?na paleta
     viewUpdateCLUT(s_pView);                             // we? palet? z viewporta i wrzu? j? na ekran
     --bRatio;
     if (bRatio == 0)
     {
+      paletteDim(s_pPaletteLMC_ACE, s_pVp->pPalette, 32, bRatio); // 0 - czarno, 15 - pe?na paleta
+      viewUpdateCLUT(s_pView);
       s_eState = STATE_CREDITS;
     }
     break;
@@ -207,12 +211,11 @@ void stateCreditsLoop(void)
     if (drawOnce == 2)
     {
       ++drawOnce;
-      paletteLoad("data/falkon.plt", s_pPalette, 32);
-      BYTE ubRatio = 15;
-      paletteDim(s_pPalette, s_pVp->pPalette, 32, ubRatio); // 0 - czarno, 15 - pe�na paleta
-      viewUpdateCLUT(s_pView);
       blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 21);
       blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 21);
+      paletteDim(s_pPaletteAtariBasic, s_pVp->pPalette, 32, 15); // 0 - czarno, 15 - pe�na paleta
+      viewUpdateCLUT(s_pView);
+      
     
 
     for (BYTE i = 0; i < CREDITS_LINE_COUNT; ++i)
@@ -220,20 +223,21 @@ void stateCreditsLoop(void)
       fontFillTextBitMap(s_pFont, s_pBmText, s_pCreditsLines[i]);
       fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 10, (i * 9) + 10, 23, FONT_COOKIE);
     }
+    
     }
   }
 
   if (joyUse(JOY1_FIRE) || keyUse(KEY_RETURN)){
-    if (creditsControl == 0)
-    {
-      stateChange(g_pStateMachineGame, &g_sStateIntro);
-      return;
-    }
-    else if (creditsControl == 1)
-    {
+    //if (creditsControl == 0)
+    //{
+      //stateChange(g_pStateMachineGame, &g_sStateIntro);
+      //return;
+    //}
+    //else if (creditsControl == 1)
+    //{
       stateChange(g_pStateMachineGame, &g_sStateMenu);
       return;
-    }
+    //}
   }
 
   viewProcessManagers(s_pView);
