@@ -146,7 +146,7 @@ UWORD newPosY = 0;
 BYTE coal = startingCoal;
 BYTE capacitors = 0;
 BYTE excesscoal = 0;
-BYTE level = 1;
+BYTE level = 16;
 
 BYTE robboMsgNr = 0;
 BYTE robboMsgCtrl = 0;
@@ -201,7 +201,7 @@ void endLevelFadeOut(void)
     paletteDim(s_pPalette, s_pVp->pPalette, 32, bRatioGame); // przyciemnij palete o wartosc zmiennej
     viewUpdateCLUT(s_pView);                                 // aktualizuj ekran 
     --bRatioGame;                                            // zmiejsz zmienna 
-    waitFrames(s_pVp, 10, uwPosY + FALCON_HEIGHT);            // zaczekaj 10 klatek
+    waitFrames(s_pVp, 4, uwPosY + FALCON_HEIGHT);            // zaczekaj 10 klatek
   }
 }
 
@@ -1277,7 +1277,7 @@ void falkonFlying2Db(void)
 
 void falconCollisionCheck(void)
 {
-
+  --coal;
   // jesli byl kamien to brak ruchu
   if (stoneHit == 1)
   {
