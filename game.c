@@ -1062,30 +1062,14 @@ void falkonHittingStone(void)
     return;
   }
 
-  UWORD uwPosX = falkonx * 32;
-  UWORD uwPosY = falkony * 32;
+  //  UWORD uwPosX = falkonx * 32;
+  //  UWORD uwPosY = falkony * 32;
 
   if (stonehitAnimControl == 1)
   {
     if (stonehitAnimTick == falkonIdleTempo * 1)
     {
       stonehitAnimFrame = 0;
-      if (oneFrameDirection == 1)
-      {
-        ++uwPosX;
-      }
-      else if (oneFrameDirection == 2)
-      {
-        --uwPosX;
-      }
-      else if (oneFrameDirection == 3)
-      {
-        --uwPosY;
-      }
-      else if (oneFrameDirection == 4)
-      {
-        ++uwPosY;
-      }
     }
     else if (stonehitAnimTick == falkonIdleTempo * 2)
     {
@@ -1094,22 +1078,6 @@ void falkonHittingStone(void)
     else if (stonehitAnimTick == falkonIdleTempo * 3)
     {
       stonehitAnimFrame = 2;
-      if (oneFrameDirection == 1)
-      {
-        ++uwPosX;
-      }
-      else if (oneFrameDirection == 2)
-      {
-        --uwPosX;
-      }
-      else if (oneFrameDirection == 3)
-      {
-        --uwPosY;
-      }
-      else if (oneFrameDirection == 4)
-      {
-        ++uwPosY;
-      }
     }
     else if (stonehitAnimTick == falkonIdleTempo * 4)
     {
@@ -1118,22 +1086,6 @@ void falkonHittingStone(void)
     else if (stonehitAnimTick == falkonIdleTempo * 5)
     {
       stonehitAnimFrame = 4;
-      if (oneFrameDirection == 1)
-      {
-        ++uwPosX;
-      }
-      else if (oneFrameDirection == 2)
-      {
-        --uwPosX;
-      }
-      else if (oneFrameDirection == 3)
-      {
-        --uwPosY;
-      }
-      else if (oneFrameDirection == 4)
-      {
-        ++uwPosY;
-      }
     }
     else if (stonehitAnimTick == falkonIdleTempo * 6)
     {
@@ -1142,22 +1094,6 @@ void falkonHittingStone(void)
     else if (stonehitAnimTick == falkonIdleTempo * 7)
     {
       stonehitAnimFrame = 6;
-      if (oneFrameDirection == 1)
-      {
-        ++uwPosX;
-      }
-      else if (oneFrameDirection == 2)
-      {
-        --uwPosX;
-      }
-      else if (oneFrameDirection == 3)
-      {
-        --uwPosY;
-      }
-      else if (oneFrameDirection == 4)
-      {
-        ++uwPosY;
-      }
     }
     else if (stonehitAnimTick == falkonIdleTempo * 8)
     {
@@ -1277,10 +1213,11 @@ void falkonFlying2Db(void)
 
 void falconCollisionCheck(void)
 {
-  --coal;
+  
   // jesli byl kamien to brak ruchu
   if (stoneHit == 1)
   {
+    --coal;
     stonehitAnimControl = 1;
     falkonIdleControl = 0;
 
@@ -1301,14 +1238,17 @@ void falconCollisionCheck(void)
     }
 
     stoneHit = 0;
+    //printOnHUD();
     return;
   }
 
   if (frameHit == 1)
   {
+    --coal;
     stonehitAnimControl = 1;
     falkonIdleControl = 0;
     frameHit = 0;
+    //printOnHUD();
     return;
   }
   prepareFalconFlying();
