@@ -29,7 +29,9 @@
     another one changes some graphics and turns the game into "Amiga-mode",
     while third one lets you skip levels by pressing 'N' key during game. 
 
-4. GAME INTRO - tl;dr, lol
+4. GAME INTRO 
+
+    1. - tl;dr, lol
 
     If you're both Amiga and Atari enthusiast you have the unique chance to infiltrate 
     your Amiga with our special Atari-inspired spaceship.
@@ -38,7 +40,7 @@
     or throw it directly to the water from Golden Gate, I still have something for you -
     maybe you will discover the alternative ending and lead the Amigans to the glory?
 
-    4.58 - some background for conservative Amigans and Atarimens of the planet Earth:
+    2. - some background for conservative Amigans and Atarimens of the planet Earth:
 
     Since early demo versions I've noticed comments like "wtf Atari logo in Amiga game" etc.
     The game is settled (hopefully in funny way) in the middle of the old democene-like 'confilct', 
@@ -48,7 +50,7 @@
     Are you on Atari side? Try getting a homeless Amiga, insert this 'Atari trojan horse' 
     into it and find out if you can beat the Amigans' part of universe.
     Amiga rulez? So as mentioned above - you can try turning things around and crush
-    the Atarimens dreams by joining the Amiga side of power along the way,
+    the Atarimens dreams by joining the Amiga side of power along the way
     (hey, you're smart, you prefer Amiga, you can do it).
 
     If you can't stand the Atari logo on your Amiga screen and it makes you sick,
@@ -57,10 +59,10 @@
 
 5. LMC
 
-    Atarenium Falcon is provided to you by Last Minute Creations:
-    Luc3k - programming and music,
-    Softiron - graphics,
-    KaiN, Proxy & PCH - afk.
+    * Atarenium Falcon is provided to you by Last Minute Creations:
+    * Luc3k - programming and music,
+    * Softiron - graphics,
+    * KaiN, Proxy & PCH - afk.
 
 Thanks for reading,
 Luc3k
