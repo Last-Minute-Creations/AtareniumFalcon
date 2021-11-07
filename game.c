@@ -1319,7 +1319,7 @@ void falconIdleAnimation(void)
     }
     break;
   case 3:
-    if (uwPrevPosY <= 222)
+    if (uwPrevPosY <= 190)
     {
       ++uwPrevPosY;
       ++uwPrevPosY;
