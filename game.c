@@ -66,6 +66,8 @@ char szLvl[50];
 
 char szRobboMsg[80];
 char *szRobbo1stLine = "ROBBO says:";
+char *szCollisionMsg1stLine = "Collision course detected, ESP enabled.";
+char *szCollisionMsg2ndLine = "1T of fuel used, danger avioded. Over.";
 
 BYTE youWin = 0;
 
@@ -91,9 +93,12 @@ UWORD uwPosX = 0;
 UWORD uwPosY = 0;
 UWORD uwPreviousX = 0;
 UWORD uwPreviousY = 0;
+UWORD HitPosX = 0;
+UWORD HitPosY = 0;
 
 BYTE stoneHit = 0;
 BYTE frameHit = 0;
+BYTE anotherHit = 0;  // sprawdzam czy po uderzeniu w kamien chce jeszcze raz, zeby sie HUD 2 razy nie rozwijal na
 
 CONST BYTE startingCoal = 10;
 
@@ -151,6 +156,7 @@ BYTE level = 16;
 BYTE robboMsgNr = 0;
 BYTE robboMsgCtrl = 0;
 BYTE robboMsgCount = 0;
+BYTE HUDcollisionMsg = 0;
 BYTE HUDfontColor = 23; //23
 
 UBYTE doubleBufferFrameControl = 2;
@@ -168,6 +174,27 @@ UBYTE audioFadeIn = 0;
 UBYTE audioLoopCount = 0;
 
 UBYTE isIgnoreNextFrame = 0; // zmienna do naprawienia glicza graficznego !
+
+void hittingStoneDirection(void){
+  
+  
+
+  switch (kierunekHold){
+    case 1:
+      ++HitPosX;
+      break;
+    case 2:
+      --HitPosX;
+      break;
+    case 3: 
+      --HitPosY;
+      break;
+    case 4:
+      ++HitPosY;
+      break;
+      
+  }   
+}
 
 void waitFrames(tVPort *pVPort, UBYTE ubHowMany, UWORD uwPosY)
 {
@@ -719,6 +746,7 @@ void isThisStone(void)
     if (kamyki[stoneX][falkony] == 3) // jesli pole docelowe to 3 (kamien)
     {
       stoneHit = 1; // oznacz ze chciales walnac w kamyk dla dalszego procesowania
+      
     }
     break;
   case 2: // i tak dalej dla reszty kierunkow
@@ -751,7 +779,15 @@ void robboScrollUp(void)
   {
     return;
   }
+
   doubleBufferFrameControl = 2;
+
+  if (anotherHit >= 2){
+      robboMsgCtrl = 3;
+      hudScrollingControl = 0;
+      hudScrollingTick = 0;
+    return;
+  }
 
   if (hudScrollingControl == 1)
   {
@@ -787,6 +823,7 @@ void robboScrollDown(void)
   {
     return;
   }
+ 
   doubleBufferFrameControl = 2;
   if (hudScrollingControl == 1)
   {
@@ -816,6 +853,7 @@ void robboScrollDown(void)
       robboMsgCtrl = 0;
       hudScrollingTick = 0;
       hudScrollingControl = 0;
+      HUDcollisionMsg = 2;
       printOnHUD();
     }
   }
@@ -823,12 +861,12 @@ void robboScrollDown(void)
 
 void robboSays(void)
 {
-  if (amigaMode == AMIGA_MODE_CHECK)
+  if (amigaMode == AMIGA_MODE_CHECK && HUDcollisionMsg != 1)
   {
     sprintf(szRobboMsg, "Traitor! Burn in hell!");
   }
 
-  else if (amigaMode != AMIGA_MODE_CHECK)
+  else if (amigaMode != AMIGA_MODE_CHECK && HUDcollisionMsg != 1)
   {
     switch (robboMsgNr)
     {
@@ -906,11 +944,21 @@ void robboSays(void)
       sprintf(szRobboMsg, "Well done! Now collect the coal and GTFO !!!");
       break;
     }
+    fontFillTextBitMap(s_pFont, s_pBmText, szRobbo1stLine);
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 8, 230, 23, FONT_COOKIE);
+    fontFillTextBitMap(s_pFont, s_pBmText, szRobboMsg);
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 8, 240, 23, FONT_COOKIE);
   }
-  fontFillTextBitMap(s_pFont, s_pBmText, szRobbo1stLine);
-  fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 8, 230, 23, FONT_COOKIE);
-  fontFillTextBitMap(s_pFont, s_pBmText, szRobboMsg);
-  fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 8, 240, 23, FONT_COOKIE);
+    else if (HUDcollisionMsg == 1){
+    fontFillTextBitMap(s_pFont, s_pBmText, szCollisionMsg1stLine);
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 8, 230, 23, FONT_COOKIE);
+    fontFillTextBitMap(s_pFont, s_pBmText, szCollisionMsg2ndLine);
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 8, 240, 23, FONT_COOKIE);
+    }
+
+
+  
+
 }
 
 void coalAndCollect(void)
@@ -1062,51 +1110,65 @@ void falkonHittingStone(void)
     return;
   }
 
-  //  UWORD uwPosX = falkonx * 32;
-  //  UWORD uwPosY = falkony * 32;
+  HitPosX = falkonx * 32;
+  HitPosY = falkony * 32;
 
   if (stonehitAnimControl == 1)
   {
     if (stonehitAnimTick == falkonIdleTempo * 1)
     {
       stonehitAnimFrame = 0;
+      //hittingStoneDirection();
     }
     else if (stonehitAnimTick == falkonIdleTempo * 2)
     {
       stonehitAnimFrame = 1;
+      //hittingStoneDirection();
+      
     }
     else if (stonehitAnimTick == falkonIdleTempo * 3)
     {
       stonehitAnimFrame = 2;
+      //hittingStoneDirection();
+      
     }
     else if (stonehitAnimTick == falkonIdleTempo * 4)
     {
       stonehitAnimFrame = 3;
+      //hittingStoneDirection();
     }
     else if (stonehitAnimTick == falkonIdleTempo * 5)
     {
       stonehitAnimFrame = 4;
+      //hittingStoneDirection();
     }
     else if (stonehitAnimTick == falkonIdleTempo * 6)
     {
       stonehitAnimFrame = 5;
+      //hittingStoneDirection();
     }
     else if (stonehitAnimTick == falkonIdleTempo * 7)
     {
       stonehitAnimFrame = 6;
+      //hittingStoneDirection();
     }
     else if (stonehitAnimTick == falkonIdleTempo * 8)
     {
+      //hittingStoneDirection();
       stonehitAnimFrame = 7;
       stonehitAnimTick = 0;
       stonehitAnimControl = 0;
       falkonIdleControl = 1;
     }
+    
+    // TODO animka trzeba dobrze blitowac, pomyslec
+    blitCopy(s_pBg, HitPosX, HitPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
+    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, HitPosX, HitPosY, 32, 32, MINTERM_COOKIE);
+    blitCopy(s_pVpManager->pBack, HitPosX, HitPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE); 
+    //blitCopy(s_pBgWithTile, HitPosX, HitPosY, s_pVpManager->pBack, HitPosX, HitPosY, 32, 32, MINTERM_COPY);                                                        // fragment tla wrzuca do zmiennej
+    blitCopyMask(s_pTiles, pAnim[stonehitAnimFrame], 64 + falkonFace, s_pVpManager->pBack, HitPosX, HitPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // rysuje falkona
+    //blitCopy(s_pBgWithTile, falkonx * 32, falkony * 32, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, MINTERM_COPY);                                                        // fragment tla wrzuca do zmiennej
 
-    blitCopy(s_pBg, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
-    blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, MINTERM_COOKIE);
-    blitCopy(s_pVpManager->pBack, uwPosX, uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);                                                         // fragment tla wrzuca do zmiennej
-    blitCopyMask(s_pTiles, pAnim[stonehitAnimFrame], 64 + falkonFace, s_pVpManager->pBack, uwPosX, uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // rysuje falkona
   }
 }
 
@@ -1217,9 +1279,13 @@ void falconCollisionCheck(void)
   // jesli byl kamien to brak ruchu
   if (stoneHit == 1)
   {
+    ++anotherHit;
     --coal;
     stonehitAnimControl = 1;
     falkonIdleControl = 0;
+    robboMsgCtrl = 1;
+    hudScrollingControl = 1;
+    HUDcollisionMsg = 1;
 
     switch (kierunek)
     {
@@ -1244,15 +1310,20 @@ void falconCollisionCheck(void)
 
   if (frameHit == 1)
   {
+    ++anotherHit;
     --coal;
     stonehitAnimControl = 1;
     falkonIdleControl = 0;
     frameHit = 0;
+    robboMsgCtrl = 1;
+    hudScrollingControl = 1;
+    HUDcollisionMsg = 1;
     //printOnHUD();
     return;
   }
   prepareFalconFlying();
   flyingAnimControl = 1;
+  anotherHit = 0;
 }
 
 void falconIdleAnimation(void)
