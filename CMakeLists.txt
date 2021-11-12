@@ -12,7 +12,7 @@ add_executable(
 target_compile_options(falkon.elf PRIVATE -Wall -Wextra)
 
 target_link_libraries(falkon.elf ace)
-target_compile_definitions(ace PUBLIC ACE_DEBUG ACE_DEBUG_UAE)
+#target_compile_definitions(ace PUBLIC ACE_DEBUG ACE_DEBUG_UAE)
 
 add_custom_command( # So call elf2hunk
 	TARGET falkon.elf POST_BUILD

@@ -175,27 +175,6 @@ UBYTE audioLoopCount = 0;
 
 UBYTE isIgnoreNextFrame = 0; // zmienna do naprawienia glicza graficznego !
 
-void hittingStoneDirection(void){
-  
-  
-
-  switch (kierunekHold){
-    case 1:
-      ++HitPosX;
-      break;
-    case 2:
-      --HitPosX;
-      break;
-    case 3: 
-      --HitPosY;
-      break;
-    case 4:
-      ++HitPosY;
-      break;
-      
-  }   
-}
-
 void waitFrames(tVPort *pVPort, UBYTE ubHowMany, UWORD uwPosY)
 {
   for (UBYTE i = 0; i < ubHowMany; ++i)
