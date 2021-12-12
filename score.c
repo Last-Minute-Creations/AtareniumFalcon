@@ -23,8 +23,8 @@ void waitFrames();
 
 extern BYTE startingCoal;
 
-extern BYTE coal;
-extern BYTE capacitors;
+extern UBYTE coal;
+extern UBYTE capacitors;
 extern BYTE falkonx;
 extern BYTE falkony;
 extern BYTE krawedzx;
@@ -35,7 +35,7 @@ extern BYTE HUDfontColor;
 
 extern UWORD uwPosY;
 
-extern BYTE excesscoal;
+extern UBYTE excesscoal;
 
 extern BYTE stoneHit;
 extern BYTE frameHit;

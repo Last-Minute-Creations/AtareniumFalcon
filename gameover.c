@@ -23,8 +23,8 @@ void waitFrames();
 
 extern BYTE youWin;
 
-extern BYTE coal;
-extern BYTE capacitors;
+extern UBYTE coal;
+extern UBYTE capacitors;
 extern BYTE falkonx;
 extern BYTE falkony;
 extern BYTE krawedzx;
@@ -43,7 +43,7 @@ extern BYTE level;
 extern BYTE robboMsgNr;
 extern BYTE robboMsgCount;
 extern BYTE robboMsgCtrl;
-extern BYTE excesscoal;
+extern UBYTE excesscoal;
 extern BYTE flyingAnimControl;
 
 extern tAmigaMode amigaMode;

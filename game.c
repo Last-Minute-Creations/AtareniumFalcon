@@ -148,10 +148,10 @@ BYTE flyingFrame = 0;
 UWORD newPosX = 0;
 UWORD newPosY = 0;
 
-BYTE coal = startingCoal;
-BYTE capacitors = 0;
-BYTE excesscoal = 0;
-BYTE level = 16;
+UBYTE coal = startingCoal;
+UBYTE capacitors = 0;
+UBYTE excesscoal = 0;
+BYTE level = 1;
 
 BYTE robboMsgNr = 0;
 BYTE robboMsgCtrl = 0;
@@ -1303,6 +1303,7 @@ void falconCollisionCheck(void)
   prepareFalconFlying();
   flyingAnimControl = 1;
   anotherHit = 0;
+  HUDcollisionMsg = 0;
 }
 
 void falconIdleAnimation(void)
