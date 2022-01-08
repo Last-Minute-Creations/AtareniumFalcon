@@ -17,8 +17,6 @@ static tSimpleBufferManager *s_pVpManager;
 extern tState g_sStateMenu;
 extern tStateManager *g_pStateMachineGame;
 
-extern BYTE startingCoal;
-
 static tFont *s_pFont;
 static tTextBitMap *s_pBmText;
 
@@ -37,72 +35,7 @@ const char *s_pLines3[TXT_LINE_COUNT] = {
 
 void waitFrames();
 
-extern BYTE youWin;
-
-extern BYTE coal;
-extern BYTE capacitors;
-extern BYTE falkonx;
-extern BYTE falkony;
-extern BYTE krawedzx;
-extern BYTE krawedzy;
-extern BYTE kierunek;
-extern BYTE falkonFace; // kierunek dziobem
-extern BYTE HUDfontColor;
-
-extern UWORD uwPosX;
-extern UWORD uwPosY;
-
-extern BYTE stoneHit;
-extern BYTE frameHit;
-
-extern BYTE level;
-extern BYTE robboMsgNr;
-extern BYTE robboMsgCount;
-extern BYTE robboMsgCtrl;
-extern BYTE excesscoal;
-extern BYTE flyingAnimControl;
-
-extern tAmigaMode amigaMode;
-
-extern UBYTE cheatmodeEnablerWhenEqual3;
-extern UBYTE secondCheatEnablerWhenEqual3;
-extern UBYTE thirdCheatEnablerWhenEqual3;
-
 void clearTiles();
-
-void clean2(void){
-
-falkonx = 0;
-falkony = 0;
-krawedzx = 0;
-krawedzy = 0;
-kierunek = 0;
-falkonFace = 0; 
-
-uwPosX = 0;
-uwPosY = 0;
-
-stoneHit = 0;
-frameHit = 0;
-coal = startingCoal;
-capacitors = 0;
-level = 1;
-robboMsgNr = 0;
-robboMsgCount = 0;
-robboMsgCtrl = 0;
-excesscoal = 0;
-HUDfontColor = 23;
-
-amigaMode = 0;
-flyingAnimControl = 0;
-
-cheatmodeEnablerWhenEqual3 = 0;
-secondCheatEnablerWhenEqual3 = 0;
-thirdCheatEnablerWhenEqual3 = 0;
-}
-
-
-
 
 void stateLeakedGameOverCreate(void){
 
@@ -155,7 +88,6 @@ void stateLeakedGameOverLoop(void){
 
 	if(joyUse(JOY1_FIRE) || keyUse(KEY_RETURN)) {
     clearTiles();
-    clean2();
 		stateChange(g_pStateMachineGame, &g_sStateMenu);
 		return;
   }

@@ -8,6 +8,10 @@
         "stddef.h": "c",
         "stdarg.h": "c",
         "copper.h": "c",
-        "ptplayer.h": "c"
+        "ptplayer.h": "c",
+        "key.h": "c",
+        "joy.h": "c",
+        "simplebuffer.h": "c",
+        "game.h": "c"
     }
 }

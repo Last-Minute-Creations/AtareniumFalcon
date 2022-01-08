@@ -9,47 +9,22 @@
 #include <ace/managers/blit.h>
 #include <ace/utils/font.h>
 #include "enum.h"
+#include "structures.h"
 
 static tView *s_pView;
 static tVPort *s_pVp;
 static tSimpleBufferManager *s_pVpManager;
 static tBitMap *s_pVAM;
 
-
 extern tState g_sStateMenu;
 extern tStateManager *g_pStateMachineGame;
+extern tAmigaMode amigaMode;
+
+extern struct collected collected;
+extern struct coords coords;
 
 void waitFrames();
 
-extern BYTE startingCoal;
-
-extern UBYTE coal;
-extern UBYTE capacitors;
-extern BYTE falkonx;
-extern BYTE falkony;
-extern BYTE krawedzx;
-extern BYTE krawedzy;
-extern BYTE kierunek;
-extern BYTE falkonFace; // kierunek dziobem
-extern BYTE HUDfontColor;
-
-extern UWORD uwPosY;
-
-extern UBYTE excesscoal;
-
-extern BYTE stoneHit;
-extern BYTE frameHit;
-
-extern BYTE level;
-extern BYTE robboMsgNr;
-extern BYTE robboMsgCount;
-
-
-extern tAmigaMode amigaMode;
-
-extern UBYTE cheatmodeEnablerWhenEqual3;
-extern UBYTE secondCheatEnablerWhenEqual3;
-extern UBYTE thirdCheatEnablerWhenEqual3;
 
 static tFont *s_pFont;
 static tTextBitMap *s_pBmText;
@@ -70,30 +45,6 @@ void vampirePage(void){
  // blitCopy(s_pVAM, 0, 128, s_pVpManager->pBack, 0, 128, 304, 208, MINTERM_COOKIE);
 }
 
-void cleanUp(void){
-falkonx = 0;
-falkony = 0;
-krawedzx = 0;
-krawedzy = 0;
-kierunek = 0;
-falkonFace = 0; 
-
-stoneHit = 0;
-frameHit = 0;
-coal = startingCoal;
-capacitors = 0;
-level = 1;
-robboMsgNr = 0;
-robboMsgCount = 0;
-excesscoal = 0;
-HUDfontColor = 23;
-
-amigaMode = 0;
-
-cheatmodeEnablerWhenEqual3 = 0;
-secondCheatEnablerWhenEqual3 = 0;
-thirdCheatEnablerWhenEqual3 = 0;
-}
 
 void stateScoreCreate(void){
   
@@ -132,7 +83,7 @@ s_pBmText = fontCreateTextBitMap(300, s_pFont->uwHeight);
 blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 21);
 blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 21);
 
-if (amigaMode == 0){
+if (amigaMode == AMIGA_MODE_OFF){
 for(BYTE i = 0 ; i < 17 ; ++i){
 
   switch (i){
@@ -152,13 +103,13 @@ for(BYTE i = 0 ; i < 17 ; ++i){
     sprintf(szScore, " ");
     break;
     case 5:
-    sprintf(szScore, "You reclaimed %d tons of our coal.", excesscoal);
+    sprintf(szScore, "You reclaimed %d tons of our coal.", collected.excessCoal);
     break;
     case 6:
     sprintf(szScore, " ");
     break;
     case 7:
-    sprintf(szScore, "%d Amigas died with acid leaking from", capacitors);
+    sprintf(szScore, "%d Amigas died with acid leaking from", collected.capacitors);
     break;
     case 8:
     sprintf(szScore, "their old capacitors.");
@@ -167,13 +118,13 @@ for(BYTE i = 0 ; i < 17 ; ++i){
     sprintf(szScore, " ");
     break;
     case 10:
-    sprintf(szScore, "%d tons of coal x 100 = %d pts.", excesscoal, excesscoal * 100);
+    sprintf(szScore, "%d tons of coal x 100 = %d pts.", collected.excessCoal, collected.excessCoal * 100);
     break;
     case 11:
-    sprintf(szScore, "%d sets of capacitors x 500 = %d pts.", capacitors, capacitors * 500);
+    sprintf(szScore, "%d sets of capacitors x 500 = %d pts.", collected.capacitors, collected.capacitors * 500);
     break;
     case 12:
-    sprintf(szScore, "Total score = %d pts.", (excesscoal * 100) + (capacitors * 500));
+    sprintf(szScore, "Total score = %d pts.", (collected.excessCoal * 100) + (collected.capacitors * 500));
     break;
     case 13:
     sprintf(szScore, " ");
@@ -194,7 +145,7 @@ for(BYTE i = 0 ; i < 17 ; ++i){
       waitFrames(s_pVp, 50, 0);
   }
 }
-else if (amigaMode == 2){
+else if (amigaMode == AMIGA_MODE_CHECK){
 for(BYTE i = 0 ; i < 17 ; ++i){
 
   switch (i){
@@ -214,13 +165,13 @@ for(BYTE i = 0 ; i < 17 ; ++i){
     sprintf(szScore2, " ");
     break;
     case 5:
-    sprintf(szScore2, "You intercepted %d tons of Atarimen's coal.", excesscoal);
+    sprintf(szScore2, "You intercepted %d tons of Atarimen's coal.", collected.excessCoal);
     break;
     case 6:
     sprintf(szScore2, " ");
     break;
     case 7:
-    sprintf(szScore2, "You saved %d capacitors for our Amigas. ", capacitors);
+    sprintf(szScore2, "You saved %d capacitors for our Amigas. ", collected.capacitors);
     break;
     case 8:
     sprintf(szScore2, " ");
@@ -229,13 +180,13 @@ for(BYTE i = 0 ; i < 17 ; ++i){
     sprintf(szScore2, " ");
     break;
     case 10:
-    sprintf(szScore2, "%d tons of coal x 100 = %d pts.", excesscoal, excesscoal * 100);
+    sprintf(szScore2, "%d tons of coal x 100 = %d pts.", collected.excessCoal, collected.excessCoal * 100);
     break;
     case 11:
-    sprintf(szScore2, "%d sets of capacitors x 500 = %d pts.", capacitors, capacitors * 500);
+    sprintf(szScore2, "%d sets of capacitors x 500 = %d pts.", collected.capacitors, collected.capacitors * 500);
     break;
     case 12:
-    sprintf(szScore2, "Total score = %d pts.", (excesscoal * 100) + (capacitors * 500));
+    sprintf(szScore2, "Total score = %d pts.", (collected.excessCoal * 100) + (collected.capacitors * 500));
     break;
     case 13:
     sprintf(szScore2, " ");
@@ -275,7 +226,6 @@ void stateScoreLoop(void){
     else if (vampire == 1){
     
 		clearTiles();
-    cleanUp();
     stateChange(g_pStateMachineGame, &g_sStateMenu);
 		return;
   }
@@ -284,7 +234,7 @@ void stateScoreLoop(void){
 	viewProcessManagers(s_pView);
 	copProcessBlocks();
 	//vPortWaitForEnd(s_pVp);
-   vPortWaitForPos(s_pVp, uwPosY, 0);
+   vPortWaitForPos(s_pVp, coords.uwPosY, 0);
 }
 
 void stateScoreDestroy(void){

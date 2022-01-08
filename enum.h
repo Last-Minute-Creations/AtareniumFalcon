@@ -19,3 +19,10 @@ typedef enum {
   LEVEL_SCORE_END = 5,
   LEVEL_SCORE_NOCOAL = 6
 } tEndLevelState;
+
+typedef enum {
+  HUD_PRINT = 0,
+  HUD_UP = 1,
+  HUD_DOWN = 2,
+  HUD_ROBBO_SAYS = 3
+} tHudState;
