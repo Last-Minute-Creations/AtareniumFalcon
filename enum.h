@@ -26,3 +26,12 @@ typedef enum {
   HUD_DOWN = 2,
   HUD_ROBBO_SAYS = 3
 } tHudState;
+
+typedef enum {
+  FLYING_ANIM_OFF = 0,
+  END = 2,
+  DB = 4,
+  CONTINUE = 6,
+  BEGIN = 7,
+  HOLD = 8,
+} tFlyingAnimState;

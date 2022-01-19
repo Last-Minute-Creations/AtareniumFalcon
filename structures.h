@@ -2,16 +2,23 @@
 #define STRUCTURES_H
 
 struct coords {
+  UBYTE falconFace;
   UBYTE falkonx;
   UBYTE falkony;
-  UBYTE krawedzx;
-  UBYTE krawedzy;
+  BYTE krawedzx;
+  BYTE krawedzy;
   UWORD uwPosX;
   UWORD uwPosY;
-  UBYTE tempX;
-  UBYTE tempY;
+  UBYTE targetTileX;
+  UBYTE targetTileY;
   UBYTE portalX;
   UBYTE portalY;
+  UBYTE robboX;
+  UBYTE robboY;
+  UBYTE uwPreviousX;
+  UBYTE uwPreviousY;
+  UBYTE newPosX;
+  UBYTE newPosY;
 };
 
 struct anim {
@@ -24,13 +31,36 @@ struct anim {
   UBYTE blueCapacitorTick;
   UBYTE blueCapacitorTempo;
   UBYTE blueCapacitorTileCheck;
+  UBYTE robboFrame;
+  UBYTE robboTick;
+  UBYTE robboTempo;
+  UBYTE falconTick;
+  UBYTE falconTempo;
+  UBYTE falconFrame;
+  UBYTE flyingTick;
+  UBYTE flyingFrame;
+  UBYTE flyingTempo;
+};
 
+struct animStateControls {
+  BOOL falconIdle;
+  UBYTE falconFlyingAnim;
+  UBYTE stoneHitAnim;
+};
+
+struct moveControls {
+  BOOL stoneHit;
+  BOOL frameHit;
+  UBYTE kierunek; 
+  UBYTE kierunekHold;
 };
 
 struct doubleBuffering {
-  UBYTE portalDB;
-  UBYTE blueCapDB;
-  UBYTE redCapDB;
+  UBYTE portal;
+  UBYTE blueCap;
+  UBYTE redCap;
+  UBYTE robbo;
+  UBYTE flyingAnimFrame;
 };
 
 struct hud {

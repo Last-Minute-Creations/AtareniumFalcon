@@ -14,8 +14,6 @@
 #include "enum.h"
 #include "structures.h"
 
-
-
 //------------------------------------------------------- gdzie� przed funkcjami
 // zmienne trzymaj�ce adresy do viewa, viewporta, simple buffer managera
 static tView *s_pView;
@@ -29,7 +27,8 @@ static tBitMap *s_pBgPortalGlow;
 static tBitMap *s_pHUD;
 static tBitMap *s_pFalconBg;
 static tBitMap *s_pAnimBg;
-static tBitMap *s_pRobbo;
+static tBitMap *s_pRobboHUD;
+static tBitMap *s_pRobboAnim;
 static tPtplayerSfx *s_pFalkonEngineSound;
 static tPtplayerSfx *s_pLadujWegiel;
 static tPtplayerSfx *s_pRobbo8000;
@@ -48,6 +47,7 @@ static UWORD s_pPalette[32];
 extern tMusicState musicPlay = MUSIC_HEAVY;
 extern tAmigaMode amigaMode = AMIGA_MODE_OFF;
 extern tHudState;
+extern tFlyingAnimState;
 
 extern tStateManager *g_pStateMachineGame;
 extern tState g_sStateMenu;
@@ -63,6 +63,8 @@ struct robboMsg robboMsg;
 struct collected collected;
 struct anim anim;
 struct doubleBuffering db;
+struct animStateControls stateControls;
+struct moveControls moveControls;
 
 #define MAP_TILE_HEIGHT 7
 #define MAP_TILE_WIDTH 10
@@ -72,17 +74,19 @@ struct doubleBuffering db;
 #define LAST_LEVEL_NUMBER 28
 #define STARTING_COAL 10
 
-UBYTE level = 16;
+UBYTE level = 1;
 char levelFilePath[20];
 
 BYTE kamyki[10][7];
 BYTE collectiblesAnim[10][7];
+UWORD pAnim[] = {0, 32, 64, 96, 128, 160, 192, 224};
 
 extern UBYTE cheatmodeEnablerWhenEqual3;
 extern UBYTE secondCheatEnablerWhenEqual3;
 extern UBYTE thirdCheatEnablerWhenEqual3;
 
 UBYTE doubleBufferFrameControl = 2;
+UBYTE prepareEndingPointCoordinatesOnce = TRUE;
 
 void waitFrames(tVPort *pVPort, UBYTE ubHowMany, UWORD uwPosY)
 {
@@ -97,7 +101,8 @@ void gameOnResume(void)
 {
   viewLoad(s_pView);
 }
-void initialSetupDeclarationOfDataInStructures(void){
+void initialSetupDeclarationOfDataInStructures(void)
+{
   robboMsg.sz1stLine = "ROBBO says:";
   robboMsg.szCollision1stLine = "Collision course detected, ESP enabled.";
   robboMsg.szCollision2ndLine = "1T of fuel used, danger avioded. Over.";
@@ -105,9 +110,11 @@ void initialSetupDeclarationOfDataInStructures(void){
   collected.excessCoal = 0;
   collected.capacitors = 0;
   collected.robbo = 0;
-  db.portalDB = 0;
-  db.blueCapDB = 0;
-  db.redCapDB = 0;
+  db.portal = 0;
+  db.blueCap = 0;
+  db.redCap = 0;
+  db.robbo = 0;
+  db.flyingAnimFrame = 0;
   anim.portalFrame = 0;
   anim.portalTick = 0;
   anim.portalTempo = 8;
@@ -117,32 +124,68 @@ void initialSetupDeclarationOfDataInStructures(void){
   anim.blueCapacitorTick = 0;
   anim.blueCapacitorTempo = 16;
   anim.blueCapacitorTileCheck = 0;
-
+  anim.robboFrame = 0;
+  anim.robboTick = 0;
+  anim.robboTempo = 24;
+  anim.falconTick = 0;
+  anim.falconTempo = 8;
+  anim.falconFrame = 0;
+  anim.flyingTick = 0;
+  anim.flyingFrame = 0;
+  anim.flyingTempo = 128;
+  stateControls.falconIdle = TRUE;
+  stateControls.falconFlyingAnim = 0;
+  stateControls.stoneHitAnim = FALSE;
+  moveControls.stoneHit = FALSE;
+  moveControls.frameHit = FALSE;
+  moveControls.kierunek = 0;
+  moveControls.kierunekHold = 0;
 }
 
-void setFalconCoordinates(void){
-  for (UBYTE i = 0; i < MAP_TILE_WIDTH; ++i){
-    for (UBYTE j = 0; j < MAP_TILE_HEIGHT; ++j){
-      if (kamyki[i][j] == 1){
+void setFalconCoordinates(void)
+{
+  for (UBYTE i = 0; i < MAP_TILE_WIDTH; ++i)
+  {
+    for (UBYTE j = 0; j < MAP_TILE_HEIGHT; ++j)
+    {
+      if (kamyki[i][j] == 1)
+      {
         coords.falkonx = i;
         coords.falkony = j;
         coords.krawedzx = i;
         coords.krawedzy = j;
         coords.uwPosX = coords.falkonx * 32;
         coords.uwPosY = coords.falkony * 32;
-        coords.tempX = coords.falkonx;
-        coords.tempY = coords.falkony;
+        coords.targetTileX = coords.falkonx;
+        coords.targetTileY = coords.falkony;
       }
     }
   }
 }
-
-void setPortalCoordinates(void){
-  for (UBYTE i = 0; i < MAP_TILE_WIDTH; ++i){
-    for (UBYTE j = 0; j < MAP_TILE_HEIGHT; ++j){
-      if (kamyki[i][j] == 10){
+void setPortalCoordinates(void)
+{
+  for (UBYTE i = 0; i < MAP_TILE_WIDTH; ++i)
+  {
+    for (UBYTE j = 0; j < MAP_TILE_HEIGHT; ++j)
+    {
+      if (kamyki[i][j] == 10)
+      {
         coords.portalX = i;
-        coords.portalY = j; 
+        coords.portalY = j;
+      }
+    }
+  }
+}
+void setRobboCoordinates(void)
+{
+  for (UBYTE i = 0; i < MAP_TILE_WIDTH; ++i)
+  {
+    for (UBYTE j = 0; j < MAP_TILE_HEIGHT; ++j)
+    {
+      if (kamyki[i][j] == 11)
+      {
+        coords.robboX = i;
+        coords.robboY = j;
       }
     }
   }
@@ -177,15 +220,15 @@ void printOnHUD(void)
   fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 290, 236, hud.fontColor, FONT_COOKIE);
 }
 
-void clearTiles(void)  // czyszczenie planszy z tile'ow na koniec kazdego etapu zeby nie zostaly smieci
+void clearTiles(void) // czyszczenie planszy z tile'ow na koniec kazdego etapu zeby nie zostaly smieci
 {
-  blitCopy(s_pBg, 0, 0, s_pBgWithTile, 0, 0, 320, 128, MINTERM_COPY);  // podlozenie defaultowego tla do zmiennej
-  blitCopy(s_pBg, 0, 128, s_pBgWithTile, 0, 128, 320, 96, MINTERM_COPY);  // gdzie wklejam potem tile  -NIE KASOWAC KURWA !1
-  for (UBYTE y = 0; y < MAP_TILE_HEIGHT; ++y) // w kazdym kolejnym rzedzie poziomym od gory
+  blitCopy(s_pBg, 0, 0, s_pBgWithTile, 0, 0, 320, 128, MINTERM_COPY);    // podlozenie defaultowego tla do zmiennej
+  blitCopy(s_pBg, 0, 128, s_pBgWithTile, 0, 128, 320, 96, MINTERM_COPY); // gdzie wklejam potem tile  -NIE KASOWAC KURWA !1
+  for (UBYTE y = 0; y < MAP_TILE_HEIGHT; ++y)                            // w kazdym kolejnym rzedzie poziomym od gory
   {
     for (UBYTE x = 0; x < MAP_TILE_WIDTH; ++x) // na kazdej kolejnej pozycji od lewej do prawej
     {
-      kamyki[x][y] = 0;     // wyczysc (wyzeruj) miejsce w tablicy trzymajace dana pozycje
+      kamyki[x][y] = 0;           // wyczysc (wyzeruj) miejsce w tablicy trzymajace dana pozycje
       collectiblesAnim[x][y] = 0; // J.W. miejsce w tablicy kontrolujacej czy i jaki element jest animowany
     }
   }
@@ -215,7 +258,7 @@ void drawTiles(void)
     else if (ubZmienna == 0x33)
     {
       kamyki[x][y] = 3;
-      ubStoneImg = ulRandMinMax(0, 2);  // drawing one of 3 possible stone images
+      ubStoneImg = ulRandMinMax(0, 2); // drawing one of 3 possible stone images
       blitCopy(s_pBg, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopy(s_pBg, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopyMask(s_pTiles, ubStoneImg * 32, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
@@ -278,7 +321,7 @@ void drawTiles(void)
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
     }
-    else if (ubZmienna == 0x45)
+    else if (ubZmienna == 0x45) // PORTAL
     {
       kamyki[x][y] = 10;
       blitCopyMask(s_pTiles, 0, 352, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
@@ -287,25 +330,25 @@ void drawTiles(void)
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
     }
-    else if (ubZmienna == 0x52)
+    else if (ubZmienna == 0x52) //ROBBO
     {
       kamyki[x][y] = 11;
-      blitCopyMask(s_pTiles, 96, 32, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-      blitCopyMask(s_pTiles, 96, 32, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+      blitCopyMask(s_pTiles, 0, 32, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+      blitCopyMask(s_pTiles, 0, 32, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
 
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
     }
-    else if (ubZmienna == 0x42)
+    else if (ubZmienna == 0x42) // BROKEN CAPAC
     {
       kamyki[x][y] = 12;
-      blitCopyMask(s_pTiles, 128, 32, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-      blitCopyMask(s_pTiles, 128, 32, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+      blitCopyMask(s_pTiles, 224, 0, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+      blitCopyMask(s_pTiles, 224, 0, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
 
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
     }
-    else if (ubZmienna == 0x31)
+    else if (ubZmienna == 0x31) // FALCON
     {
       kamyki[x][y] = 1;
     }
@@ -321,32 +364,215 @@ void drawTiles(void)
   systemUnuse();
   setFalconCoordinates();
   setPortalCoordinates();
+  setRobboCoordinates();
   paletteDim(s_pPalette, s_pVp->pPalette, 32, 15);
   viewUpdateCLUT(s_pView);
 }
 
-void portalAnimBlit(void)  // animacja portalu na planszy
+void setDestionationCoordsToEndFlying()
 {
-  blitCopy(s_pBg, coords.portalX * 32, coords.portalY * 32, s_pBgPortalGlow, 0, 0, 32, 32, MINTERM_COOKIE);  // wytnij tlo w miejscu gdzie jest portal do s_pBgPortalGlow
-  blitCopyMask(s_pTiles, anim.portalFrame * 32, 352, s_pBgPortalGlow, 0, 0, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // wytnij klatke tile'a i doklej do s_pBgPortalGlow z zachowaniem transparentnosci - maska
-  blitCopy(s_pBgPortalGlow, 0, 0, s_pVpManager->pBack, coords.portalX * 32, coords.portalY * 32, 32, 32, MINTERM_COPY); // wrzuc gotowe s_pBgPortalGlow na ekran pBack
+switch (moveControls.kierunekHold)
+    {
+    case 1:
+      coords.falkonx = coords.falkonx + 1;
+      break;
+    case 2:
+      coords.falkonx = coords.falkonx - 1;
+      break;
+    case 3:
+      coords.falkony = coords.falkony - 1;
+      break;
+    case 4:
+      coords.falkony = coords.falkony + 1;
+      break;
+    }
 }
 
-void portalAnimFrameCounter(void){
+void ifCollectibleTileBgSetup(void)
+{
+  switch (moveControls.kierunekHold)
+  {
+  case 1:
+    coords.targetTileX = coords.falkonx + 1;
+    break;
+  case 2:
+    coords.targetTileX = coords.falkonx - 1;
+    break;
+  case 3:
+    coords.targetTileY = coords.falkony - 1;
+    break;
+  case 4:
+    coords.targetTileY = coords.falkony + 1;
+    break;
+  }
+}
+
+void falconIdleAnimation(void)
+{
+  if (stateControls.falconIdle == FALSE)
+  {
+    return;
+  }
+
+  if (anim.falconTick == anim.falconTempo * 1)
+  {
+    anim.falconFrame = 0;
+  }
+  else if (anim.falconTick == anim.falconTempo * 2)
+  {
+    anim.falconFrame = 1;
+  }
+  else if (anim.falconTick == anim.falconTempo * 3)
+  {
+    anim.falconFrame = 2;
+  }
+  else if (anim.falconTick == anim.falconTempo * 4)
+  {
+    anim.falconFrame = 3;
+  }
+  else if (anim.falconTick == anim.falconTempo * 5)
+  {
+    anim.falconFrame = 4;
+  }
+  else if (anim.falconTick == anim.falconTempo * 6)
+  {
+    anim.falconFrame = 5;
+  }
+  else if (anim.falconTick == anim.falconTempo * 7)
+  {
+    anim.falconFrame = 6;
+  }
+  else if (anim.falconTick >= anim.falconTempo * 8)
+  {
+    anim.falconFrame = 7;
+    anim.falconTick = 0;
+    if (stateControls.falconIdle == HOLD)
+    {
+      stateControls.falconIdle = FALSE;
+      stateControls.falconFlyingAnim = TRUE;
+      /*
+      if (stateControls.stoneHitAnim == HOLD){
+        stateControls.stoneHitAnim = TRUE;
+      }
+      if (stateControls.falconFlyingAnim == HOLD){
+        stateControls.falconFlyingAnim = BEGIN;
+      } */
+    }
+  }
+  UWORD uwPrevPosX = coords.uwPosX;
+  UWORD uwPrevPosY = coords.uwPosY;
+  switch (moveControls.kierunekHold)
+  {
+  case 1:
+    if (uwPrevPosX >= 2)
+    {
+      --uwPrevPosX;
+      --uwPrevPosX;
+    }
+    break;
+  case 2:
+    if (uwPrevPosX <= 318)
+    {
+      ++uwPrevPosX;
+      ++uwPrevPosX;
+    }
+    break;
+  case 3:
+    if (uwPrevPosY <= 190)
+    {
+      ++uwPrevPosY;
+      ++uwPrevPosY;
+    }
+    break;
+  case 4:
+    if (uwPrevPosY >= 2)
+    {
+      --uwPrevPosY;
+      --uwPrevPosY;
+    }
+    break;
+  }
+  blitCopy(s_pBg, uwPrevPosX, uwPrevPosY, s_pVpManager->pBack, uwPrevPosX, uwPrevPosY, 32, 32, MINTERM_COOKIE);
+  //blitCopy(s_pBg, uwPrevPosX, uwPrevPosY, s_pVpManager->pFront, uwPrevPosX, uwPrevPosY, 32, 32, MINTERM_COOKIE);
+  blitCopy(s_pBg, coords.uwPosX, coords.uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
+  blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, coords.uwPosX, coords.uwPosY, 32, 32, MINTERM_COOKIE);
+  blitCopyMask(s_pTiles, anim.falconFrame * 32, 192 + coords.falconFace, s_pVpManager->pBack, coords.falkonx * 32, coords.falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+}
+
+void blitBackground(void) // TO BEDZIE BLIT ANIM FRAME
+{
+  blitCopy(s_pBg, coords.uwPosX, coords.uwPosY, s_pVpManager->pBack, coords.uwPosX, coords.uwPosY, 32, 32, MINTERM_COOKIE);
+}   
+
+void falconFlyingAnimation(void)
+{
+  if (stateControls.falconFlyingAnim != TRUE){
+    return;
+  }
+  blitBackground();
+  db.flyingAnimFrame = 1;
+  
+  setDestionationCoordsToEndFlying();
+  coords.uwPosX = coords.falkonx * 32;
+  coords.uwPosY = coords.falkony * 32;
+  stateControls.falconIdle = TRUE;
+  stateControls.falconFlyingAnim = FALSE;
+}
+
+void portalAnimBlit(void) // animacja portalu na planszy
+{
+  blitCopy(s_pBg, coords.portalX * 32, coords.portalY * 32, s_pBgPortalGlow, 0, 0, 32, 32, MINTERM_COOKIE);             // wytnij tlo w miejscu gdzie jest portal do s_pBgPortalGlow
+  blitCopyMask(s_pTiles, anim.portalFrame * 32, 352, s_pBgPortalGlow, 0, 0, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);  // wytnij klatke tile'a i doklej do s_pBgPortalGlow z zachowaniem transparentnosci - maska
+  blitCopy(s_pBgPortalGlow, 0, 0, s_pVpManager->pBack, coords.portalX * 32, coords.portalY * 32, 32, 32, MINTERM_COPY); // wrzuc gotowe s_pBgPortalGlow na ekran pBack
+}
+void robboAnimBlit(void) // animacja portalu na planszy
+{
+  blitCopy(s_pBg, coords.robboX * 32, coords.robboY * 32, s_pRobboAnim, 0, 0, 32, 32, MINTERM_COOKIE);
+  blitCopyMask(s_pTiles, anim.robboFrame * 32, 32, s_pRobboAnim, 0, 0, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+  blitCopy(s_pRobboAnim, 0, 0, s_pVpManager->pBack, coords.robboX * 32, coords.robboY * 32, 32, 32, MINTERM_COPY);
+}
+
+void portalAnimFrameCounter(void)
+{
   if (anim.portalTick > anim.portalTempo)
   {
+    db.portal = 1;
     ++anim.portalFrame;
-    portalAnimBlit();
     anim.portalTick = 0;
-    db.portalDB = 1;
     if (anim.portalFrame == 7)
     {
       anim.portalFrame = 0;
     }
+    portalAnimBlit();
   }
 }
 
+void robboAnimCounter(void)
+{
+  if (anim.robboTick > anim.robboTempo)
+  {
+    db.robbo = 1;
+    ++anim.robboFrame;
+    anim.robboTick = 0;
+    if (anim.robboFrame == 8)
+    {
+      anim.robboFrame = 0;
+    }
+    robboAnimBlit();
+  }
+}
 
+void capacitorsAnimLooper(void)
+{
+  if (anim.redCapacitorTick > anim.redCapacitorTempo)
+  {
+    anim.redCapacitorTick = 0;
+  }
+  if (anim.blueCapacitorTick > anim.blueCapacitorTempo)
+  {
+    anim.blueCapacitorTick = 0;
+  }
+}
 
 void redCapacitorsAnimation(void)
 {
@@ -354,7 +580,7 @@ void redCapacitorsAnimation(void)
 
   if (anim.redCapacitorTick == anim.redCapacitorTempo)
   {
-    db.redCapDB = 1;
+    db.redCap = 1;
     for (i = 0; i < 10; ++i)
     {
       for (k = 0; k < 7; ++k)
@@ -372,7 +598,6 @@ void redCapacitorsAnimation(void)
     {
       anim.redCapacitorTileCheck = 0;
     }
-    
   }
 }
 void blueCapacitorsAnimation(void)
@@ -380,7 +605,7 @@ void blueCapacitorsAnimation(void)
 
   if (anim.blueCapacitorTick == anim.blueCapacitorTempo)
   {
-    db.blueCapDB = 1;
+    db.blueCap = 1;
     for (UBYTE i = 0; i < 10; ++i)
     {
       for (UBYTE k = 0; k < 7; ++k)
@@ -401,21 +626,31 @@ void blueCapacitorsAnimation(void)
   }
 }
 
-void doubleBufferingHandler(void){
-  if (db.portalDB == 1)
+void doubleBufferingHandler(void)
+{
+  if (db.flyingAnimFrame == 1){
+    blitBackground();
+    db.flyingAnimFrame = 0;
+  }
+  if (db.portal == 1)
   {
     portalAnimBlit();
-    db.portalDB = 0;
+    db.portal = 0;
   }
-  if (db.blueCapDB == 1)
+  if (db.blueCap == 1)
   {
     blueCapacitorsAnimation();
-    db.blueCapDB = 0;
+    db.blueCap = 0;
   }
-  if (db.redCapDB == 1)
+  if (db.redCap == 1)
   {
     redCapacitorsAnimation();
-    db.redCapDB = 0;
+    db.redCap = 0;
+  }
+  if (db.robbo == 1)
+  {
+    robboAnimBlit();
+    db.robbo = 0;
   }
 
   if (doubleBufferFrameControl > 0)
@@ -426,7 +661,7 @@ void doubleBufferingHandler(void){
     }
     else if (hud.stateCtrl == HUD_UP)
     {
-     // robboScrollUp();
+      // robboScrollUp();
     }
     else if (hud.stateCtrl == HUD_DOWN)
     {
@@ -435,10 +670,93 @@ void doubleBufferingHandler(void){
 
     if (hud.stateCtrl == HUD_ROBBO_SAYS)
     {
-     // robboSays();
+      // robboSays();
     }
 
     --doubleBufferFrameControl;
+  }
+}
+
+void isThisStone(void)
+{
+  // funkcja sprawdzajaca przed wykonaniem ruchu czy chcemy wleciec w kamien
+
+  BYTE stoneX = 0; // tu utrzymamy wspolrzedne docelowe
+  BYTE stoneY = 0; // i porownamy czy jest na nich kamien
+
+  switch (moveControls.kierunek)
+  {
+  case 1:                                    // gdy w prawo
+    stoneX = coords.falkonx + 1;             // przypisz do stoneX docelowa wspolrzedna
+    if (kamyki[stoneX][coords.falkony] == 3) // jesli pole docelowe to 3 (kamien)
+    {
+      moveControls.stoneHit = TRUE; // oznacz ze chciales walnac w kamyk dla dalszego procesowania
+    }
+    break;
+  case 2: // i tak dalej dla reszty kierunkow
+    stoneX = coords.falkonx - 1;
+    if (kamyki[stoneX][coords.falkony] == 3)
+    {
+      moveControls.stoneHit = TRUE;
+    }
+    break;
+  case 3:
+    stoneY = coords.falkony - 1;
+    if (kamyki[coords.falkonx][stoneY] == 3)
+    {
+      moveControls.stoneHit = TRUE;
+    }
+    break;
+  case 4:
+    stoneY = coords.falkony + 1;
+    if (kamyki[coords.falkonx][stoneY] == 3)
+    {
+      moveControls.stoneHit = TRUE;
+    }
+    break;
+  }
+}
+void isThisFrame(void)
+{
+  // tu jest funkcja sprawdzajaca czy sie chcemy wypierdolic za ekran i nie pozwalajaca na to
+  switch (moveControls.kierunek)
+  {
+  case 1:                                  // gdy w prawo
+    coords.krawedzx = coords.krawedzx + 1; // pole docelowe
+    if (coords.krawedzx == 10)             // jesli za ekranem (bo fruwamy od 0 do 9)
+    {
+      coords.krawedzx = 9;          // ustaw znow na 9
+      coords.falkonx = 9;           // zatrzymaj falkona tez na 9
+      moveControls.frameHit = TRUE; // oznacz ze chciales walnac w ramke dla dalszego procesowania, animka i tak dalej
+    }
+    break;
+  case 2: // JW w lewo
+    coords.krawedzx = coords.krawedzx - 1;
+    if (coords.krawedzx == -1)
+    {
+      coords.krawedzx = 0;
+      coords.falkonx = 0;
+      moveControls.frameHit = TRUE;
+    }
+    break;
+  case 3: // JW w gore
+    coords.krawedzy = coords.krawedzy - 1;
+    if (coords.krawedzy == -1)
+    {
+      coords.krawedzy = 0;
+      coords.falkony = 0;
+      moveControls.frameHit = TRUE;
+    }
+    break;
+  case 4: // JW w dol
+    coords.krawedzy = coords.krawedzy + 1;
+    if (coords.krawedzy == 7)
+    {
+      coords.krawedzy = 6;
+      coords.falkony = 6;
+      moveControls.frameHit = TRUE;
+    }
+    break;
   }
 }
 
@@ -509,37 +827,37 @@ void stateGameCreate(void)
 
   g_pCustom->color[0] = 0x0FFF; // zmie� kolor zero aktualnie u�ywanej palety na 15,15,15
 
-
   if (thirdCheatEnablerWhenEqual3 != 3)
-    {
-      s_pTiles = bitmapCreateFromFile("data/tileset.bm", 0);          // z pliku tileset.bm, nie lokuj bitmapy w pami�ci FAST
-      s_pTilesMask = bitmapCreateFromFile("data/tileset_mask.bm", 0); // z pliku tileset_mask.bm, nie lokuj bitmapy w pami�ci FAST
-      s_pHUD = bitmapCreateFromFile("data/HUD.bm", 0);
-      hud.fontColor = 23;
-      copProcessBlocks();
-    }
-    else if (thirdCheatEnablerWhenEqual3 == 3)
-    {
-      amigaMode = AMIGA_MODE_CHECK;
-      hud.fontColor = 5;
-      s_pTiles = bitmapCreateFromFile("data/tileset2.bm", 0);
-      s_pTilesMask = bitmapCreateFromFile("data/tileset_mask2.bm", 0);
-      s_pHUD = bitmapCreateFromFile("data/amiHUD.bm", 0);
-      copBlockEnable(s_pView->pCopList, copBlockBeforeHud);
-      copBlockEnable(s_pView->pCopList, copBlockAfterHud);
-    }
-  
+  {
+    s_pTiles = bitmapCreateFromFile("data/tileset.bm", 0);          // z pliku tileset.bm, nie lokuj bitmapy w pami�ci FAST
+    s_pTilesMask = bitmapCreateFromFile("data/tileset_mask.bm", 0); // z pliku tileset_mask.bm, nie lokuj bitmapy w pami�ci FAST
+    s_pHUD = bitmapCreateFromFile("data/HUD.bm", 0);
+    hud.fontColor = 23;
+    copProcessBlocks();
+  }
+  else if (thirdCheatEnablerWhenEqual3 == 3)
+  {
+    amigaMode = AMIGA_MODE_CHECK;
+    hud.fontColor = 5;
+    s_pTiles = bitmapCreateFromFile("data/tileset2.bm", 0);
+    s_pTilesMask = bitmapCreateFromFile("data/tileset_mask2.bm", 0);
+    s_pHUD = bitmapCreateFromFile("data/amiHUD.bm", 0);
+    copBlockEnable(s_pView->pCopList, copBlockBeforeHud);
+    copBlockEnable(s_pView->pCopList, copBlockAfterHud);
+  }
+
   s_pBg = bitmapCreateFromFile("data/tlo1.bm", 0);
   s_pBgWithTile = bitmapCreateFromFile("data/tlo1.bm", 0); // fragmenty tla do podstawiania po ruchu
-  s_pRobbo = bitmapCreateFromFile("data/falkon_robbo.bm", 0);
+  s_pRobboHUD = bitmapCreateFromFile("data/falkon_robbo.bm", 0);
   s_pFalconBg = bitmapCreate(48, 32, 5, BMF_INTERLEAVED);
   s_pAnimBg = bitmapCreate(48, 32, 5, BMF_INTERLEAVED);
   s_pBgPortalGlow = bitmapCreate(48, 32, 5, BMF_INTERLEAVED);
+  s_pRobboAnim = bitmapCreate(48, 32, 5, BMF_INTERLEAVED);
   s_pFont = fontCreate("data/topaz.fnt");
   s_pGotekFont = fontCreate("data/gotekFont.fnt");
   s_pBmText = fontCreateTextBitMap(300, s_pFont->uwHeight); // bitmapa robocza długa na 200px, wysoka na jedną linię tekstu
 
-// proste wy�wietlanie bitmapy na viewporcie
+  // proste wy�wietlanie bitmapy na viewporcie
   s_pVpManager = simpleBufferCreate(0,
                                     TAG_SIMPLEBUFFER_VPORT, s_pVp,                              // parent viewport
                                     TAG_SIMPLEBUFFER_BITMAP_FLAGS, BMF_CLEAR | BMF_INTERLEAVED, // wst�pne czyszczenie bitmapy, przyspieszenie rysowania grafiki
@@ -556,7 +874,7 @@ void stateGameCreate(void)
   blitCopy(s_pHUD, 0, 0, s_pVpManager->pFront, 0, 224, 320, 32, MINTERM_COOKIE);
   joyOpen(); // b�dziemy u�ywa� d�oja w grze
   keyCreate();
-  // na koniec create: 
+  // na koniec create:
 
   randInit(1337);
   printOnHUD();
@@ -572,36 +890,89 @@ void stateGameCreate(void)
   setFalconCoordinates();
   ptplayerEnableMusic(1);
   systemUnuse(); // system w trakcie loop nie jest nam potrzebny
-} 
+}
 
 void stateGameLoop(void)
 {
   doubleBufferingHandler();
 
-
+  ++anim.robboTick;
+  robboAnimCounter();
 
   ++anim.portalTick;
   portalAnimFrameCounter();
 
   ++anim.redCapacitorTick;
-  if (anim.redCapacitorTick > anim.redCapacitorTempo)
-  {
-    anim.redCapacitorTick = 0;
-  }
   ++anim.blueCapacitorTick;
-  if (anim.blueCapacitorTick > anim.blueCapacitorTempo)
+  capacitorsAnimLooper();
+
+  if (stateControls.falconIdle == TRUE || stateControls.falconIdle == HOLD)
   {
-    anim.blueCapacitorTick = 0;
+    ++anim.falconTick;
   }
 
+  if (stateControls.falconFlyingAnim == TRUE)
+  {
+    ++anim.flyingTick;
+  }
 
+  //falkonHittingStone();
 
+  //robboScrollUp();
+  //robboScrollDown();
+  //portalAnim();
+
+  falconIdleAnimation();
+  falconFlyingAnimation();
   redCapacitorsAnimation();
   blueCapacitorsAnimation();
 
+  moveControls.kierunek = 0;
+
+  joyProcess();
+  keyProcess();
+
+  if (joyUse(JOY1_RIGHT) || keyUse(KEY_D) || keyUse(KEY_RIGHT))
+  {
+    moveControls.kierunek = 1;
+    coords.falconFace = 0;
+  }
+  else if (joyUse(JOY1_LEFT) || keyUse(KEY_A) || keyUse(KEY_LEFT))
+  {
+    moveControls.kierunek = 2;
+    coords.falconFace = 32;
+  }
+  else if (joyUse(JOY1_UP) || keyUse(KEY_W) || keyUse(KEY_UP))
+  {
+    moveControls.kierunek = 3;
+  }
+  else if (joyUse(JOY1_DOWN) || keyUse(KEY_S) || keyUse(KEY_DOWN))
+  {
+    moveControls.kierunek = 4;
+  }
+
+  if (moveControls.kierunek != 0)
+  {
+    if (stateControls.falconFlyingAnim != FLYING_ANIM_OFF)
+    {
+      return;
+    }
+    moveControls.kierunekHold = moveControls.kierunek;
+    stateControls.falconIdle = HOLD;
+    prepareEndingPointCoordinatesOnce = TRUE;
+    /*
+      if (musicPlay == MUSIC_AMBIENT_SFX)
+      {
+        ptplayerSfxPlay(s_pFalkonEngineSound, 3, 64, 100);
+      }
+       */
+    isThisStone();
+    isThisFrame();
+  }
+
   viewProcessManagers(s_pView); // obliczenia niezb�dne do poprawnego dzia�ania viewport�w
-  copProcessBlocks();     // obliczenia niezb�dne do poprawnego dzia�ania coppera
-  vPortWaitForEnd(s_pVp); // r�wnowa�ne amosowemu wait vbl
+  copProcessBlocks();           // obliczenia niezb�dne do poprawnego dzia�ania coppera
+  vPortWaitForEnd(s_pVp);       // r�wnowa�ne amosowemu wait vbl
 }
 
 void stateGameDestroy(void)
@@ -623,7 +994,8 @@ void stateGameDestroy(void)
   bitmapDestroy(s_pFalconBg);
   bitmapDestroy(s_pAnimBg);
   bitmapDestroy(s_pBgPortalGlow);
-  bitmapDestroy(s_pRobbo);
+  bitmapDestroy(s_pRobboHUD);
+  bitmapDestroy(s_pRobboAnim);
 
   fontDestroy(s_pFont);
   fontDestroy(s_pGotekFont);
