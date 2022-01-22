@@ -449,7 +449,7 @@ void falconIdleAnimation(void)
     if (stateControls.falconIdle == HOLD)
     {
       stateControls.falconIdle = FALSE;
-      stateControls.falconFlyingAnim = TRUE;
+      stateControls.falconFlyingAnim = BEGIN;
       /*
       if (stateControls.stoneHitAnim == HOLD){
         stateControls.stoneHitAnim = TRUE;
@@ -506,17 +506,25 @@ void blitBackground(void) // TO BEDZIE BLIT ANIM FRAME
 
 void falconFlyingAnimation(void)
 {
-  if (stateControls.falconFlyingAnim != TRUE){
+  if (stateControls.falconFlyingAnim == FALSE){
     return;
   }
+  if (stateControls.falconFlyingAnim == BEGIN){
   blitBackground();
   db.flyingAnimFrame = 1;
+  stateControls.falconFlyingAnim = END;
+  }
+
+  else if (stateControls.falconFlyingAnim == END){
+    setDestionationCoordsToEndFlying();
+    coords.uwPosX = coords.falkonx * 32; 
+    coords.uwPosY = coords.falkony * 32; 
+    stateControls.falconIdle = TRUE; 
+    stateControls.falconFlyingAnim = FALSE;
+
+  }
   
-  setDestionationCoordsToEndFlying();
-  coords.uwPosX = coords.falkonx * 32;
-  coords.uwPosY = coords.falkony * 32;
-  stateControls.falconIdle = TRUE;
-  stateControls.falconFlyingAnim = FALSE;
+  
 }
 
 void portalAnimBlit(void) // animacja portalu na planszy
