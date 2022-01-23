@@ -71,8 +71,8 @@ convertBitmaps(
 
 convertBitmaps(
 	TARGET falkon.elf PALETTE ${PLT_PATH}
-	MASK_COLOR "#000000"
-	INTERLEAVED SOURCES ${RES_DIR}/tileset.png ${RES_DIR}/tileset2.png
+	MASK_COLOR "#880088"
+	INTERLEAVED SOURCES ${RES_DIR}/tilesetP.png ${RES_DIR}/tilesetP2.png
 	DESTINATIONS ${DATA_DIR}/tileset.bm ${DATA_DIR}/tileset2.bm
 	MASKS ${DATA_DIR}/tileset_mask.bm ${DATA_DIR}/tileset_mask2.bm
 
