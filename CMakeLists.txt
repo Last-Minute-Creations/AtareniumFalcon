@@ -114,5 +114,8 @@ file(
 	${RES_DIR}/26.txt
 	${RES_DIR}/27.txt
 	${RES_DIR}/28.txt
+	${RES_DIR}/29.txt
+	${RES_DIR}/30.txt
+	${RES_DIR}/31.txt
 	DESTINATION ${DATA_DIR}
 )

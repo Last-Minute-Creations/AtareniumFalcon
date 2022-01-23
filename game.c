@@ -55,7 +55,7 @@ extern tState g_sStateLeakedGameOver;
 #define FALCON_HEIGHT 32
 #define ANIM_FRAME_COUNT 8
 
-#define LAST_LEVEL_NUMBER 28
+#define LAST_LEVEL_NUMBER 31
 
 char szMsg[50];  // do wyswietlania wegla na HUD
 char szMsg2[50]; // do wyswietlania kondkow na HUD
@@ -1861,7 +1861,7 @@ void stateGameLoop(void)
     stateChange(g_pStateMachineGame, &g_sStateMenu);
     return;
   }
-  else if (keyUse(KEY_N))
+  else if (keyUse(KEY_N) && level < LAST_LEVEL_NUMBER)
   {
     if (cheatmodeEnablerWhenEqual3 != 3)
     {
