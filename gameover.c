@@ -38,6 +38,10 @@ extern UWORD uwPosY;
 
 extern BYTE stoneHit;
 extern BYTE frameHit;
+extern BYTE stonehitAnimControl;
+extern BYTE falkonIdleControl;
+extern BYTE hudScrollingControl; 
+extern BYTE anotherHit; 
 
 extern BYTE level;
 extern BYTE robboMsgNr;
@@ -69,6 +73,10 @@ uwPosY = 0;
 
 stoneHit = 0;
 frameHit = 0;
+anotherHit = 0;
+hudScrollingControl = 0; 
+stonehitAnimControl = 0;
+falkonIdleControl = 1;
 coal = startingCoal;
 capacitors = 0;
 level = 1;

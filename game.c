@@ -102,8 +102,8 @@ BYTE anotherHit = 0;  // sprawdzam czy po uderzeniu w kamien chce jeszcze raz, z
 
 CONST BYTE startingCoal = 10;
 
-BYTE falkonIdle = 0;
-BYTE falkonIdleTempo = 8;
+UBYTE falkonIdle = 0;
+UBYTE falkonIdleTempo = 8;
 BYTE falkonIdleControl = 1;
 BYTE redCapacitorsAnimTick = 0;
 BYTE tickTempo = 8;
@@ -138,7 +138,7 @@ BYTE portalGlowY = 0;
 BYTE portalGlowDB = 0;
 
 BYTE stonehitAnimControl = 0;
-BYTE stonehitAnimTick = 0;
+UBYTE stonehitAnimTick = 0;
 BYTE stonehitAnimFrame = 0;
 BYTE oneFrameDirection = 0;
 
@@ -1130,7 +1130,7 @@ void falkonHittingStone(void)
     // TODO animka trzeba dobrze blitowac, pomyslec
     blitCopy(s_pBg, HitPosX, HitPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
     blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, HitPosX, HitPosY, 32, 32, MINTERM_COOKIE);
-    blitCopy(s_pVpManager->pBack, HitPosX, HitPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE); 
+    //blitCopy(s_pVpManager->pBack, HitPosX, HitPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE); 
     //blitCopy(s_pBgWithTile, HitPosX, HitPosY, s_pVpManager->pBack, HitPosX, HitPosY, 32, 32, MINTERM_COPY);                                                        // fragment tla wrzuca do zmiennej
     blitCopyMask(s_pTiles, pAnim[stonehitAnimFrame], 64 + falkonFace, s_pVpManager->pBack, HitPosX, HitPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // rysuje falkona
     //blitCopy(s_pBgWithTile, falkonx * 32, falkony * 32, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, MINTERM_COPY);                                                        // fragment tla wrzuca do zmiennej
