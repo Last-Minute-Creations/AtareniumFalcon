@@ -847,7 +847,7 @@ void robboSays(void)
 
   else if (amigaMode != AMIGA_MODE_CHECK && HUDcollisionMsg != 1)
   {
-    switch (robboMsgNr)
+    switch (level)
     {
     case 1:
       sprintf(szRobboMsg, "Follow the Atari portal.");
@@ -865,57 +865,44 @@ void robboSays(void)
       sprintf(szRobboMsg, "Infiltrate the Amigans territory.");
       break;
     case 6:
-      sprintf(szRobboMsg, "Minister Renton is counting on you, Sir.");
-      break;
-    case 7:
-      sprintf(szRobboMsg, "Please clean up here, I found some GermZ.");
-      break;
-    case 8:
-      sprintf(szRobboMsg, "Take me home, this place sucks!");
-      break;
-    case 9:
       sprintf(szRobboMsg, "Find the coal warehouse and reclaim it.");
       break;
-
+    case 7:
+      sprintf(szRobboMsg, "Minister Renton is counting on you, Sir.");
+      break;
+    case 8:
+      sprintf(szRobboMsg, "Training completed. Good Luck.");
+      break;
     case 10:
-      sprintf(szRobboMsg, "Try new economic LSA 68090 engine in menu.");
+      sprintf(szRobboMsg, "Please clean up here, I found some GermZ.");
       break;
     case 11:
+      sprintf(szRobboMsg, "Try new economic LSA 68090 engine in menu.");
+      break;
+    case 12:
       sprintf(szRobboMsg, "Have you played Aminer yet?");
       break;
-
-    case 12:
+    case 15:
       sprintf(szRobboMsg, "Beware of VamPiRes, or you become one!");
       break;
-
-    case 13:
+    case 21:
       sprintf(szRobboMsg, "Drop me out at LK Avalon please.");
       break;
-
-    case 14:
+    case 22:
       sprintf(szRobboMsg, "You like Paula? I love Laura!");
       break;
-
-    case 15:
-      sprintf(szRobboMsg, "Atari has no glitches...");
-      break;
-
-    case 16:
-      sprintf(szRobboMsg, "..even if played in 2077.");
-      break;
-    case 17:
-      sprintf(szRobboMsg, "Make River Raid not Bridge Strike!");
-      break;
-    case 18:
-      sprintf(szRobboMsg, "Cytadela is better than Doom.");
-      break;
-    case 19:
+    case 23:
       sprintf(szRobboMsg, "How to double the value of your Atari...?");
       break;
-    case 20:
+    case 24:
       sprintf(szRobboMsg, "...Just insert the cassette into tape drive.");
       break;
-
+    case 25:
+      sprintf(szRobboMsg, "Make River Raid not Bridge Strike!");
+      break;
+    case 28:
+      sprintf(szRobboMsg, "Cytadela is better than Doom.");
+      break;
     case LAST_LEVEL_NUMBER - 1:
       sprintf(szRobboMsg, "We're close, I feel it in my DSP.");
       break;
