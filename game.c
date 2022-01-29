@@ -959,7 +959,7 @@ void coalAndCollect(void)
     ++coal;
   }
 
-  --coal;
+  //--coal;
 
   switch (what)
   {
@@ -1259,7 +1259,7 @@ void falconCollisionCheck(void)
   if (stoneHit == 1)
   {
     ++anotherHit;
-    --coal;
+    //--coal;
     stonehitAnimControl = 1;
     falkonIdleControl = 0;
     robboMsgCtrl = 1;
@@ -1290,7 +1290,7 @@ void falconCollisionCheck(void)
   if (frameHit == 1)
   {
     ++anotherHit;
-    --coal;
+    //--coal;
     stonehitAnimControl = 1;
     falkonIdleControl = 0;
     frameHit = 0;
@@ -1820,7 +1820,7 @@ void stateGameLoop(void)
   //}
   //else if(isIgnoreNextFrame == 0)
   //{
-  if (coal == 0 && levelScoreControl != LEVEL_SCORE_NOCOAL)
+  if (coal == 0 && levelScoreControl != LEVEL_SCORE_NOCOAL && flyingAnimControl == 0)
   {
     levelScoreControl = LEVEL_SCORE_NOCOAL;
     //gameOverCoalBlinkingOnHUD();
@@ -1905,6 +1905,9 @@ void stateGameLoop(void)
       return;
     }
     kierunekHold = kierunek;
+    --coal;
+    printOnHUD();
+    doubleBufferFrameControl = 2;
 
     if (musicPlay == MUSIC_AMBIENT_SFX)
     {
