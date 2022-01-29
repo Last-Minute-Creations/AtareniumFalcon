@@ -1551,6 +1551,66 @@ void hudAnim(void)
   }
 }
 
+void robboAnimBlit(void) // animacja portalu na planszy
+{
+  UBYTE i = 0, k = 0;
+    for (i = 0; i < 10; ++i)
+    {
+      for (k = 0; k < 7; ++k)
+      {
+        if (collectiblesAnim[i][k] == 11)
+        {
+          blitCopy(s_pBg, coords.robboX * 32, coords.robboY * 32, s_pRobboAnim, 0, 0, 32, 32, MINTERM_COOKIE);
+          blitCopyMask(s_pTiles, anim.robboFrame * 32, 32, s_pRobboAnim, 0, 0, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+          blitCopy(s_pRobboAnim, 0, 0, s_pVpManager->pBack, coords.robboX * 32, coords.robboY * 32, 32, 32, MINTERM_COPY);
+        }
+      }
+    }
+}
+void robboAnimCounter(void)
+{
+  if (anim.robboTick > anim.robboTempo)
+  {
+    db.robbo = 1;
+    ++anim.robboFrame;
+    anim.robboTick = 0;
+    if (anim.robboFrame == 8)
+    {
+      anim.robboFrame = 0;
+    }
+    robboAnimBlit();
+  }
+}
+
+void doubleBufferingHandler(void)
+{
+  if (db.flyingAnimFrame == 1)
+  {
+    //blitBackground();
+    db.flyingAnimFrame = 0;
+  }
+  if (db.portal == 1)
+  {
+    //portalAnimBlit();
+    db.portal = 0;
+  }
+  if (db.blueCap == 1)
+  {
+    //blueCapacitorsAnimation();
+    db.blueCap = 0;
+  }
+  if (db.redCap == 1)
+  {
+    //redCapacitorsAnimation();
+    db.redCap = 0;
+  }
+  if (db.robbo == 1)
+  {
+    robboAnimBlit();
+    db.robbo = 0;
+  }
+}
+
 void stateGameCreate(void)
 {
   // Here goes your startup code
