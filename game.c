@@ -12,6 +12,7 @@
 #include <ace/managers/ptplayer.h>
 #include <ace/utils/file.h>
 #include "enum.h"
+#include "structures.h"
 
 //------------------------------------------------------- gdzie� przed funkcjami
 // zmienne trzymaj�ce adresy do viewa, viewporta, simple buffer managera
@@ -27,6 +28,7 @@ static tBitMap *s_pHUD;
 static tBitMap *s_pFalconBg;
 static tBitMap *s_pAnimBg;
 static tBitMap *s_pRobbo;
+static tBitMap *s_pRobboAnim; 
 static tPtplayerSfx *s_pFalkonEngineSound;
 static tPtplayerSfx *s_pLadujWegiel;
 static tPtplayerSfx *s_pRobbo8000;
@@ -50,12 +52,23 @@ extern tState g_sStateGuruMastah;
 extern tState g_sStateScoreAmi;
 extern tState g_sStateLeakedGameOver;
 
+struct coords coords; 
+struct hud hud; 
+struct robboMsg robboMsg; 
+struct collected collected; 
+struct anim anim; 
+struct doubleBuffering db; 
+struct animStateControls stateControls; 
+struct moveControls moveControls; 
+
 #define MAP_TILE_HEIGHT 7
 #define MAP_TILE_WIDTH 10
 #define FALCON_HEIGHT 32
 #define ANIM_FRAME_COUNT 8
 
 #define LAST_LEVEL_NUMBER 31
+
+#define STARTING_COAL 10
 
 char szMsg[50];  // do wyswietlania wegla na HUD
 char szMsg2[50]; // do wyswietlania kondkow na HUD
@@ -174,6 +187,47 @@ UBYTE audioFadeIn = 0;
 UBYTE audioLoopCount = 0;
 
 UBYTE isIgnoreNextFrame = 0; // zmienna do naprawienia glicza graficznego !
+
+void initialSetupDeclarationOfDataInStructures(void) 
+{ 
+  robboMsg.sz1stLine = "ROBBO says:"; 
+  robboMsg.szCollision1stLine = "Collision course detected, ESP enabled."; 
+  robboMsg.szCollision2ndLine = "1T of fuel used, danger avioded. Over."; 
+  collected.coal = STARTING_COAL; 
+  collected.excessCoal = 0; 
+  collected.capacitors = 0; 
+  collected.robbo = 0; 
+  db.portal = 0; 
+  db.blueCap = 0; 
+  db.redCap = 0; 
+  db.robbo = 0; 
+  db.flyingAnimFrame = 0; 
+  anim.portalFrame = 0; 
+  anim.portalTick = 0; 
+  anim.portalTempo = 8; 
+  anim.redCapacitorTick = 0; 
+  anim.redCapacitorTempo = 8; 
+  anim.redCapacitorTileCheck = 0; 
+  anim.blueCapacitorTick = 0; 
+  anim.blueCapacitorTempo = 16; 
+  anim.blueCapacitorTileCheck = 0; 
+  anim.robboFrame = 0; 
+  anim.robboTick = 0; 
+  anim.robboTempo = 24; 
+  anim.falconTick = 0; 
+  anim.falconTempo = 8; 
+  anim.falconFrame = 0; 
+  anim.flyingTick = 0; 
+  anim.flyingFrame = 0; 
+  anim.flyingTempo = 128; 
+  stateControls.falconIdle = TRUE; 
+  stateControls.falconFlyingAnim = 0; 
+  stateControls.stoneHitAnim = FALSE; 
+  moveControls.stoneHit = FALSE; 
+  moveControls.frameHit = FALSE; 
+  moveControls.kierunek = 0; 
+  moveControls.kierunekHold = 0; 
+} 
 
 void waitFrames(tVPort *pVPort, UBYTE ubHowMany, UWORD uwPosY)
 {
@@ -352,8 +406,11 @@ void drawTiles(void)
     else if (ubZmienna == 0x52)
     {
       kamyki[x][y] = 11;
-      blitCopyMask(s_pTiles, 96, 32, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-      blitCopyMask(s_pTiles, 96, 32, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+      collectiblesAnim[x][y] = 11;
+      coords.robboX = x; 
+      coords.robboY = y; 
+      blitCopyMask(s_pTiles, 0, 32, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+      blitCopyMask(s_pTiles, 0, 32, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
 
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
@@ -1560,9 +1617,9 @@ void robboAnimBlit(void) // animacja portalu na planszy
       {
         if (collectiblesAnim[i][k] == 11)
         {
-          blitCopy(s_pBg, coords.robboX * 32, coords.robboY * 32, s_pRobboAnim, 0, 0, 32, 32, MINTERM_COOKIE);
+          blitCopy(s_pBg, i * 32, k * 32, s_pRobboAnim, 0, 0, 32, 32, MINTERM_COOKIE);
           blitCopyMask(s_pTiles, anim.robboFrame * 32, 32, s_pRobboAnim, 0, 0, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-          blitCopy(s_pRobboAnim, 0, 0, s_pVpManager->pBack, coords.robboX * 32, coords.robboY * 32, 32, 32, MINTERM_COPY);
+          blitCopy(s_pRobboAnim, 0, 0, s_pVpManager->pBack, i * 32, k * 32, 32, 32, MINTERM_COPY);
         }
       }
     }
@@ -1613,6 +1670,7 @@ void doubleBufferingHandler(void)
 
 void stateGameCreate(void)
 {
+  initialSetupDeclarationOfDataInStructures();
   // Here goes your startup code
   //-------------------------------------------------------------- gdzie� w create
   s_pView = viewCreate(0,
@@ -1699,6 +1757,7 @@ void stateGameCreate(void)
   s_pFalconBg = bitmapCreate(48, 32, 5, BMF_INTERLEAVED);
   s_pAnimBg = bitmapCreate(48, 32, 5, BMF_INTERLEAVED);
   s_pBgPortalGlow = bitmapCreate(48, 32, 5, BMF_INTERLEAVED);
+  s_pRobboAnim = bitmapCreate(48, 32, 5, BMF_INTERLEAVED);
   s_pFont = fontCreate("data/topaz.fnt");
   s_pGotekFont = fontCreate("data/gotekFont.fnt");
 
@@ -1798,6 +1857,8 @@ void stateGameLoop(void)
   {
     blueCapacitorsAnimTick = 0;
   }
+
+  
 
   if (falkonIdleControl == 1)
   {
@@ -1966,6 +2027,10 @@ void stateGameLoop(void)
     falconCollisionCheck();
   }
 
+  doubleBufferingHandler();
+  ++anim.robboTick; 
+  robboAnimCounter();
+
   if (doubleBufferFrameControl > 0)
   {
     if (robboMsgCtrl == 0)
@@ -1988,6 +2053,8 @@ void stateGameLoop(void)
 
     --doubleBufferFrameControl;
   }
+
+  
 
   if (youWin == 1) // sprawdzenie ktore zakonczenie uruchomic
   {
