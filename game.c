@@ -139,6 +139,7 @@ BYTE hudAnimTick = 0;
 BYTE hudTickTempo = 60;
 BYTE hudTickFrame = 0;
 BYTE hudAnimDB = 0;
+BYTE hudAlreadyUp = FALSE;
 
 BYTE hudScrollingControl = 0;
 BYTE hudScrollingTick = 0;
@@ -811,7 +812,7 @@ void isThisStone(void)
 
 void robboScrollUp(void)
 {
-  if (robboMsgCtrl != 1)
+  if (robboMsgCtrl != 1 || coal == 0)
   {
     return;
   }
@@ -1880,8 +1881,7 @@ void stateGameLoop(void)
   redCapacitorsAnimation();
   blueCapacitorsAnimation();
 
-  robboScrollUp();
-  robboScrollDown();
+  
   //portalAnim();
 
   if (flyingAnimControl == 3)
@@ -2014,8 +2014,10 @@ void stateGameLoop(void)
     }
     kierunekHold = kierunek;
     --coal;
+    if (anotherHit < 1){
     printOnHUD();
     doubleBufferFrameControl = 2;
+    }
 
     if (musicPlay == MUSIC_AMBIENT_SFX)
     {
@@ -2026,6 +2028,9 @@ void stateGameLoop(void)
     czyRamka();
     falconCollisionCheck();
   }
+
+  robboScrollUp();
+  robboScrollDown();
 
   doubleBufferingHandler();
   ++anim.robboTick; 
