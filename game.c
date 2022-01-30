@@ -1253,12 +1253,32 @@ void endFalconFlying(void)
   // blitCopy(s_pBg, falkonx * 32, falkony * 32, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, MINTERM_COOKIE);
 }
 
+void robboAnimBlit(void) 
+{
+  UBYTE i = 0, k = 0;
+    for (i = 0; i < 10; ++i)
+    {
+      for (k = 0; k < 7; ++k)
+      {
+        if (collectiblesAnim[i][k] == 11)
+        {
+          blitCopy(s_pBg, i * 32, k * 32, s_pRobboAnim, 0, 0, 32, 32, MINTERM_COOKIE);
+          blitCopyMask(s_pTiles, anim.robboFrame * 32, 32, s_pRobboAnim, 0, 0, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+          blitCopy(s_pRobboAnim, 0, 0, s_pVpManager->pBack, i * 32, k * 32, 32, 32, MINTERM_COPY);
+        }
+      }
+    }
+}
+
 void blitFlyingAnimFrame(void)
 {
   blitCopy(s_pBg, uwPreviousX, uwPreviousY, s_pVpManager->pBack, uwPreviousX, uwPreviousY, 32, 32, MINTERM_COOKIE);
-  if (kamyki[tempX][tempY] > 3 && kamyki[tempX][tempY] != 10)
+  if (kamyki[tempX][tempY] > 3 && kamyki[tempX][tempY] != 10 && kamyki[tempX][tempY] != 11)
   {
     blitCopy(s_pBgWithTile, newPosX, newPosY, s_pVpManager->pBack, newPosX, newPosY, 32, 32, MINTERM_COOKIE);
+  }
+  if (kamyki[tempX][tempY] == 11){
+    robboAnimBlit();
   }
 
   else if (kamyki[tempX][tempY] < 4)
@@ -1609,22 +1629,7 @@ void hudAnim(void)
   }
 }
 
-void robboAnimBlit(void) // animacja portalu na planszy
-{
-  UBYTE i = 0, k = 0;
-    for (i = 0; i < 10; ++i)
-    {
-      for (k = 0; k < 7; ++k)
-      {
-        if (collectiblesAnim[i][k] == 11)
-        {
-          blitCopy(s_pBg, i * 32, k * 32, s_pRobboAnim, 0, 0, 32, 32, MINTERM_COOKIE);
-          blitCopyMask(s_pTiles, anim.robboFrame * 32, 32, s_pRobboAnim, 0, 0, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-          blitCopy(s_pRobboAnim, 0, 0, s_pVpManager->pBack, i * 32, k * 32, 32, 32, MINTERM_COPY);
-        }
-      }
-    }
-}
+
 void robboAnimCounter(void)
 {
   if (anim.robboTick > anim.robboTempo)
@@ -1801,6 +1806,9 @@ void stateGameCreate(void)
 
 void stateGameLoop(void)
 {
+  doubleBufferingHandler();
+  ++anim.robboTick; 
+  robboAnimCounter();
   // Here goes code done each game frame
   if (musicPlay == MUSIC_HEAVY && audioFadeIn < 64)
   {
@@ -2031,10 +2039,6 @@ void stateGameLoop(void)
 
   robboScrollUp();
   robboScrollDown();
-
-  doubleBufferingHandler();
-  ++anim.robboTick; 
-  robboAnimCounter();
 
   if (doubleBufferFrameControl > 0)
   {
