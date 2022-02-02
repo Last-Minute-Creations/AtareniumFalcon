@@ -189,45 +189,40 @@ UBYTE audioLoopCount = 0;
 
 UBYTE isIgnoreNextFrame = 0; // zmienna do naprawienia glicza graficznego !
 
-void initialSetupDeclarationOfDataInStructures(void)
+void initialSetupDeclarationOfData(void)
 {
-  robboMsg.sz1stLine = "ROBBO says:";
-  robboMsg.szCollision1stLine = "Collision course detected, ESP enabled.";
-  robboMsg.szCollision2ndLine = "1T of fuel used, danger avioded. Over.";
-  collected.coal = STARTING_COAL;
-  collected.excessCoal = 0;
-  collected.capacitors = 0;
-  collected.robbo = 0;
-  db.portal = 0;
-  db.blueCap = 0;
-  db.redCap = 0;
-  db.robbo = 0;
-  db.flyingAnimFrame = 0;
-  anim.portalFrame = 0;
-  anim.portalTick = 0;
-  anim.portalTempo = 8;
-  anim.redCapacitorTick = 0;
-  anim.redCapacitorTempo = 8;
-  anim.redCapacitorTileCheck = 0;
-  anim.blueCapacitorTick = 0;
-  anim.blueCapacitorTempo = 16;
-  anim.blueCapacitorTileCheck = 0;
+falkonx = 0;
+falkony = 0;
+krawedzx = 0;
+krawedzy = 0;
+kierunek = 0;
+falkonFace = 0; 
+
+uwPosX = 0;
+uwPosY = 0;
+
+stoneHit = 0;
+frameHit = 0;
+anotherHit = 0;
+hudScrollingControl = 0; 
+stonehitAnimControl = 0;
+falkonIdleControl = 1;
+coal = startingCoal;
+capacitors = 0;
+level = 1;
+robboMsgNr = 0;
+robboMsgCount = 0;
+robboMsgCtrl = 0;
+excesscoal = 0;
+HUDfontColor = 23;
+
+amigaMode = AMIGA_MODE_OFF;
+flyingAnimControl = 0;
+musicPlay = MUSIC_HEAVY;
+  
   anim.robboFrame = 0;
   anim.robboTick = 0;
-  anim.robboTempo = 24;
-  anim.falconTick = 0;
-  anim.falconTempo = 8;
-  anim.falconFrame = 0;
-  anim.flyingTick = 0;
-  anim.flyingFrame = 0;
-  anim.flyingTempo = 128;
-  stateControls.falconIdle = TRUE;
-  stateControls.falconFlyingAnim = 0;
-  stateControls.stoneHitAnim = FALSE;
-  moveControls.stoneHit = FALSE;
-  moveControls.frameHit = FALSE;
-  moveControls.kierunek = 0;
-  moveControls.kierunekHold = 0;
+  anim.robboTempo = 24;  
 }
 
 void waitFrames(tVPort *pVPort, UBYTE ubHowMany, UWORD uwPosY)
@@ -678,7 +673,6 @@ void levelScore(void) // WITH PORTAL OPEN AND FALKON IN PORTAL ANIM !!!
       HUDfontColor = 23;
       levelAnimFrame = 0;
       levelScoreControl = LEVEL_SCORE_OFF;
-      clean();
       ptplayerStop();
     }
   }
@@ -698,7 +692,6 @@ void levelScore(void) // WITH PORTAL OPEN AND FALKON IN PORTAL ANIM !!!
       HUDfontColor = 23;
       levelAnimFrame = 0;
       levelScoreControl = LEVEL_SCORE_OFF;
-      clean();
       ptplayerStop();
     }
   }
@@ -1668,7 +1661,7 @@ void doubleBufferingHandler(void)
 
 void stateGameCreate(void)
 {
-  initialSetupDeclarationOfDataInStructures();
+  initialSetupDeclarationOfData();
   // Here goes your startup code
   //-------------------------------------------------------------- gdzie� w create
   s_pView = viewCreate(0,
@@ -1962,7 +1955,6 @@ void stateGameLoop(void)
   {
     ptplayerStop();
     clearTiles();
-    clean();
     stateChange(g_pStateMachineGame, &g_sStateMenu);
     return;
   }

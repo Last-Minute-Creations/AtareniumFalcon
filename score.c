@@ -21,35 +21,11 @@ extern tStateManager *g_pStateMachineGame;
 
 void waitFrames();
 
-extern BYTE startingCoal;
-
-extern UBYTE coal;
 extern UBYTE capacitors;
-extern BYTE falkonx;
-extern BYTE falkony;
-extern BYTE krawedzx;
-extern BYTE krawedzy;
-extern BYTE kierunek;
-extern BYTE falkonFace; // kierunek dziobem
-extern BYTE HUDfontColor;
-
-extern UWORD uwPosY;
 
 extern UBYTE excesscoal;
 
-extern BYTE stoneHit;
-extern BYTE frameHit;
-
-extern BYTE level;
-extern BYTE robboMsgNr;
-extern BYTE robboMsgCount;
-
-
 extern tAmigaMode amigaMode;
-
-extern UBYTE cheatmodeEnablerWhenEqual3;
-extern UBYTE secondCheatEnablerWhenEqual3;
-extern UBYTE thirdCheatEnablerWhenEqual3;
 
 static tFont *s_pFont;
 static tTextBitMap *s_pBmText;
@@ -68,31 +44,6 @@ void vampirePage(void){
 
   blitCopy(s_pVAM, 0, 0, s_pVpManager->pBack, 24, 12, 272, 192, MINTERM_COOKIE);
  // blitCopy(s_pVAM, 0, 128, s_pVpManager->pBack, 0, 128, 304, 208, MINTERM_COOKIE);
-}
-
-void cleanUp(void){
-falkonx = 0;
-falkony = 0;
-krawedzx = 0;
-krawedzy = 0;
-kierunek = 0;
-falkonFace = 0; 
-
-stoneHit = 0;
-frameHit = 0;
-coal = startingCoal;
-capacitors = 0;
-level = 1;
-robboMsgNr = 0;
-robboMsgCount = 0;
-excesscoal = 0;
-HUDfontColor = 23;
-
-amigaMode = 0;
-
-cheatmodeEnablerWhenEqual3 = 0;
-secondCheatEnablerWhenEqual3 = 0;
-thirdCheatEnablerWhenEqual3 = 0;
 }
 
 void stateScoreCreate(void){
@@ -275,7 +226,6 @@ void stateScoreLoop(void){
     else if (vampire == 1){
     
 		clearTiles();
-    cleanUp();
     stateChange(g_pStateMachineGame, &g_sStateMenu);
 		return;
   }
@@ -284,7 +234,7 @@ void stateScoreLoop(void){
 	viewProcessManagers(s_pView);
 	copProcessBlocks();
 	//vPortWaitForEnd(s_pVp);
-   vPortWaitForPos(s_pVp, uwPosY, 0);
+   vPortWaitForPos(s_pVp, 255, 0);
 }
 
 void stateScoreDestroy(void){

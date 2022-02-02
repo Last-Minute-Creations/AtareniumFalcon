@@ -92,8 +92,15 @@ static void starProcess(void) {
 	}
 }
 
+void cheatcodesCleanUp (void){      // can't clean up in game.c initialSetupDeclarationOfData()
+	cheatmodeEnablerWhenEqual3 = 0;   // because it will turn off used cheats !
+	secondCheatEnablerWhenEqual3 = 0;
+	thirdCheatEnablerWhenEqual3 = 0;
+}
+
 void stateMenuCreate(void)
 {
+	cheatcodesCleanUp();
 	s_pView = viewCreate(0,
 						 TAG_VIEW_COPLIST_MODE, COPPER_MODE_BLOCK,
 						 TAG_VIEW_GLOBAL_CLUT, 1,
