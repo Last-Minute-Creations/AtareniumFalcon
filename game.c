@@ -1723,6 +1723,7 @@ void stateGameCreate(void)
   initialSetupDeclarationOfData();
   if (tutorialLevelsSkip == TRUE){
     level = 9;
+    coal = 1;
   }
   // Here goes your startup code
   //-------------------------------------------------------------- gdzie� w create
