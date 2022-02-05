@@ -24,6 +24,7 @@ static tBitMap *s_pBg;
 static tBitMap *s_pBgWithTile;
 static tBitMap *s_pBgPortalGlow;
 static tBitMap *s_pHUD;
+static tBitMap *s_pAmiHUDblink;
 static tBitMap *s_pFalconBg;
 static tBitMap *s_pAnimBg;
 static tBitMap *s_pRobbo;
@@ -699,16 +700,26 @@ void levelScore(void) // WITH PORTAL OPEN AND FALKON IN PORTAL ANIM !!!
     }
   }
 
-  if (amigaMode != AMIGA_MODE_OFF && levelScoreTick == 64 && levelScoreControl == LEVEL_SCORE_NOCOAL)
-  {
-    levelScoreTick = 0;
-    blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 96, 32, MINTERM_COOKIE);
-    sprintf(szMsg3, "NO COAL");
-    fontFillTextBitMap(s_pGotekFont, s_pBmText, szMsg3);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 239, HUDfontColor, FONT_COOKIE);
-    ++levelAnimFrame;
+ 
+    
 
-    if (levelAnimFrame == 2)
+  if (amigaMode != AMIGA_MODE_OFF && levelScoreControl == LEVEL_SCORE_NOCOAL)
+  {
+    if (levelScoreTick >= 0 && levelScoreTick < 32){
+      blitCopy(s_pAmiHUDblink, 0, 0, s_pVpManager->pBack, 288, 224, 32, 32, MINTERM_COOKIE);
+    }
+    if (levelScoreTick >= 32 && levelScoreTick < 64){
+      blitCopy(s_pHUD, 288, 0, s_pVpManager->pBack, 288, 224, 32, 32, MINTERM_COOKIE);
+      blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 96, 32, MINTERM_COOKIE);
+      sprintf(szMsg3, "NO COAL");
+      fontFillTextBitMap(s_pGotekFont, s_pBmText, szMsg3);
+      fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 239, HUDfontColor, FONT_COOKIE);
+    }
+    if (levelScoreTick >= 64){
+    levelScoreTick = 0;
+    ++levelAnimFrame;
+    }
+    if (levelAnimFrame == 4)
     {
       youWin = 2;
       HUDfontColor = 23;
@@ -1131,6 +1142,7 @@ void coalAndCollect(void)
       s_pTilesMask = bitmapCreateFromFile("data/tileset_mask2.bm", 0);
       bitmapDestroy(s_pHUD);
       s_pHUD = bitmapCreateFromFile("data/amiHUD.bm", 0);
+      s_pAmiHUDblink = bitmapCreateFromFile("data/amiHUD_LED_OFF.bm", 0);
       blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320, 32, MINTERM_COOKIE);
       blitCopy(s_pHUD, 0, 0, s_pVpManager->pFront, 0, 224, 320, 32, MINTERM_COOKIE);
 
@@ -1788,6 +1800,7 @@ void stateGameCreate(void)
     s_pTiles = bitmapCreateFromFile("data/tileset2.bm", 0);
     s_pTilesMask = bitmapCreateFromFile("data/tileset_mask2.bm", 0);
     s_pHUD = bitmapCreateFromFile("data/amiHUD.bm", 0);
+    s_pAmiHUDblink = bitmapCreateFromFile("data/amiHUD_LED_OFF.bm", 0);
     copBlockEnable(s_pView->pCopList, copBlockBeforeHud);
     copBlockEnable(s_pView->pCopList, copBlockAfterHud);
   }
@@ -2148,6 +2161,9 @@ void stateGameDestroy(void)
   bitmapDestroy(s_pBg);
   bitmapDestroy(s_pBgWithTile);
   bitmapDestroy(s_pHUD);
+  if (thirdCheatEnablerWhenEqual3 == 3){
+    bitmapDestroy(s_pAmiHUDblink);
+  }
   bitmapDestroy(s_pFalconBg);
   bitmapDestroy(s_pAnimBg);
   bitmapDestroy(s_pBgPortalGlow);

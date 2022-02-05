@@ -51,9 +51,9 @@ convertPalette(falkon.elf ${RES_DIR}/falkon.pal ${PLT_PATH}) # z res/falkon.pal 
 convertBitmaps(
 	TARGET falkon.elf PALETTE ${PLT_PATH}
 	INTERLEAVED SOURCES
-		${RES_DIR}/amiHUD.png
+		${RES_DIR}/amiHUD.png ${RES_DIR}/amiHUD_LED_OFF.png
 	DESTINATIONS
-	${DATA_DIR}/amiHUD.bm
+	${DATA_DIR}/amiHUD.bm ${DATA_DIR}/amiHUD_LED_OFF.bm
 )
 
 convertBitmaps(
