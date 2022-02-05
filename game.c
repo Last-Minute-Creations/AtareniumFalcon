@@ -73,9 +73,10 @@ char szLvl[50];
 
 char szRobboMsg[80];
 char *szRobbo1stLine = "ROBBO says:";
-char *szRobbo1stLineTribute = "ROBBO says: Boot of Fame";
 char *szCollisionMsg1stLine = "Collision course detected, ESP enabled.";
 char *szCollisionMsg2ndLine = "1T of fuel used, danger avioded. Over.";
+char *szTribute1stLine = "Golden Gumboot with BASIC Code strings for";
+char *szTribute2ndLine = "Saberman - Great Atariman of the Galaxy.";
 
 BOOL robbo1stLineExceptionModificator = FALSE; 
 
@@ -226,8 +227,14 @@ robboMsgCtrl = 0;
 excesscoal = 0;
 HUDfontColor = 23;
 
-amigaMode = AMIGA_MODE_OFF;
+levelScoreControl = 0;
+levelAnimFrame = 0;
+levelScoreTick = 0;
 flyingAnimControl = 0;
+flyingFrame = 0;
+flyingTick = 0;
+
+amigaMode = AMIGA_MODE_OFF;
 musicPlay = MUSIC_HEAVY;
   
   anim.robboFrame = 0;
@@ -325,14 +332,14 @@ void drawTiles(void)
   {
     fileRead(levelFile, &ubZmienna, 1);
 
-    if (ubZmienna == 0x30)
+    if (ubZmienna == 0x30)   // ONLY BG
     {
       kamyki[x][y] = 0;
       blitCopy(s_pBg, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopy(s_pBg, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
     }
 
-    else if (ubZmienna == 0x33)
+    else if (ubZmienna == 0x33)   // RANDOM 1-3 METEORITE
     {
       kamyki[x][y] = 3;
       ubStoneImg = ulRandMinMax(0, 2);
@@ -341,7 +348,7 @@ void drawTiles(void)
       blitCopyMask(s_pTiles, ubStoneImg * 32, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
       blitCopyMask(s_pTiles, ubStoneImg * 32, 0, s_pVpManager->pFront, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
     }
-    else if (ubZmienna == 0x34)
+    else if (ubZmienna == 0x34)    // 2 COAL
     {
       kamyki[x][y] = 4;
       blitCopyMask(s_pTiles, 96, 0, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
@@ -350,7 +357,7 @@ void drawTiles(void)
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
     }
 
-    else if (ubZmienna == 0x35)
+    else if (ubZmienna == 0x35)  // 3 COAL
     {
       kamyki[x][y] = 5;
       blitCopyMask(s_pTiles, 128, 0, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
@@ -359,7 +366,7 @@ void drawTiles(void)
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
     }
 
-    else if (ubZmienna == 0x36)
+    else if (ubZmienna == 0x36)  // 4 COAL
     {
       kamyki[x][y] = 6;
       blitCopyMask(s_pTiles, 160, 0, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
@@ -367,7 +374,7 @@ void drawTiles(void)
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
     }
-    else if (ubZmienna == 0x37)
+    else if (ubZmienna == 0x37)   // 5 COAL
     {
       kamyki[x][y] = 7;
       blitCopyMask(s_pTiles, 192, 0, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
@@ -375,7 +382,7 @@ void drawTiles(void)
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
     }
-    else if (ubZmienna == 0x38)
+    else if (ubZmienna == 0x38)   // BLUE CAPACITOR
     {
       kamyki[x][y] = 8;
       collectiblesAnim[x][y] = 8;
@@ -384,7 +391,7 @@ void drawTiles(void)
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
     }
-    else if (ubZmienna == 0x39)
+    else if (ubZmienna == 0x39)  // RED CAPACITOR
     {
       kamyki[x][y] = 9;
       collectiblesAnim[x][y] = 9;
@@ -402,7 +409,7 @@ void drawTiles(void)
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
     }
-    else if (ubZmienna == 0x52)  
+    else if (ubZmienna == 0x52)  // ROBBO
     {
       kamyki[x][y] = 11;
       collectiblesAnim[x][y] = 11;
@@ -411,7 +418,7 @@ void drawTiles(void)
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
     }
-    else if (ubZmienna == 0x42)
+    else if (ubZmienna == 0x42) // BROKEN CAPACITOR
     {
       kamyki[x][y] = 12;
       blitCopyMask(s_pTiles, 224, 0, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
@@ -935,7 +942,6 @@ void robboSays(void)
       sprintf(szRobboMsg, "Training completed. Good Luck.");
       break;
     case 9:
-      sprintf(szRobboMsg, "for Saberman, the great Atariman of ASS.");
       robbo1stLineExceptionModificator = TRUE;
       break;
     case 10:
@@ -978,14 +984,17 @@ void robboSays(void)
       if (robbo1stLineExceptionModificator == FALSE){
         fontFillTextBitMap(s_pFont, s_pBmText, szRobbo1stLine);
         fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 8, 230, 23, FONT_COOKIE);
+        fontFillTextBitMap(s_pFont, s_pBmText, szRobboMsg);
+        fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 8, 240, 23, FONT_COOKIE);
     }
       else if (robbo1stLineExceptionModificator == TRUE){
-        fontFillTextBitMap(s_pFont, s_pBmText, szRobbo1stLineTribute);
+        fontFillTextBitMap(s_pFont, s_pBmText, szTribute1stLine);
         fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 8, 230, 23, FONT_COOKIE);
+        fontFillTextBitMap(s_pFont, s_pBmText, szTribute2ndLine);
+        fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 8, 240, 23, FONT_COOKIE);
         robbo1stLineExceptionModificator = FALSE;
     }
-    fontFillTextBitMap(s_pFont, s_pBmText, szRobboMsg);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 8, 240, 23, FONT_COOKIE);
+    
   }
   else if (HUDcollisionMsg == 1)
   {
@@ -1129,6 +1138,16 @@ void coalAndCollect(void)
       copProcessBlocks();
       break;
     }
+  case 13:
+    //++robboMsgNr;
+    //++robboMsgCount;
+    // if (musicPlay == MUSIC_AMBIENT_SFX)
+    // {
+    //   ptplayerSfxPlay(s_pRobbo8000, 3, 32, 100);
+    // }
+    robboMsgCtrl = 1;
+    hudScrollingControl = 1;
+    break;
     printOnHUD();
   }
 }
