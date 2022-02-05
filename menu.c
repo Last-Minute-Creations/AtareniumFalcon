@@ -37,6 +37,7 @@ UBYTE cheatmodeEnablerWhenEqual3 = 0;
 UBYTE secondCheatEnablerWhenEqual3 = 0;
 UBYTE thirdCheatEnablerWhenEqual3 = 0;
 UBYTE cheatModeStarColor = 0;
+BOOL tutorialLevelsSkip = FALSE;
 
 UBYTE creditsControl = 0;
 
@@ -101,6 +102,7 @@ void cheatcodesCleanUp (void){      // can't clean up in game.c initialSetupDecl
 void stateMenuCreate(void)
 {
 	cheatcodesCleanUp();
+	tutorialLevelsSkip = FALSE;
 	s_pView = viewCreate(0,
 						 TAG_VIEW_COPLIST_MODE, COPPER_MODE_BLOCK,
 						 TAG_VIEW_GLOBAL_CLUT, 1,
@@ -197,6 +199,9 @@ void stateMenuLoop(void)
 	}
 	if (keyUse(KEY_R) && thirdCheatEnablerWhenEqual3 == 2){
 		++thirdCheatEnablerWhenEqual3;
+	}
+	if (keyUse(KEY_X) && tutorialLevelsSkip == FALSE){
+		tutorialLevelsSkip = TRUE;
 	}
 
 

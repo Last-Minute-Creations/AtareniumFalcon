@@ -53,8 +53,6 @@ extern tState g_sStateGuruMastah;
 extern tState g_sStateScoreAmi;
 extern tState g_sStateLeakedGameOver;
 
-
-
 #define MAP_TILE_HEIGHT 7
 #define MAP_TILE_WIDTH 10
 #define FALCON_HEIGHT 32
@@ -78,7 +76,9 @@ char *szCollisionMsg2ndLine = "1T of fuel used, danger avioded. Over.";
 char *szTribute1stLine = "Golden Gumboot with BASIC Code strings for";
 char *szTribute2ndLine = "Saberman - Great Atariman of the Galaxy.";
 
-BOOL robbo1stLineExceptionModificator = FALSE; 
+BOOL robbo1stLineExceptionModificator = FALSE;
+BOOL setGameOverInNextLoopIter = FALSE;
+BOOL gameOverWhenAnotherCollisionHack = FALSE;
 
 BYTE youWin = 0;
 
@@ -110,8 +110,6 @@ UWORD HitPosY = 0;
 BYTE stoneHit = 0;
 BYTE frameHit = 0;
 BYTE anotherHit = 0; // sprawdzam czy po uderzeniu w kamien chce jeszcze raz, zeby sie HUD 2 razy nie rozwijal na
-
-CONST BYTE startingCoal = 10;
 
 UBYTE falkonIdle = 0;
 UBYTE falkonIdleTempo = 8;
@@ -160,7 +158,7 @@ BYTE flyingFrame = 0;
 UWORD newPosX = 0;
 UWORD newPosY = 0;
 
-UBYTE coal = startingCoal;
+UBYTE coal = STARTING_COAL;
 UBYTE capacitors = 0;
 UBYTE excesscoal = 0;
 BYTE level = 1;
@@ -171,17 +169,19 @@ BYTE robboMsgCount = 0;
 BYTE HUDcollisionMsg = 0;
 BYTE HUDfontColor = 23; //23
 
-struct anim { 
-  UBYTE robboFrame; 
-  UBYTE robboTick; 
-  UBYTE robboTempo; 
-} ;  
+struct anim
+{
+  UBYTE robboFrame;
+  UBYTE robboTick;
+  UBYTE robboTempo;
+};
 
 struct anim anim;
 
-struct db {
+struct db
+{
   UBYTE robbo;
-} ;
+};
 struct db db;
 
 UBYTE doubleBufferFrameControl = 2;
@@ -194,6 +194,7 @@ UBYTE tempY = 0;
 extern UBYTE cheatmodeEnablerWhenEqual3;
 extern UBYTE secondCheatEnablerWhenEqual3;
 extern UBYTE thirdCheatEnablerWhenEqual3;
+extern BOOL tutorialLevelsSkip;
 
 UBYTE audioFadeIn = 0;
 UBYTE audioLoopCount = 0;
@@ -202,44 +203,47 @@ UBYTE isIgnoreNextFrame = 0; // zmienna do naprawienia glicza graficznego !
 
 void initialSetupDeclarationOfData(void)
 {
-falkonx = 0;
-falkony = 0;
-krawedzx = 0;
-krawedzy = 0;
-kierunek = 0;
-falkonFace = 0; 
+  falkonx = 0;
+  falkony = 0;
+  krawedzx = 0;
+  krawedzy = 0;
+  kierunek = 0;
+  falkonFace = 0;
 
-uwPosX = 0;
-uwPosY = 0;
+  uwPosX = 0;
+  uwPosY = 0;
 
-stoneHit = 0;
-frameHit = 0;
-anotherHit = 0;
-hudScrollingControl = 0; 
-stonehitAnimControl = 0;
-falkonIdleControl = 1;
-coal = startingCoal;
-capacitors = 0;
-level = 1;
-robboMsgNr = 0;
-robboMsgCount = 0;
-robboMsgCtrl = 0;
-excesscoal = 0;
-HUDfontColor = 23;
+  stoneHit = 0;
+  frameHit = 0;
+  anotherHit = 0;
+  hudScrollingControl = 0;
+  stonehitAnimControl = 0;
+  falkonIdleControl = 1;
+  coal = STARTING_COAL;
+  capacitors = 0;
+  level = 1;
+  robboMsgNr = 0;
+  robboMsgCount = 0;
+  robboMsgCtrl = 0;
+  excesscoal = 0;
+  HUDfontColor = 23;
 
-levelScoreControl = 0;
-levelAnimFrame = 0;
-levelScoreTick = 0;
-flyingAnimControl = 0;
-flyingFrame = 0;
-flyingTick = 0;
+  levelScoreControl = LEVEL_SCORE_OFF;
+  levelAnimFrame = 0;
+  levelScoreTick = 0;
+  flyingAnimControl = 0;
+  flyingFrame = 0;
+  flyingTick = 0;
 
-amigaMode = AMIGA_MODE_OFF;
-musicPlay = MUSIC_HEAVY;
-  
+  setGameOverInNextLoopIter = FALSE;
+  gameOverWhenAnotherCollisionHack = FALSE;
+
+  amigaMode = AMIGA_MODE_OFF;
+  musicPlay = MUSIC_HEAVY;
+
   anim.robboFrame = 0;
   anim.robboTick = 0;
-  anim.robboTempo = 24;  
+  anim.robboTempo = 24;
 }
 
 void waitFrames(tVPort *pVPort, UBYTE ubHowMany, UWORD uwPosY)
@@ -332,14 +336,14 @@ void drawTiles(void)
   {
     fileRead(levelFile, &ubZmienna, 1);
 
-    if (ubZmienna == 0x30)   // ONLY BG
+    if (ubZmienna == 0x30) // ONLY BG
     {
       kamyki[x][y] = 0;
       blitCopy(s_pBg, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopy(s_pBg, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
     }
 
-    else if (ubZmienna == 0x33)   // RANDOM 1-3 METEORITE
+    else if (ubZmienna == 0x33) // RANDOM 1-3 METEORITE
     {
       kamyki[x][y] = 3;
       ubStoneImg = ulRandMinMax(0, 2);
@@ -348,7 +352,7 @@ void drawTiles(void)
       blitCopyMask(s_pTiles, ubStoneImg * 32, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
       blitCopyMask(s_pTiles, ubStoneImg * 32, 0, s_pVpManager->pFront, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
     }
-    else if (ubZmienna == 0x34)    // 2 COAL
+    else if (ubZmienna == 0x34) // 2 COAL
     {
       kamyki[x][y] = 4;
       blitCopyMask(s_pTiles, 96, 0, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
@@ -357,7 +361,7 @@ void drawTiles(void)
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
     }
 
-    else if (ubZmienna == 0x35)  // 3 COAL
+    else if (ubZmienna == 0x35) // 3 COAL
     {
       kamyki[x][y] = 5;
       blitCopyMask(s_pTiles, 128, 0, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
@@ -366,7 +370,7 @@ void drawTiles(void)
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
     }
 
-    else if (ubZmienna == 0x36)  // 4 COAL
+    else if (ubZmienna == 0x36) // 4 COAL
     {
       kamyki[x][y] = 6;
       blitCopyMask(s_pTiles, 160, 0, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
@@ -374,7 +378,7 @@ void drawTiles(void)
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
     }
-    else if (ubZmienna == 0x37)   // 5 COAL
+    else if (ubZmienna == 0x37) // 5 COAL
     {
       kamyki[x][y] = 7;
       blitCopyMask(s_pTiles, 192, 0, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
@@ -382,7 +386,7 @@ void drawTiles(void)
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
     }
-    else if (ubZmienna == 0x38)   // BLUE CAPACITOR
+    else if (ubZmienna == 0x38) // BLUE CAPACITOR
     {
       kamyki[x][y] = 8;
       collectiblesAnim[x][y] = 8;
@@ -391,7 +395,7 @@ void drawTiles(void)
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
     }
-    else if (ubZmienna == 0x39)  // RED CAPACITOR
+    else if (ubZmienna == 0x39) // RED CAPACITOR
     {
       kamyki[x][y] = 9;
       collectiblesAnim[x][y] = 9;
@@ -401,7 +405,7 @@ void drawTiles(void)
     }
     else if (ubZmienna == 0x45) // PORTAL
     {
-      kamyki[x][y] = 10;  
+      kamyki[x][y] = 10;
       portalGlowX = x;
       portalGlowY = y;
       blitCopyMask(s_pTiles, 0, 352, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
@@ -409,7 +413,7 @@ void drawTiles(void)
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
     }
-    else if (ubZmienna == 0x52)  // ROBBO
+    else if (ubZmienna == 0x52) // ROBBO
     {
       kamyki[x][y] = 11;
       collectiblesAnim[x][y] = 11;
@@ -426,7 +430,7 @@ void drawTiles(void)
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
     }
-    else if (ubZmienna == 0x53)  // SABERMAN TRIBUTE BOOT OF GLORY
+    else if (ubZmienna == 0x53) // SABERMAN TRIBUTE BOOT OF GLORY
     {
       kamyki[x][y] = 13;
       blitCopyMask(s_pSabermanTribute, 0, 0, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pSabermanTributeMask->Planes[0]);
@@ -434,7 +438,7 @@ void drawTiles(void)
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
     }
-    else if (ubZmienna == 0x31)  // FALCON START POSITION
+    else if (ubZmienna == 0x31) // FALCON START POSITION
     {
       kamyki[x][y] = 1;
       falkonx = x;
@@ -592,6 +596,10 @@ void levelScoreDBredraw(void) // odrysowanie tego co w levelScore ale bez oblicz
 void levelScore(void) // WITH PORTAL OPEN AND FALKON IN PORTAL ANIM !!!
 {
   if (levelScoreControl == LEVEL_SCORE_OFF)
+  {
+    return;
+  }
+  if (gameOverWhenAnotherCollisionHack == TRUE)
   {
     return;
   }
@@ -833,8 +841,10 @@ void robboScrollUp(void)
 
   if (hudScrollingControl == 1)
   {
+
     if (hudScrollingTick == 0 || hudScrollingTick == 1)
     {
+      printOnHUD(); // HACK SIMILAR TO L.1979 - HUD DOUBLE BUFFER DISPLAY
       blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 248, 320, 8, MINTERM_COOKIE);
     }
     else if (hudScrollingTick == 4 || hudScrollingTick == 5)
@@ -898,15 +908,14 @@ void robboScrollDown(void)
       hudScrollingTick = 0;
       hudScrollingControl = 0;
       HUDcollisionMsg = 2;
+      gameOverWhenAnotherCollisionHack = FALSE;
       printOnHUD();
-      
     }
   }
 }
 
 void robboSays(void)
 {
-  
 
   if (amigaMode == AMIGA_MODE_CHECK && HUDcollisionMsg != 1)
   {
@@ -939,7 +948,7 @@ void robboSays(void)
       sprintf(szRobboMsg, "Minister Renton is counting on you, Sir.");
       break;
     case 8:
-      sprintf(szRobboMsg, "Training completed. Good Luck.");
+      sprintf(szRobboMsg, "Training passed, skip it with X in menu.");
       break;
     case 9:
       robbo1stLineExceptionModificator = TRUE;
@@ -981,22 +990,23 @@ void robboSays(void)
       sprintf(szRobboMsg, "Well done! Now collect the coal and GTFO !!!");
       break;
     }
-      if (robbo1stLineExceptionModificator == FALSE){
-        fontFillTextBitMap(s_pFont, s_pBmText, szRobbo1stLine);
-        fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 8, 230, 23, FONT_COOKIE);
-        fontFillTextBitMap(s_pFont, s_pBmText, szRobboMsg);
-        fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 8, 240, 23, FONT_COOKIE);
-    }
-      else if (robbo1stLineExceptionModificator == TRUE){
-        fontFillTextBitMap(s_pFont, s_pBmText, szTribute1stLine);
-        fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 8, 230, 23, FONT_COOKIE);
-        fontFillTextBitMap(s_pFont, s_pBmText, szTribute2ndLine);
-        fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 8, 240, 23, FONT_COOKIE);
-        robbo1stLineExceptionModificator = FALSE;
-    }
-    
   }
-  else if (HUDcollisionMsg == 1)
+  if (robbo1stLineExceptionModificator == FALSE && HUDcollisionMsg == 0)
+  {
+    fontFillTextBitMap(s_pFont, s_pBmText, szRobbo1stLine);
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 8, 230, 23, FONT_COOKIE);
+    fontFillTextBitMap(s_pFont, s_pBmText, szRobboMsg);
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 8, 240, 23, FONT_COOKIE);
+  }
+  else if (robbo1stLineExceptionModificator == TRUE && HUDcollisionMsg == 0)
+  {
+    fontFillTextBitMap(s_pFont, s_pBmText, szTribute1stLine);
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 8, 230, 23, FONT_COOKIE);
+    fontFillTextBitMap(s_pFont, s_pBmText, szTribute2ndLine);
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 8, 240, 23, FONT_COOKIE);
+    robbo1stLineExceptionModificator = FALSE;
+  }
+  if (HUDcollisionMsg == 1)
   {
     fontFillTextBitMap(s_pFont, s_pBmText, szCollisionMsg1stLine);
     fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 8, 230, 23, FONT_COOKIE);
@@ -1136,11 +1146,10 @@ void coalAndCollect(void)
       copBlockEnable(s_pView->pCopList, copBlockBeforeHud);
       copBlockEnable(s_pView->pCopList, copBlockAfterHud);
       copProcessBlocks();
-      break;
     }
+    break;
+
   case 13:
-    //++robboMsgNr;
-    //++robboMsgCount;
     // if (musicPlay == MUSIC_AMBIENT_SFX)
     // {
     //   ptplayerSfxPlay(s_pRobbo8000, 3, 32, 100);
@@ -1148,8 +1157,8 @@ void coalAndCollect(void)
     robboMsgCtrl = 1;
     hudScrollingControl = 1;
     break;
-    printOnHUD();
   }
+  printOnHUD();
 }
 
 void falkonHittingStone(void)
@@ -1698,7 +1707,11 @@ void doubleBufferingHandler(void)
 
 void stateGameCreate(void)
 {
+  clearTiles();
   initialSetupDeclarationOfData();
+  if (tutorialLevelsSkip == TRUE){
+    level = 9;
+  }
   // Here goes your startup code
   //-------------------------------------------------------------- gdzie� w create
   s_pView = viewCreate(0,
@@ -1782,8 +1795,8 @@ void stateGameCreate(void)
   s_pBg = bitmapCreateFromFile("data/tlo1.bm", 0);
   s_pBgWithTile = bitmapCreateFromFile("data/tlo1.bm", 0); // fragmenty tla do podstawiania po ruchu
   s_pRobbo = bitmapCreateFromFile("data/falkon_robbo.bm", 0);
-  s_pSabermanTribute = bitmapCreateFromFile("data/saberman.bm",0);
-  s_pSabermanTributeMask = bitmapCreateFromFile("data/saberman_mask.bm",0);
+  s_pSabermanTribute = bitmapCreateFromFile("data/saberman.bm", 0);
+  s_pSabermanTributeMask = bitmapCreateFromFile("data/saberman_mask.bm", 0);
   s_pFalconBg = bitmapCreate(48, 32, 5, BMF_INTERLEAVED);
   s_pAnimBg = bitmapCreate(48, 32, 5, BMF_INTERLEAVED);
   s_pBgPortalGlow = bitmapCreate(48, 32, 5, BMF_INTERLEAVED);
@@ -1948,6 +1961,13 @@ void stateGameLoop(void)
     ++stonehitAnimTick;
   }
 
+  if (hudFullyUp == TRUE && coal == 0)
+  {
+    robboMsgCtrl = 2;
+    hudScrollingControl = 1;
+    gameOverWhenAnotherCollisionHack = TRUE;
+  }
+
   kierunek = 0;
 
   //if (isIgnoreNextFrame > 0)
@@ -1957,16 +1977,16 @@ void stateGameLoop(void)
   //}
   //else if(isIgnoreNextFrame == 0)
   //{
+  if (setGameOverInNextLoopIter == TRUE) // HACK FROM BELOW (L.1979) RESOLVING !
+  {
+    printOnHUD();
+    levelScoreControl = LEVEL_SCORE_NOCOAL;
+    setGameOverInNextLoopIter = FALSE;
+  }
+
   if (coal == 0 && levelScoreControl != LEVEL_SCORE_NOCOAL && flyingAnimControl == 0)
   {
-    levelScoreControl = LEVEL_SCORE_NOCOAL;
-    //gameOverCoalBlinkingOnHUD();
-    //coal = 10;
-    //youWin = 2;
-
-    //clean();
-    //ptplayerStop();
-    //return;
+    setGameOverInNextLoopIter = TRUE; // HACK FOR DOUBLE BUFFER WHEN GOING TO ROBBO ON 0 COAL
   }
 
   joyProcess();

@@ -23,7 +23,6 @@ void waitFrames();
 
 extern BYTE youWin;
 
-void clearTiles();
 
 void stateGameOverCreate(void){
 
@@ -68,7 +67,6 @@ void stateGameOverLoop(void){
 	keyProcess();
 
 	if(joyUse(JOY1_FIRE) || keyUse(KEY_RETURN)) {
-    clearTiles();
 		stateChange(g_pStateMachineGame, &g_sStateMenu);
 		return;
   }
