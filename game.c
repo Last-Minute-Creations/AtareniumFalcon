@@ -12,7 +12,6 @@
 #include <ace/managers/ptplayer.h>
 #include <ace/utils/file.h>
 #include "enum.h"
-#include "structures.h"
 
 //------------------------------------------------------- gdzie� przed funkcjami
 // zmienne trzymaj�ce adresy do viewa, viewporta, simple buffer managera
@@ -29,6 +28,8 @@ static tBitMap *s_pFalconBg;
 static tBitMap *s_pAnimBg;
 static tBitMap *s_pRobbo;
 static tBitMap *s_pRobboAnim;
+static tBitMap *s_pSabermanTribute;
+static tBitMap *s_pSabermanTributeMask;
 static tPtplayerSfx *s_pFalkonEngineSound;
 static tPtplayerSfx *s_pLadujWegiel;
 static tPtplayerSfx *s_pRobbo8000;
@@ -52,14 +53,7 @@ extern tState g_sStateGuruMastah;
 extern tState g_sStateScoreAmi;
 extern tState g_sStateLeakedGameOver;
 
-struct coords coords;
-struct hud hud;
-struct robboMsg robboMsg;
-struct collected collected;
-struct anim anim;
-struct doubleBuffering db;
-struct animStateControls stateControls;
-struct moveControls moveControls;
+
 
 #define MAP_TILE_HEIGHT 7
 #define MAP_TILE_WIDTH 10
@@ -79,8 +73,11 @@ char szLvl[50];
 
 char szRobboMsg[80];
 char *szRobbo1stLine = "ROBBO says:";
+char *szRobbo1stLineTribute = "ROBBO says: Boot of Fame";
 char *szCollisionMsg1stLine = "Collision course detected, ESP enabled.";
 char *szCollisionMsg2ndLine = "1T of fuel used, danger avioded. Over.";
+
+BOOL robbo1stLineExceptionModificator = FALSE; 
 
 BYTE youWin = 0;
 
@@ -172,6 +169,19 @@ BYTE robboMsgCtrl = 0;
 BYTE robboMsgCount = 0;
 BYTE HUDcollisionMsg = 0;
 BYTE HUDfontColor = 23; //23
+
+struct anim { 
+  UBYTE robboFrame; 
+  UBYTE robboTick; 
+  UBYTE robboTempo; 
+} ;  
+
+struct anim anim;
+
+struct db {
+  UBYTE robbo;
+} ;
+struct db db;
 
 UBYTE doubleBufferFrameControl = 2;
 UBYTE idleFrame = 0;
@@ -335,7 +345,6 @@ void drawTiles(void)
     {
       kamyki[x][y] = 4;
       blitCopyMask(s_pTiles, 96, 0, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-      blitCopyMask(s_pTiles, 96, 0, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
 
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
@@ -344,7 +353,6 @@ void drawTiles(void)
     else if (ubZmienna == 0x35)
     {
       kamyki[x][y] = 5;
-      blitCopyMask(s_pTiles, 128, 0, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
       blitCopyMask(s_pTiles, 128, 0, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
 
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
@@ -355,7 +363,6 @@ void drawTiles(void)
     {
       kamyki[x][y] = 6;
       blitCopyMask(s_pTiles, 160, 0, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-      blitCopyMask(s_pTiles, 160, 0, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
 
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
@@ -363,7 +370,6 @@ void drawTiles(void)
     else if (ubZmienna == 0x37)
     {
       kamyki[x][y] = 7;
-      blitCopyMask(s_pTiles, 192, 0, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
       blitCopyMask(s_pTiles, 192, 0, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
 
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
@@ -374,7 +380,6 @@ void drawTiles(void)
       kamyki[x][y] = 8;
       collectiblesAnim[x][y] = 8;
       blitCopyMask(s_pTiles, 0, 256, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-      blitCopyMask(s_pTiles, 0, 256, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
 
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
@@ -384,28 +389,23 @@ void drawTiles(void)
       kamyki[x][y] = 9;
       collectiblesAnim[x][y] = 9;
       blitCopyMask(s_pTiles, 0, 288, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-      blitCopyMask(s_pTiles, 0, 288, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
     }
-    else if (ubZmienna == 0x45)
+    else if (ubZmienna == 0x45) // PORTAL
     {
-      kamyki[x][y] = 10;
+      kamyki[x][y] = 10;  
       portalGlowX = x;
       portalGlowY = y;
-      blitCopyMask(s_pTiles, 0, 352, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
       blitCopyMask(s_pTiles, 0, 352, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
 
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
     }
-    else if (ubZmienna == 0x52)
+    else if (ubZmienna == 0x52)  
     {
       kamyki[x][y] = 11;
       collectiblesAnim[x][y] = 11;
-      coords.robboX = x;
-      coords.robboY = y;
-      blitCopyMask(s_pTiles, 0, 32, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
       blitCopyMask(s_pTiles, 0, 32, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
 
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
@@ -415,12 +415,19 @@ void drawTiles(void)
     {
       kamyki[x][y] = 12;
       blitCopyMask(s_pTiles, 224, 0, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-      blitCopyMask(s_pTiles, 224, 0, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
 
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
     }
-    else if (ubZmienna == 0x31)
+    else if (ubZmienna == 0x53)  // SABERMAN TRIBUTE BOOT OF GLORY
+    {
+      kamyki[x][y] = 13;
+      blitCopyMask(s_pSabermanTribute, 0, 0, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pSabermanTributeMask->Planes[0]);
+
+      blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
+      blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
+    }
+    else if (ubZmienna == 0x31)  // FALCON START POSITION
     {
       kamyki[x][y] = 1;
       falkonx = x;
@@ -927,6 +934,10 @@ void robboSays(void)
     case 8:
       sprintf(szRobboMsg, "Training completed. Good Luck.");
       break;
+    case 9:
+      sprintf(szRobboMsg, "for Saberman, the great Atariman of ASS.");
+      robbo1stLineExceptionModificator = TRUE;
+      break;
     case 10:
       sprintf(szRobboMsg, "Please clean up here, I found some GermZ.");
       break;
@@ -964,8 +975,15 @@ void robboSays(void)
       sprintf(szRobboMsg, "Well done! Now collect the coal and GTFO !!!");
       break;
     }
-    fontFillTextBitMap(s_pFont, s_pBmText, szRobbo1stLine);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 8, 230, 23, FONT_COOKIE);
+      if (robbo1stLineExceptionModificator == FALSE){
+        fontFillTextBitMap(s_pFont, s_pBmText, szRobbo1stLine);
+        fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 8, 230, 23, FONT_COOKIE);
+    }
+      else if (robbo1stLineExceptionModificator == TRUE){
+        fontFillTextBitMap(s_pFont, s_pBmText, szRobbo1stLineTribute);
+        fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 8, 230, 23, FONT_COOKIE);
+        robbo1stLineExceptionModificator = FALSE;
+    }
     fontFillTextBitMap(s_pFont, s_pBmText, szRobboMsg);
     fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 8, 240, 23, FONT_COOKIE);
   }
@@ -1632,26 +1650,26 @@ void robboAnimCounter(void)
 
 void doubleBufferingHandler(void)
 {
-  if (db.flyingAnimFrame == 1)
-  {
-    //blitBackground();
-    db.flyingAnimFrame = 0;
-  }
-  if (db.portal == 1)
-  {
-    //portalAnimBlit();
-    db.portal = 0;
-  }
-  if (db.blueCap == 1)
-  {
-    //blueCapacitorsAnimation();
-    db.blueCap = 0;
-  }
-  if (db.redCap == 1)
-  {
-    //redCapacitorsAnimation();
-    db.redCap = 0;
-  }
+  // if (db.flyingAnimFrame == 1)
+  // {
+  //   //blitBackground();
+  //   db.flyingAnimFrame = 0;
+  // }
+  // if (db.portal == 1)
+  // {
+  //   //portalAnimBlit();
+  //   db.portal = 0;
+  // }
+  // if (db.blueCap == 1)
+  // {
+  //   //blueCapacitorsAnimation();
+  //   db.blueCap = 0;
+  // }
+  // if (db.redCap == 1)
+  // {
+  //   //redCapacitorsAnimation();
+  //   db.redCap = 0;
+  // }
   if (db.robbo == 1)
   {
     robboAnimBlit();
@@ -1745,6 +1763,8 @@ void stateGameCreate(void)
   s_pBg = bitmapCreateFromFile("data/tlo1.bm", 0);
   s_pBgWithTile = bitmapCreateFromFile("data/tlo1.bm", 0); // fragmenty tla do podstawiania po ruchu
   s_pRobbo = bitmapCreateFromFile("data/falkon_robbo.bm", 0);
+  s_pSabermanTribute = bitmapCreateFromFile("data/saberman.bm",0);
+  s_pSabermanTributeMask = bitmapCreateFromFile("data/saberman_mask.bm",0);
   s_pFalconBg = bitmapCreate(48, 32, 5, BMF_INTERLEAVED);
   s_pAnimBg = bitmapCreate(48, 32, 5, BMF_INTERLEAVED);
   s_pBgPortalGlow = bitmapCreate(48, 32, 5, BMF_INTERLEAVED);
@@ -2093,6 +2113,8 @@ void stateGameDestroy(void)
   bitmapDestroy(s_pAnimBg);
   bitmapDestroy(s_pBgPortalGlow);
   bitmapDestroy(s_pRobbo);
+  bitmapDestroy(s_pSabermanTribute);
+  bitmapDestroy(s_pSabermanTributeMask);
 
   fontDestroy(s_pFont);
   fontDestroy(s_pGotekFont);

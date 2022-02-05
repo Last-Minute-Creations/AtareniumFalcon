@@ -14,9 +14,13 @@ target_compile_options(falkon.elf PRIVATE -Wall -Wextra)
 target_link_libraries(falkon.elf ace)
 #target_compile_definitions(ace PUBLIC ACE_DEBUG ACE_DEBUG_UAE)
 
+if(NOT (CMAKE_BUILD_TYPE STREQUAL "Debug") AND NOT (CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo"))
+    set(ELF2HUNK_ARGS ${ELF2HUNK_ARGS} -s)
+endif()
+
 add_custom_command( # So call elf2hunk
 	TARGET falkon.elf POST_BUILD
-	COMMAND ${ELF2HUNK} falkon.elf falkon.exe
+	COMMAND ${ELF2HUNK} falkon.elf falkon.exe ${ELF2HUNK_ARGS}
 )
 
 set(RES_DIR ${CMAKE_CURRENT_LIST_DIR}/res) # st�d bierzemy pliki do konwersji
@@ -59,22 +63,22 @@ convertBitmaps(
 		${RES_DIR}/gej_ower.png ${RES_DIR}/HUD.png
 		${RES_DIR}/tlo1.png ${RES_DIR}/tlo2.png ${RES_DIR}/tlo3.png
 		${RES_DIR}/tlo4.png ${RES_DIR}/tlo5.png ${RES_DIR}/tlo6.png
-		${RES_DIR}/vampire.png ${RES_DIR}/falkon_robbo.png
+		${RES_DIR}/vampire.png ${RES_DIR}/falkon_robbo.png 
 	DESTINATIONS
 		${DATA_DIR}/menulogo.bm ${DATA_DIR}/menuoptions.bm  ${DATA_DIR}/menulmc.bm
 		${DATA_DIR}/gej_ower.bm ${DATA_DIR}/HUD.bm
 		${DATA_DIR}/tlo1.bm ${DATA_DIR}/tlo2.bm ${DATA_DIR}/tlo3.bm
 		${DATA_DIR}/tlo4.bm ${DATA_DIR}/tlo5.bm ${DATA_DIR}/tlo6.bm
-		${DATA_DIR}/vampire.bm ${DATA_DIR}/falkon_robbo.bm
+		${DATA_DIR}/vampire.bm ${DATA_DIR}/falkon_robbo.bm 
 )
 
 
 convertBitmaps(
 	TARGET falkon.elf PALETTE ${PLT_PATH}
 	MASK_COLOR "#880088"
-	INTERLEAVED SOURCES ${RES_DIR}/tilesetP.png ${RES_DIR}/tilesetP2.png
-	DESTINATIONS ${DATA_DIR}/tileset.bm ${DATA_DIR}/tileset2.bm
-	MASKS ${DATA_DIR}/tileset_mask.bm ${DATA_DIR}/tileset_mask2.bm
+	INTERLEAVED SOURCES ${RES_DIR}/tileset.png ${RES_DIR}/tileset2.png ${RES_DIR}/saberman.png
+	DESTINATIONS ${DATA_DIR}/tileset.bm ${DATA_DIR}/tileset2.bm ${DATA_DIR}/saberman.bm
+	MASKS ${DATA_DIR}/tileset_mask.bm ${DATA_DIR}/tileset_mask2.bm ${DATA_DIR}/saberman_mask.bm
 
 )
 
