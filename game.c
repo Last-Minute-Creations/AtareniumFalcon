@@ -431,7 +431,7 @@ void drawTiles(void)
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
     }
-    else if (ubZmienna == 0x53) // SABERMAN TRIBUTE BOOT OF GLORY
+    else if (ubZmienna == 0x53) // S -  SABERMAN TRIBUTE BOOT OF GLORY   
     {
       kamyki[x][y] = 13;
       blitCopyMask(s_pSabermanTribute, 0, 0, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pSabermanTributeMask->Planes[0]);
