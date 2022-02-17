@@ -90,6 +90,7 @@ convertAudio(
 file(
 	COPY ${RES_DIR}/topaz.fnt ${RES_DIR}/mod.falkon ${RES_DIR}/mod.falkon-ambient2
 	${RES_DIR}/LadujWegiel.sfx ${RES_DIR}/robbo8000.sfx ${RES_DIR}/cap11025.sfx
+	${RES_DIR}/Atari.sfx ${RES_DIR}/Morse_LMC8000.sfx ${RES_DIR}/AceSample.sfx
 	${RES_DIR}/1.txt
 	${RES_DIR}/2.txt
 	${RES_DIR}/3.txt

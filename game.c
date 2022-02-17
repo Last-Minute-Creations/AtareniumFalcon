@@ -958,7 +958,7 @@ void robboSays(void)
       sprintf(szRobboMsg, "Find the coal warehouse and reclaim it.");
       break;
     case 7:
-      sprintf(szRobboMsg, "Minister Renton is counting on you, Sir.");
+      sprintf(szRobboMsg, "Amigans call that place Magazyn.");  // 
       break;
     case 8:
       sprintf(szRobboMsg, "Training passed, skip it with X in menu.");
@@ -967,7 +967,7 @@ void robboSays(void)
       robbo1stLineExceptionModificator = TRUE;
       break;
     case 10:
-      sprintf(szRobboMsg, "Please clean up here, I found some GermZ.");
+      sprintf(szRobboMsg, "Minister Renton is counting on you, Sir.");  
       break;
     case 11:
       sprintf(szRobboMsg, "Try new economic LSA 68090 engine in menu.");
@@ -979,7 +979,7 @@ void robboSays(void)
       sprintf(szRobboMsg, "Beware of VamPiRes, or you become one!");
       break;
     case 21:
-      sprintf(szRobboMsg, "Drop me out at LK Avalon please.");
+      sprintf(szRobboMsg, "Please clean up here, I found some GermZ.");
       break;
     case 22:
       sprintf(szRobboMsg, "You like Paula? I love Laura!");
@@ -992,6 +992,9 @@ void robboSays(void)
       break;
     case 25:
       sprintf(szRobboMsg, "Make River Raid not Bridge Strike!");
+      break;
+    case 27:
+      sprintf(szRobboMsg, "Drop me out at LK Avalon please.");
       break;
     case 28:
       sprintf(szRobboMsg, "Cytadela is better than Doom.");

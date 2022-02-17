@@ -9,7 +9,7 @@ extern tState g_sStateWungiel;
 
 void genericCreate(void) {
 	g_pStateMachineGame = stateManagerCreate();
-	statePush(g_pStateMachineGame, &g_sStateMenu);
+	statePush(g_pStateMachineGame, &g_sStateWungiel);
 }
 
 void genericProcess(void) {
