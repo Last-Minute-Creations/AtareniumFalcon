@@ -134,7 +134,7 @@ void stateCreditsLoop(void)
       ptplayerSfxPlay(s_pLMCsfx, -1, 64, 100);
       blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 0);
       blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 0);
-      blitCopy(s_pLMC, 0, 0, s_pVpManager->pBack, 104, 40, 112, 160, MINTERM_COOKIE);
+      blitCopy(s_pLMC, 0, 0, s_pVpManager->pBack, 104, 40, 112, 153, MINTERM_COOKIE);
     }
 
     paletteDim(s_pPaletteLMC_ACE, s_pVp->pPalette, 32, bRatio); // 0 - czarno, 15 - pe?na paleta
@@ -175,7 +175,7 @@ void stateCreditsLoop(void)
       ptplayerSfxPlay(s_pACEsfx, -1, 64, 100);
       blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 0);
       blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 0);
-      blitCopy(s_pACE, 0, 0, s_pVpManager->pBack, 80, 95, 155, 70, MINTERM_COOKIE);
+      blitCopy(s_pACE, 0, 0, s_pVpManager->pBack, 80, 95, 160, 69, MINTERM_COOKIE);
     }
 
     paletteDim(s_pPaletteLMC_ACE, s_pVp->pPalette, 32, bRatio); // 0 - czarno, 15 - pe?na paleta
