@@ -2,14 +2,14 @@
 #include <ace/managers/state.h>
 
 tStateManager *g_pStateMachineGame;
-extern tState g_sStateGame;
-extern tState g_sStateMenu;
-extern tState g_sStateWungiel;
-//extern tState g_sStateCredits;
+//extern tState g_sStateGame;
+//extern tState g_sStateMenu;
+//extern tState g_sStateWungiel;
+extern tState g_sStateLmcAce;
 
 void genericCreate(void) {
 	g_pStateMachineGame = stateManagerCreate();
-	statePush(g_pStateMachineGame, &g_sStateWungiel);
+	statePush(g_pStateMachineGame, &g_sStateLmcAce);
 }
 
 void genericProcess(void) {
