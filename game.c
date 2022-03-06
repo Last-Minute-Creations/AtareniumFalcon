@@ -115,7 +115,7 @@ BYTE frameHit = 0;
 BYTE anotherHit = 0; // sprawdzam czy po uderzeniu w kamien chce jeszcze raz, zeby sie HUD 2 razy nie rozwijal na
 
 UBYTE falkonIdle = 0;
-UBYTE falkonIdleTempo = 8;
+UBYTE falkonIdleTempo = 12;
 BYTE falkonIdleControl = 1;
 BYTE redCapacitorsAnimTick = 0;
 BYTE tickTempo = 8;
@@ -1121,7 +1121,7 @@ void coalAndCollect(void)
     ++robboMsgCount;
     if (musicPlay == MUSIC_AMBIENT_SFX)
     {
-      ptplayerSfxPlay(s_pRobbo8000, 3, 32, 100);
+      ptplayerSfxPlay(s_pRobbo8000, 2, 32, 100);
     }
     robboMsgCtrl = 1;
     hudScrollingControl = 1;
@@ -1471,6 +1471,17 @@ void falconIdleAnimation(void)
     idleFrame = 7;
     falkonIdle = 0;
   }
+
+  if (musicPlay == MUSIC_AMBIENT_SFX)
+  {
+    UBYTE everySecondAnimFrame;
+    everySecondAnimFrame = idleFrame % 2;
+    if (everySecondAnimFrame == 0)
+    {
+      ptplayerSfxPlay(s_pFalkonEngineSound, 3, 64, 50);
+    }
+  }
+
   UWORD uwPrevPosX = uwPosX;
   UWORD uwPrevPosY = uwPosY;
   switch (kierunekHold)
@@ -2050,6 +2061,14 @@ void stateGameLoop(void)
     {
       return;
     }
+    if (falkonIdleControl != 1)
+    {
+    return;
+    }
+    if (musicPlay == MUSIC_AMBIENT_SFX)
+    {
+        ptplayerSfxPlay(s_pFalkonEngineSound, 3, 0, 50);
+    }
     ++level;
     nextLevel();
     return;
@@ -2075,6 +2094,7 @@ void stateGameLoop(void)
     else if (musicPlay == MUSIC_AMBIENT_SFX)
     {
       musicPlay = MUSIC_OFF;
+      ptplayerSfxPlay(s_pFalkonEngineSound, 3, 0, 50);
       ptplayerSetMasterVolume(0); // cisza
       ptplayerEnableMusic(0);
     }
