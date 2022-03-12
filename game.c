@@ -81,7 +81,7 @@ char *szTribute2ndLine = "Saberman - Great Atariman of the Galaxy.";
 
 BOOL robbo1stLineExceptionModificator = FALSE;
 BOOL setGameOverInNextLoopIter = FALSE;
-BOOL gameOverWhenAnotherCollisionHack = FALSE;
+
 
 BYTE youWin = 0;
 
@@ -201,6 +201,10 @@ extern BOOL tutorialLevelsSkip;
 
 UBYTE audioFadeIn = 0;
 UBYTE audioLoopCount = 0;
+
+// HACKS
+BOOL gameOverWhenAnotherCollisionHack = FALSE;
+BOOL noFlyingWhenCountingCoalInPortalHack = FALSE;
 
 UBYTE isIgnoreNextFrame = 0; // zmienna do naprawienia glicza graficznego !
 
@@ -483,6 +487,7 @@ void clearTiles(void) // czyszczenie planszy z tile'ow na koniec kazdego etapu z
 
 void nextLevel(void) // ladowanie kolejnego levela
 {
+  noFlyingWhenCountingCoalInPortalHack = FALSE;  // release no fly hack !
   coal = 1;        // wegiel na start
   audioFadeIn = 0; // zmienna do wlaczenia muzyki po wyciszeniu
 
@@ -629,7 +634,9 @@ void levelScore(void) // WITH PORTAL OPEN AND FALKON IN PORTAL ANIM !!!
     sprintf(szMsg3, "%d", excesscoal);
     fontFillTextBitMap(s_pFont, s_pBmText, szMsg3);
     fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 130, 232, HUDfontColor, FONT_COOKIE);
+    
   }
+
 
   if (amigaMode != AMIGA_MODE_OFF && levelScoreTick == levelScoreTempo && levelScoreControl == LEVEL_SCORE_COUNT)
   {
@@ -1111,6 +1118,7 @@ void coalAndCollect(void)
     break;
 
   case 10:
+    noFlyingWhenCountingCoalInPortalHack = TRUE;
     levelScoreControl = LEVEL_SCORE_COUNT;
     falkonIdleControl = 1;
     //portalAnimControl = 1;
@@ -2105,6 +2113,9 @@ void stateGameLoop(void)
   {
     if (flyingAnimControl != 0)
     {
+      return;
+    }
+    if (noFlyingWhenCountingCoalInPortalHack == TRUE){ // no flying when in portal hack !
       return;
     }
     kierunekHold = kierunek;
