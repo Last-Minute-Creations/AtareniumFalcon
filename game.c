@@ -12,6 +12,7 @@
 #include <ace/managers/ptplayer.h>
 #include <ace/utils/file.h>
 #include "enum.h"
+#include "levels.h"
 
 //------------------------------------------------------- gdzie� przed funkcjami
 // zmienne trzymaj�ce adresy do viewa, viewporta, simple buffer managera
@@ -326,12 +327,9 @@ void gameOnResume(void)
 void drawTiles(void)
 {
 
-  sprintf(levelFilePath, "data/%d.txt", level);
-  systemUse();
-  tFile *levelFile = fileOpen(levelFilePath, "r");
-  BYTE ubZmienna = 0;
   BYTE x = 0;
   BYTE y = 0;
+  BYTE endlineCounter = 0;
 
   falkonx = 0;
   falkony = 0;
@@ -339,18 +337,17 @@ void drawTiles(void)
   krawedzy = 0;
   kierunek = 0;
 
-  for (BYTE i = 0; i < 82; ++i)
+  for (BYTE i = 0; i < 72; ++i)
   {
-    fileRead(levelFile, &ubZmienna, 1);
-
-    if (ubZmienna == 0x30) // ONLY BG
+    ++endlineCounter;
+    if (gameLevels[level][i] == '0') // ONLY BG 0x30
     {
       kamyki[x][y] = 0;
       blitCopy(s_pBg, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopy(s_pBg, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
     }
 
-    else if (ubZmienna == 0x33) // RANDOM 1-3 METEORITE
+    else if (gameLevels[level][i] == '3') // RANDOM 1-3 METEORITE 0x33
     {
       kamyki[x][y] = 3;
       ubStoneImg = ulRandMinMax(0, 2);
@@ -359,7 +356,7 @@ void drawTiles(void)
       blitCopyMask(s_pTiles, ubStoneImg * 32, 0, s_pVpManager->pBack, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
       blitCopyMask(s_pTiles, ubStoneImg * 32, 0, s_pVpManager->pFront, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
     }
-    else if (ubZmienna == 0x34) // 2 COAL
+    else if (gameLevels[level][i] == '4') // 2 COAL 0x34
     {
       kamyki[x][y] = 4;
       blitCopyMask(s_pTiles, 96, 0, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
@@ -368,7 +365,7 @@ void drawTiles(void)
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
     }
 
-    else if (ubZmienna == 0x35) // 3 COAL
+    else if (gameLevels[level][i] == '5') // 3 COAL  0x35
     {
       kamyki[x][y] = 5;
       blitCopyMask(s_pTiles, 128, 0, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
@@ -377,7 +374,7 @@ void drawTiles(void)
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
     }
 
-    else if (ubZmienna == 0x36) // 4 COAL
+    else if (gameLevels[level][i] == '6') // 4 COAL 0x36
     {
       kamyki[x][y] = 6;
       blitCopyMask(s_pTiles, 160, 0, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
@@ -385,7 +382,7 @@ void drawTiles(void)
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
     }
-    else if (ubZmienna == 0x37) // 5 COAL
+    else if (gameLevels[level][i] == '7') // 5 COAL 0x37
     {
       kamyki[x][y] = 7;
       blitCopyMask(s_pTiles, 192, 0, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
@@ -393,7 +390,7 @@ void drawTiles(void)
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
     }
-    else if (ubZmienna == 0x38) // BLUE CAPACITOR
+    else if (gameLevels[level][i] == '8') // BLUE CAPACITOR 0x38
     {
       kamyki[x][y] = 8;
       collectiblesAnim[x][y] = 8;
@@ -402,7 +399,7 @@ void drawTiles(void)
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
     }
-    else if (ubZmienna == 0x39) // RED CAPACITOR
+    else if (gameLevels[level][i] == '9') // RED CAPACITOR 0x39
     {
       kamyki[x][y] = 9;
       collectiblesAnim[x][y] = 9;
@@ -410,7 +407,7 @@ void drawTiles(void)
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
     }
-    else if (ubZmienna == 0x45) // PORTAL
+    else if (gameLevels[level][i] == 'E') // PORTAL 0x45
     {
       kamyki[x][y] = 10;
       portalGlowX = x;
@@ -420,7 +417,7 @@ void drawTiles(void)
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
     }
-    else if (ubZmienna == 0x52) // ROBBO
+    else if (gameLevels[level][i] == 'R') // ROBBO  0x52
     {
       kamyki[x][y] = 11;
       collectiblesAnim[x][y] = 11;
@@ -429,7 +426,7 @@ void drawTiles(void)
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
     }
-    else if (ubZmienna == 0x42) // BROKEN CAPACITOR
+    else if (gameLevels[level][i] == 'B') // BROKEN CAPACITOR 0x42
     {
       kamyki[x][y] = 12;
       blitCopyMask(s_pTiles, 224, 0, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
@@ -437,7 +434,7 @@ void drawTiles(void)
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
     }
-    else if (ubZmienna == 0x53) // S -  SABERMAN TRIBUTE BOOT OF GLORY   
+    else if (gameLevels[level][i] == 'S') // S -  SABERMAN TRIBUTE BOOT OF GLORY   0x53 
     {
       kamyki[x][y] = 13;
       blitCopyMask(s_pSabermanTribute, 0, 0, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pSabermanTributeMask->Planes[0]);
@@ -445,7 +442,7 @@ void drawTiles(void)
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
     }
-    else if (ubZmienna == 0x31) // FALCON START POSITION
+    else if (gameLevels[level][i] == '1') // FALCON START POSITION 0x31
     {
       kamyki[x][y] = 1;
       falkonx = x;
@@ -459,14 +456,13 @@ void drawTiles(void)
     }
 
     ++x;
-    if (ubZmienna == 0x0a)
+    if (endlineCounter == 10)
     {
+      endlineCounter = 0;
       x = 0;
       ++y;
     }
   }
-  fileClose(levelFile);
-  systemUnuse();
   paletteDim(s_pPalette, s_pVp->pPalette, 32, 15);
   viewUpdateCLUT(s_pView);
 }

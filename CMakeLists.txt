@@ -99,37 +99,6 @@ convertAudio(
 file(
 	COPY ${RES_DIR}/topaz.fnt ${RES_DIR}/mod.falkon ${RES_DIR}/mod.falkon-ambient2
 	${RES_DIR}/LadujWegiel.sfx ${RES_DIR}/robbo8000.sfx ${RES_DIR}/cap11025.sfx
-	${RES_DIR}/Atari.sfx ${RES_DIR}/Morse_LMC8000.sfx ${RES_DIR}/AceSample.sfx
-	${RES_DIR}/1.txt
-	${RES_DIR}/2.txt
-	${RES_DIR}/3.txt
-	${RES_DIR}/4.txt
-	${RES_DIR}/5.txt
-	${RES_DIR}/6.txt
-	${RES_DIR}/7.txt
-	${RES_DIR}/8.txt
-	${RES_DIR}/9.txt
-	${RES_DIR}/10.txt
-	${RES_DIR}/11.txt
-	${RES_DIR}/12.txt
-	${RES_DIR}/13.txt
-	${RES_DIR}/14.txt
-	${RES_DIR}/15.txt
-	${RES_DIR}/16.txt
-	${RES_DIR}/17.txt
-	${RES_DIR}/18.txt
-	${RES_DIR}/19.txt
-	${RES_DIR}/20.txt
-	${RES_DIR}/21.txt
-	${RES_DIR}/22.txt
-	${RES_DIR}/23.txt
-	${RES_DIR}/24.txt
-	${RES_DIR}/25.txt
-	${RES_DIR}/26.txt
-	${RES_DIR}/27.txt
-	${RES_DIR}/28.txt
-	${RES_DIR}/29.txt
-	${RES_DIR}/30.txt
-	${RES_DIR}/31.txt
+	${RES_DIR}/Morse_LMC8000.sfx ${RES_DIR}/AceSample.sfx
 	DESTINATION ${DATA_DIR}
 )
