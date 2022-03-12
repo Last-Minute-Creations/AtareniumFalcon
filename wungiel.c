@@ -109,7 +109,6 @@ void stateWungielCreate(void)
         uwX += fontGlyphWidth(s_pFont, load1[i]) + 1;
         ptplayerSfxPlay(s_pAtari, 3, 64, 100);
         typingRandomizer = ulRandMinMax(10, 20);
-        //ptplayerSfxPlay(s_pAtari, 3, 0, 100);
         waitFrames(s_pVp, typingRandomizer, 200);
         
     }
@@ -144,7 +143,6 @@ void stateWungielCreate(void)
         ptplayerSfxPlay(s_pAtari, 3, 64, 100);
         typingRandomizer = ulRandMinMax(10, 20);
         waitFrames(s_pVp, typingRandomizer, 200);
-        ptplayerSfxPlay(s_pAtari, 3, 0, 100);
     }
 
 
@@ -167,7 +165,6 @@ void stateWungielCreate(void)
         fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, (i * 7) + 10, 120, 23, FONT_COOKIE);
         ptplayerSfxPlay(s_pAtari, 3, 64, 100);
         typingRandomizer = ulRandMinMax(10, 20);
-        ptplayerSfxPlay(s_pAtari, 3, 0, 100);
         waitFrames(s_pVp, typingRandomizer, 200);
     }
 

@@ -88,6 +88,11 @@ convertAudio(
 )
 
 convertAudio(
+    TARGET falkon.elf 	SOURCE ${RES_DIR}/Atari.wav  
+    DESTINATION ${DATA_DIR}/Atari.sfx 
+)
+
+convertAudio(
     TARGET falkon.elf 	SOURCE ${RES_DIR}/AceSample.wav
     DESTINATION ${DATA_DIR}/AceSample.sfx
 )
