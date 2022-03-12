@@ -114,7 +114,7 @@ convertAudio(
 
 convertAudio(
     TARGET falkon.elf 	SOURCE ${RES_DIR}/Morse_LMC8000.wav  
-    DESTINATION ${DATA_DIR}/Morse_LMC.sfx 
+    DESTINATION ${DATA_DIR}/Morse_LMC8000.sfx 
 )
 
 convertAudio(
