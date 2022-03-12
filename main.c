@@ -5,7 +5,7 @@ tStateManager *g_pStateMachineGame;
 //extern tState g_sStateGame;
 extern tState g_sStateMenu;
 //extern tState g_sStateWungiel;
-//extern tState g_sStateLmcAce;
+extern tState g_sStateLmcAce;
 
 void genericCreate(void) {
 	g_pStateMachineGame = stateManagerCreate();

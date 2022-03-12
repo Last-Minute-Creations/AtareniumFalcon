@@ -96,9 +96,33 @@ convertAudio(
     TARGET falkon.elf 	SOURCE ${RES_DIR}/AceSample.wav
     DESTINATION ${DATA_DIR}/AceSample.sfx
 )
+
+convertAudio(
+    TARGET falkon.elf 	SOURCE ${RES_DIR}/cap11025.wav  
+    DESTINATION ${DATA_DIR}/cap11025.sfx 
+)
+
+convertAudio(
+    TARGET falkon.elf 	SOURCE ${RES_DIR}/LadujWegiel.wav  
+    DESTINATION ${DATA_DIR}/LadujWegiel.sfx 
+)
+
+convertAudio(
+    TARGET falkon.elf 	SOURCE ${RES_DIR}/robbo8000.wav  
+    DESTINATION ${DATA_DIR}/robbo8000.sfx 
+)
+
+convertAudio(
+    TARGET falkon.elf 	SOURCE ${RES_DIR}/Morse_LMC8000.wav  
+    DESTINATION ${DATA_DIR}/Morse_LMC.sfx 
+)
+
+convertAudio(
+    TARGET falkon.elf 	SOURCE ${RES_DIR}/AceSample.wav  
+    DESTINATION ${DATA_DIR}/AceSample.sfx 
+)
+
 file(
 	COPY ${RES_DIR}/topaz.fnt ${RES_DIR}/mod.falkon ${RES_DIR}/mod.falkon-ambient2
-	${RES_DIR}/LadujWegiel.sfx ${RES_DIR}/robbo8000.sfx ${RES_DIR}/cap11025.sfx
-	${RES_DIR}/Morse_LMC8000.sfx ${RES_DIR}/AceSample.sfx
 	DESTINATION ${DATA_DIR}
 )
