@@ -28,7 +28,7 @@ static tSimpleBufferManager *s_pVpManagerMenu;
 #define STAR_COUNT 60
 #define STAR_STEPS 64
 
-extern tState g_sStateGame;
+// extern tState g_sStateGame;
 extern tState g_sStateIntro;
 extern tState g_sStateCredits;
 extern tStateManager *g_pStateMachineGame;
@@ -37,6 +37,7 @@ UBYTE cheatmodeEnablerWhenEqual3 = 0;
 UBYTE secondCheatEnablerWhenEqual3 = 0;
 UBYTE thirdCheatEnablerWhenEqual3 = 0;
 UBYTE cheatModeStarColor = 0;
+BOOL tutorialLevelsSkip = FALSE;
 
 UBYTE creditsControl = 0;
 
@@ -92,8 +93,16 @@ static void starProcess(void) {
 	}
 }
 
+void cheatcodesCleanUp (void){      // can't clean up in game.c initialSetupDeclarationOfData()
+	cheatmodeEnablerWhenEqual3 = 0;   // because it will turn off used cheats !
+	secondCheatEnablerWhenEqual3 = 0;
+	thirdCheatEnablerWhenEqual3 = 0;
+}
+
 void stateMenuCreate(void)
 {
+	cheatcodesCleanUp();
+	tutorialLevelsSkip = FALSE;
 	s_pView = viewCreate(0,
 						 TAG_VIEW_COPLIST_MODE, COPPER_MODE_BLOCK,
 						 TAG_VIEW_GLOBAL_CLUT, 1,
@@ -147,7 +156,7 @@ void stateMenuLoop(void)
 
 	if (joyUse(JOY1_FIRE) || keyUse(KEY_RETURN))
 	{
-		stateChange(g_pStateMachineGame, &g_sStateGame);
+		stateChange(g_pStateMachineGame, &g_sStateIntro);
 		return;
 	}
 
@@ -190,6 +199,9 @@ void stateMenuLoop(void)
 	}
 	if (keyUse(KEY_R) && thirdCheatEnablerWhenEqual3 == 2){
 		++thirdCheatEnablerWhenEqual3;
+	}
+	if (keyUse(KEY_X) && tutorialLevelsSkip == FALSE){
+		tutorialLevelsSkip = TRUE;
 	}
 
 

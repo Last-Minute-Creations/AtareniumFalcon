@@ -6,7 +6,7 @@ add_subdirectory(ACE ace)
 
 add_executable(
 	falkon.elf
-	main.c game.c menu.c gameover.c intro.c credits.c score.c wungiel.c guruMastah.c leakedGameOver.c
+	main.c game.c menu.c gameover.c intro.c credits.c score.c wungiel.c guruMastah.c leakedGameOver.c lmcAce.c
 ) # Compiler emits .elf file, we need hunk for Amiga
 
 target_compile_options(falkon.elf PRIVATE -Wall -Wextra)
@@ -14,9 +14,13 @@ target_compile_options(falkon.elf PRIVATE -Wall -Wextra)
 target_link_libraries(falkon.elf ace)
 #target_compile_definitions(ace PUBLIC ACE_DEBUG ACE_DEBUG_UAE)
 
+if(NOT (CMAKE_BUILD_TYPE STREQUAL "Debug") AND NOT (CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo"))
+    set(ELF2HUNK_ARGS ${ELF2HUNK_ARGS} -s)
+endif()
+
 add_custom_command( # So call elf2hunk
 	TARGET falkon.elf POST_BUILD
-	COMMAND ${ELF2HUNK} falkon.elf falkon.exe
+	COMMAND ${ELF2HUNK} falkon.elf falkon.exe ${ELF2HUNK_ARGS}
 )
 
 set(RES_DIR ${CMAKE_CURRENT_LIST_DIR}/res) # st�d bierzemy pliki do konwersji
@@ -47,9 +51,9 @@ convertPalette(falkon.elf ${RES_DIR}/falkon.pal ${PLT_PATH}) # z res/falkon.pal 
 convertBitmaps(
 	TARGET falkon.elf PALETTE ${PLT_PATH}
 	INTERLEAVED SOURCES
-		${RES_DIR}/amiHUD.png
+		${RES_DIR}/amiHUD.png ${RES_DIR}/amiHUD_LED_OFF_green.png ${RES_DIR}/amiHUD_LED_OFF_yellow.png
 	DESTINATIONS
-	${DATA_DIR}/amiHUD.bm
+	${DATA_DIR}/amiHUD.bm ${DATA_DIR}/amiHUD_LED_OFF_green.bm ${DATA_DIR}/amiHUD_LED_OFF_yellow.bm
 )
 
 convertBitmaps(
@@ -59,60 +63,66 @@ convertBitmaps(
 		${RES_DIR}/gej_ower.png ${RES_DIR}/HUD.png
 		${RES_DIR}/tlo1.png ${RES_DIR}/tlo2.png ${RES_DIR}/tlo3.png
 		${RES_DIR}/tlo4.png ${RES_DIR}/tlo5.png ${RES_DIR}/tlo6.png
-		${RES_DIR}/vampire.png ${RES_DIR}/falkon_robbo.png
+		${RES_DIR}/vampire.png ${RES_DIR}/falkon_robbo.png 
 	DESTINATIONS
 		${DATA_DIR}/menulogo.bm ${DATA_DIR}/menuoptions.bm  ${DATA_DIR}/menulmc.bm
 		${DATA_DIR}/gej_ower.bm ${DATA_DIR}/HUD.bm
 		${DATA_DIR}/tlo1.bm ${DATA_DIR}/tlo2.bm ${DATA_DIR}/tlo3.bm
 		${DATA_DIR}/tlo4.bm ${DATA_DIR}/tlo5.bm ${DATA_DIR}/tlo6.bm
-		${DATA_DIR}/vampire.bm ${DATA_DIR}/falkon_robbo.bm
+		${DATA_DIR}/vampire.bm ${DATA_DIR}/falkon_robbo.bm 
 )
 
 
 convertBitmaps(
 	TARGET falkon.elf PALETTE ${PLT_PATH}
-	MASK_COLOR "#000000"
-	INTERLEAVED SOURCES ${RES_DIR}/tileset.png ${RES_DIR}/tileset2.png
-	DESTINATIONS ${DATA_DIR}/tileset.bm ${DATA_DIR}/tileset2.bm
-	MASKS ${DATA_DIR}/tileset_mask.bm ${DATA_DIR}/tileset_mask2.bm
+	MASK_COLOR "#880088"
+	INTERLEAVED SOURCES ${RES_DIR}/tileset.png ${RES_DIR}/tileset2.png ${RES_DIR}/saberman.png
+	DESTINATIONS ${DATA_DIR}/tileset.bm ${DATA_DIR}/tileset2.bm ${DATA_DIR}/saberman.bm
+	MASKS ${DATA_DIR}/tileset_mask.bm ${DATA_DIR}/tileset_mask2.bm ${DATA_DIR}/saberman_mask.bm
 
 )
 
 convertAudio(
-    TARGET falkon.elf 	SOURCE ${RES_DIR}/falkonEngine.wav  ${RES_DIR}/AceSample.wav
-    DESTINATION ${DATA_DIR}/falkonEngine.sfx ${DATA_DIR}/AceSample.sfx
+    TARGET falkon.elf 	SOURCE ${RES_DIR}/falkonEngine.wav  
+    DESTINATION ${DATA_DIR}/falkonEngine.sfx 
+)
+
+convertAudio(
+    TARGET falkon.elf 	SOURCE ${RES_DIR}/Atari.wav  
+    DESTINATION ${DATA_DIR}/Atari.sfx 
+)
+
+convertAudio(
+    TARGET falkon.elf 	SOURCE ${RES_DIR}/AceSample.wav
+    DESTINATION ${DATA_DIR}/AceSample.sfx
+)
+
+convertAudio(
+    TARGET falkon.elf 	SOURCE ${RES_DIR}/cap11025.wav  
+    DESTINATION ${DATA_DIR}/cap11025.sfx 
+)
+
+convertAudio(
+    TARGET falkon.elf 	SOURCE ${RES_DIR}/LadujWegiel.wav  
+    DESTINATION ${DATA_DIR}/LadujWegiel.sfx 
+)
+
+convertAudio(
+    TARGET falkon.elf 	SOURCE ${RES_DIR}/robbo8000.wav  
+    DESTINATION ${DATA_DIR}/robbo8000.sfx 
+)
+
+convertAudio(
+    TARGET falkon.elf 	SOURCE ${RES_DIR}/Morse_LMC8000.wav  
+    DESTINATION ${DATA_DIR}/Morse_LMC8000.sfx 
+)
+
+convertAudio(
+    TARGET falkon.elf 	SOURCE ${RES_DIR}/AceSample.wav  
+    DESTINATION ${DATA_DIR}/AceSample.sfx 
 )
 
 file(
 	COPY ${RES_DIR}/topaz.fnt ${RES_DIR}/mod.falkon ${RES_DIR}/mod.falkon-ambient2
-	${RES_DIR}/LadujWegiel.sfx ${RES_DIR}/robbo8000.sfx ${RES_DIR}/cap11025.sfx
-	${RES_DIR}/1.txt
-	${RES_DIR}/2.txt
-	${RES_DIR}/3.txt
-	${RES_DIR}/4.txt
-	${RES_DIR}/5.txt
-	${RES_DIR}/6.txt
-	${RES_DIR}/7.txt
-	${RES_DIR}/8.txt
-	${RES_DIR}/9.txt
-	${RES_DIR}/10.txt
-	${RES_DIR}/11.txt
-	${RES_DIR}/12.txt
-	${RES_DIR}/13.txt
-	${RES_DIR}/14.txt
-	${RES_DIR}/15.txt
-	${RES_DIR}/16.txt
-	${RES_DIR}/17.txt
-	${RES_DIR}/18.txt
-	${RES_DIR}/19.txt
-	${RES_DIR}/20.txt
-	${RES_DIR}/21.txt
-	${RES_DIR}/22.txt
-	${RES_DIR}/23.txt
-	${RES_DIR}/24.txt
-	${RES_DIR}/25.txt
-	${RES_DIR}/26.txt
-	${RES_DIR}/27.txt
-	${RES_DIR}/28.txt
 	DESTINATION ${DATA_DIR}
 )

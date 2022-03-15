@@ -19,3 +19,19 @@ typedef enum {
   LEVEL_SCORE_END = 5,
   LEVEL_SCORE_NOCOAL = 6
 } tEndLevelState;
+
+typedef enum {
+  METEORITE = '3',
+  COAL_2 = '4',
+  COAL_3 = '5',
+  COAL_4 = '6',
+  COAL_5 = '7',
+  CAPACITOR_BLUE = '8',
+  CAPACITOR_RED = '9',
+  PORTAL = 'E',
+  ROBBO = 'R',
+  CAPACITOR_BROKEN = 'B',
+  SABERMANS_GUMBOOT = 'S',
+  FALCON_START_POSITION = '1',
+  EMPTY_TILE = '0' 
+} tDrawingTilesetElements;

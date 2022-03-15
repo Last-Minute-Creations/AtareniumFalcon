@@ -8,6 +8,7 @@
         "stddef.h": "c",
         "stdarg.h": "c",
         "copper.h": "c",
-        "ptplayer.h": "c"
+        "ptplayer.h": "c",
+        "types.h": "c"
     }
 }
