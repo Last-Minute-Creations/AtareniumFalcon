@@ -34,6 +34,7 @@ static tBitMap *s_pRobboAnim;
 static tBitMap *s_pSabermanTribute;
 static tBitMap *s_pSabermanTributeMask;
 static tPtplayerSfx *s_pFalkonEngineSound;
+static tPtplayerSfx *s_pWicherEngineSound;
 static tPtplayerSfx *s_pLadujWegiel;
 static tPtplayerSfx *s_pRobbo8000;
 static tPtplayerSfx *s_pCapacitorSFX;
@@ -1479,11 +1480,27 @@ void falconIdleAnimation(void)
 
   if (musicPlay == MUSIC_AMBIENT_SFX)
   {
-    UBYTE everySecondAnimFrame;
-    everySecondAnimFrame = idleFrame % 2;
-    if (everySecondAnimFrame == 0)
+    //UBYTE everySecondAnimFrame;
+    //everySecondAnimFrame = idleFrame % 2;
+    //if (everySecondAnimFrame == 0)
+    if (idleFrame == 0 || idleFrame == 4)
     {
+      if (amigaMode == AMIGA_MODE_OFF){
       ptplayerSfxPlay(s_pFalkonEngineSound, 3, 64, 50);
+      }
+      else if (amigaMode == AMIGA_MODE_ON || amigaMode == AMIGA_MODE_CHECK){
+      ptplayerSfxPlay(s_pWicherEngineSound, 3, 64, 50);  
+      }
+
+    }
+    else if (idleFrame == 2 || idleFrame == 6)
+    {
+      if (amigaMode == AMIGA_MODE_OFF){
+      ptplayerSfxPlay(s_pFalkonEngineSound, 3, 0, 50);
+      }
+      else if (amigaMode == AMIGA_MODE_ON || amigaMode == AMIGA_MODE_CHECK){
+      ptplayerSfxPlay(s_pWicherEngineSound, 3, 0, 50);  
+      }
     }
   }
 
@@ -1804,6 +1821,7 @@ void stateGameCreate(void)
   ptplayerLoadMod(s_pMod, 0, 0);
 
   s_pFalkonEngineSound = ptplayerSfxCreateFromFile("data/falkonEngine.sfx");
+  s_pWicherEngineSound = ptplayerSfxCreateFromFile("data/wicherEngine.sfx");
   s_pLadujWegiel = ptplayerSfxCreateFromFile("data/LadujWegiel.sfx");
   s_pRobbo8000 = ptplayerSfxCreateFromFile("data/robbo8000.sfx");
   s_pCapacitorSFX = ptplayerSfxCreateFromFile("data/cap11025.sfx");
@@ -2085,7 +2103,7 @@ void stateGameLoop(void)
       musicPlay = MUSIC_AMBIENT_SFX;
       ptplayerEnableMusic(0);
       ptplayerLoadMod(s_pModAmbient, 0, 0); // chce nowy modek
-      ptplayerSetMasterVolume(20);
+      ptplayerSetMasterVolume(64);
       ptplayerEnableMusic(1);
     }
     else if (musicPlay == MUSIC_OFF) // teraz wracam do pierwszego modka
@@ -2129,7 +2147,12 @@ void stateGameLoop(void)
 
     if (musicPlay == MUSIC_AMBIENT_SFX)
     {
-      ptplayerSfxPlay(s_pFalkonEngineSound, 3, 64, 100);
+      if (amigaMode == AMIGA_MODE_OFF){
+      ptplayerSfxPlay(s_pFalkonEngineSound, 3, 64, 50);
+      }
+      else if (amigaMode == AMIGA_MODE_ON || amigaMode == AMIGA_MODE_CHECK){
+      ptplayerSfxPlay(s_pWicherEngineSound, 3, 64, 50);  
+      }
     }
 
     isThisStone();
