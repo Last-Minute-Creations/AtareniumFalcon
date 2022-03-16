@@ -1067,7 +1067,7 @@ void coalAndCollect(void)
     coal = coal + 2;
     if (musicPlay == MUSIC_AMBIENT_SFX)
     {
-      ptplayerSfxPlay(s_pLadujWegiel, 3, 64, 100);
+      ptplayerSfxPlay(s_pLadujWegiel, 2, 64, 100);
     }
     break;
 
@@ -1075,7 +1075,7 @@ void coalAndCollect(void)
     coal = coal + 3;
     if (musicPlay == MUSIC_AMBIENT_SFX)
     {
-      ptplayerSfxPlay(s_pLadujWegiel, 3, 64, 100);
+      ptplayerSfxPlay(s_pLadujWegiel, 2, 64, 100);
     }
     break;
 
@@ -1083,7 +1083,7 @@ void coalAndCollect(void)
     coal = coal + 4;
     if (musicPlay == MUSIC_AMBIENT_SFX)
     {
-      ptplayerSfxPlay(s_pLadujWegiel, 3, 64, 100);
+      ptplayerSfxPlay(s_pLadujWegiel, 2, 64, 100);
     }
     break;
 
@@ -1091,7 +1091,7 @@ void coalAndCollect(void)
     coal = coal + 5;
     if (musicPlay == MUSIC_AMBIENT_SFX)
     {
-      ptplayerSfxPlay(s_pLadujWegiel, 3, 64, 100);
+      ptplayerSfxPlay(s_pLadujWegiel, 2, 64, 100);
     }
     break;
 
@@ -2153,10 +2153,10 @@ void stateGameLoop(void)
     if (musicPlay == MUSIC_AMBIENT_SFX)
     {
       if (amigaMode == AMIGA_MODE_OFF){
-      ptplayerSfxPlay(s_pFalkonEngineSound, 3, 64, 50);
+      ptplayerSfxPlay(s_pFalkonEngineSound, 3, 64, 70);
       }
       else if (amigaMode == AMIGA_MODE_ON || amigaMode == AMIGA_MODE_CHECK){
-      ptplayerSfxPlay(s_pWicherEngineSound, 3, 64, 50);  
+      ptplayerSfxPlay(s_pWicherEngineSound, 3, 64, 70);  
       }
     }
 
@@ -2222,6 +2222,7 @@ void stateGameDestroy(void)
   ptplayerModDestroy(s_pMod);
   ptplayerModDestroy(s_pModAmbient);
   ptplayerSfxDestroy(s_pFalkonEngineSound);
+  ptplayerSfxDestroy(s_pWicherEngineSound);
   ptplayerSfxDestroy(s_pLadujWegiel);
   ptplayerSfxDestroy(s_pRobbo8000);
   ptplayerSfxDestroy(s_pPortal8000);
