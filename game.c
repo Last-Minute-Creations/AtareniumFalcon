@@ -36,6 +36,7 @@ static tBitMap *s_pSabermanTributeMask;
 static tPtplayerSfx *s_pFalkonEngineSound;
 static tPtplayerSfx *s_pWicherEngineSound;
 static tPtplayerSfx *s_pLadujWegiel;
+static tPtplayerSfx *s_pPortal8000;
 static tPtplayerSfx *s_pRobbo8000;
 static tPtplayerSfx *s_pCapacitorSFX;
 static tPtplayerSfx *s_pAtariExcessCoalTickSound;
@@ -663,6 +664,9 @@ void levelScore(void) // WITH PORTAL OPEN AND FALKON IN PORTAL ANIM !!!
     {
       levelAnimFrame = 0;
       levelScoreControl = LEVEL_SCORE_PORTAL_ANIM;
+      if (musicPlay == MUSIC_AMBIENT_SFX){
+      ptplayerSfxPlay(s_pPortal8000, 3, 64, 70);
+      }
     }
   }
 
@@ -1823,6 +1827,7 @@ void stateGameCreate(void)
   s_pFalkonEngineSound = ptplayerSfxCreateFromFile("data/falkonEngine.sfx");
   s_pWicherEngineSound = ptplayerSfxCreateFromFile("data/wicherEngine.sfx");
   s_pLadujWegiel = ptplayerSfxCreateFromFile("data/LadujWegiel.sfx");
+  s_pPortal8000 = ptplayerSfxCreateFromFile("data/portalSfx8000.sfx");
   s_pRobbo8000 = ptplayerSfxCreateFromFile("data/robbo8000.sfx");
   s_pCapacitorSFX = ptplayerSfxCreateFromFile("data/cap11025.sfx");
   s_pAtariExcessCoalTickSound = ptplayerSfxCreateFromFile("data/Atari.sfx");
@@ -2219,6 +2224,7 @@ void stateGameDestroy(void)
   ptplayerSfxDestroy(s_pFalkonEngineSound);
   ptplayerSfxDestroy(s_pLadujWegiel);
   ptplayerSfxDestroy(s_pRobbo8000);
+  ptplayerSfxDestroy(s_pPortal8000);
   ptplayerSfxDestroy(s_pCapacitorSFX);
   ptplayerSfxDestroy(s_pAtariExcessCoalTickSound);
   ptplayerDestroy();

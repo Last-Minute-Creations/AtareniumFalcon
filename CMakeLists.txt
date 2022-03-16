@@ -127,6 +127,11 @@ convertAudio(
     DESTINATION ${DATA_DIR}/wicherEngine.sfx 
 )
 
+convertAudio(
+    TARGET falkon.elf 	SOURCE ${RES_DIR}/portalSfx8000.wav  
+    DESTINATION ${DATA_DIR}/portalSfx8000.sfx 
+)
+
 file(
 	COPY ${RES_DIR}/topaz.fnt ${RES_DIR}/mod.falkon ${RES_DIR}/mod.falkon-ambient2
 	DESTINATION ${DATA_DIR}
