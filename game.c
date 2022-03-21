@@ -209,6 +209,7 @@ UBYTE audioLoopCount = 0;
 // HACKS
 BOOL gameOverWhenAnotherCollisionHack = FALSE;
 BOOL noFlyingWhenCountingCoalInPortalHack = FALSE;
+BOOL noCheatLevelSkipWhenRobboMessageOn = FALSE;
 
 UBYTE isIgnoreNextFrame = 0; // zmienna do naprawienia glicza graficznego !
 
@@ -1130,6 +1131,7 @@ void coalAndCollect(void)
     break;
 
   case 11:
+    noCheatLevelSkipWhenRobboMessageOn = TRUE;  // LEVEL SKIP HACK
     ++robboMsgNr;
     ++robboMsgCount;
     if (musicPlay == MUSIC_AMBIENT_SFX)
@@ -2092,6 +2094,10 @@ void stateGameLoop(void)
     {
       return;
     }
+    if (noCheatLevelSkipWhenRobboMessageOn == TRUE)
+    {
+      return;
+    }
     if (falkonIdleControl != 1)
     {
     return;
@@ -2140,6 +2146,9 @@ void stateGameLoop(void)
     }
     if (noFlyingWhenCountingCoalInPortalHack == TRUE){ // no flying when in portal hack !
       return;
+    }
+    if (noCheatLevelSkipWhenRobboMessageOn == TRUE){
+      noCheatLevelSkipWhenRobboMessageOn = FALSE;  // no level skip when robbo display hack release
     }
     kierunekHold = kierunek;
     if (secondCheatEnablerWhenEqual3 == 3)
