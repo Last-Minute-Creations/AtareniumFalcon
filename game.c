@@ -64,7 +64,7 @@ extern tState g_sStateLeakedGameOver;
 #define FALCON_HEIGHT 32
 #define ANIM_FRAME_COUNT 8
 
-#define LAST_LEVEL_NUMBER 31
+#define LAST_LEVEL_NUMBER 32
 
 #define STARTING_COAL 10
 
@@ -1012,6 +1012,9 @@ void robboSays(void)
       break;
     case 28:
       sprintf(szRobboMsg, "Cytadela is better than Doom.");
+      break;
+    case 30:
+      sprintf(szRobboMsg, "Did you choose the right path?");
       break;
     case LAST_LEVEL_NUMBER - 1:
       sprintf(szRobboMsg, "We're close, I feel it in my DSP.");
