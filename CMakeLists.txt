@@ -128,8 +128,8 @@ convertAudio(
 )
 
 convertAudio(
-    TARGET falkon.elf 	SOURCE ${RES_DIR}/portalSfx8000.wav  
-    DESTINATION ${DATA_DIR}/portalSfx8000.sfx 
+    TARGET falkon.elf 	SOURCE ${RES_DIR}/portalSfx8000.wav
+    DESTINATION ${DATA_DIR}/portalSfx8000.sfx
 )
 
 file(
