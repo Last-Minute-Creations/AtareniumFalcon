@@ -17,7 +17,7 @@ static tSimpleBufferManager *s_pVpManager;
 
 //extern tState g_sStateIntro;
 extern tStateManager *g_pStateMachineGame;
-extern tState g_sStateMenu;
+//extern tState g_sStateMenu;
 extern tState g_sStateCredits;
 
 void waitFrames();
@@ -46,6 +46,11 @@ const char dots[] = "...";
 const char *w3 = "WUNGIEL DETECTED";
 const char *w4 = "DONE";
 const char run[] = "RUN";
+
+void blitBlueAtariScreen(void){
+    blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 21);
+    blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 21);
+}
 
 void printLineOfAtariText(lineToPass, textPositionY){
         sprintf(szWungiel, lineToPass);
@@ -124,8 +129,7 @@ void stateWungielCreate(void)
     s_pFont = fontCreate("data/topaz.fnt");
     s_pBmText = fontCreateTextBitMap(300, s_pFont->uwHeight);
 
-    blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 21);
-    blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 21);
+    blitBlueAtariScreen();
 
     for (UBYTE i = 1; i < 5; ++i){
         switch (i){

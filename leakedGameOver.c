@@ -28,7 +28,7 @@ const char *s_pLines3[TXT_LINE_COUNT] = {
     "if (leaked capacitor == 2){",
     "amigaModeDestroy(); ",
     "}",
-    "// WTF",
+    "// WTF   N N N N N",
     "NO AMIGA SPIRIT FROM YOU I SMELL.",
     "LEAKED CAPACITOR NO GOOD IMPROVEMENT IS.",
     "SPACESHIP WICHER OF OURS YOU DESTROYED.",
@@ -44,12 +44,7 @@ extern BYTE excesscoal;
 
 extern tAmigaMode amigaMode;
 
-
-
 void clearTiles();
-
-
-
 
 void stateLeakedGameOverCreate(void){
 

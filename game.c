@@ -268,8 +268,6 @@ void waitFrames(tVPort *pVPort, UBYTE ubHowMany, UWORD uwPosY)
   }
 }
 
-void clean();
-
 void portalGlowAnim(void) // animacja portalu na planszy
 {
   blitCopy(s_pBg, portalGlowX * 32, portalGlowY * 32, s_pBgPortalGlow, 0, 0, 32, 32, MINTERM_COOKIE);                 // wytnij tlo w miejscu gdzie jest portal do s_pBgPortalGlow
@@ -317,6 +315,7 @@ void printOnHUD(void)
   sprintf(szMsg4, "%d", robboMsgCount);
   fontFillTextBitMap(s_pFont, s_pBmText, szMsg4);
   fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 250, 236, HUDfontColor, FONT_COOKIE);
+  // PRINTING LEVEL NUMBER TO BE DELETED !!!!
   blitCopy(s_pHUD, 288, 0, s_pVpManager->pBack, 288, 224, 32, 32, MINTERM_COOKIE);
   sprintf(szLvl, "%d", level);
   fontFillTextBitMap(s_pFont, s_pBmText, szLvl);

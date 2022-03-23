@@ -9,6 +9,7 @@
         "stdarg.h": "c",
         "copper.h": "c",
         "ptplayer.h": "c",
-        "types.h": "c"
+        "types.h": "c",
+        "game.h": "c"
     }
 }

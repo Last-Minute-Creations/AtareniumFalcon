@@ -27,6 +27,14 @@ static tSimpleBufferManager *s_pVpManager;
 extern tState g_sStateGame;
 extern tStateManager *g_pStateMachineGame;
 
+// TEMPORARY FOR SHORTCUT GAMEPLAY TESTING
+void blitBlueAtariScreen2(void){
+    blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 21);
+    blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 21);
+}
+
+void blitBlueAtariScreen();
+
 static tFont *s_pFont;
 static tTextBitMap *s_pBmText;
 
@@ -75,6 +83,31 @@ const char *s_pLines[INTRO_LINE_COUNT] = {
     "Let electrolyte eat out their PCBs.",
     "HAR! HAR! HAR!"};
 
+void printIntroPage(pageNr){ // p1:21 p2:14 
+    UBYTE totalLines;
+    UBYTE page2setup;
+    switch (pageNr){
+        case 1:
+        totalLines = 21;
+        page2setup = 0;
+        break;
+        case 2:
+        totalLines = 14;
+        page2setup = 21;
+        break;
+    }
+    fontFillTextBitMap(s_pFont, s_pBmText, s_pLines[lineCount + page2setup]);
+    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 10, (lineCount * 9) + 10, 23, FONT_COOKIE);
+    ++lineCount;
+    if (lineCount == totalLines)
+    {
+      lineCount = 0;
+      fontFillTextBitMap(s_pFont, s_pBmText, IntroContinue);
+      fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 10, 200, 23, FONT_COOKIE);
+    }
+    s_eState = STATE_INTRO_WAIT;
+}
+
 void stateIntroCreate(void)
 {
 
@@ -106,8 +139,7 @@ void stateIntroCreate(void)
   s_pFont = fontCreate("data/topaz.fnt");
   s_pBmText = fontCreateTextBitMap(300, s_pFont->uwHeight);
 
-  blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 21);
-  blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 21);
+  blitBlueAtariScreen2();
 }
 
   void stateIntroLoop(void)
@@ -119,16 +151,7 @@ void stateIntroCreate(void)
     {
 
     case STATE_INTRO_PAGE1:
-      fontFillTextBitMap(s_pFont, s_pBmText, s_pLines[lineCount]);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 10, (lineCount * 9) + 10, 23, FONT_COOKIE);
-    ++lineCount;
-    if (lineCount == 21)
-    {
-      lineCount = 0;
-      fontFillTextBitMap(s_pFont, s_pBmText, IntroContinue);
-      fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 10, 200, 23, FONT_COOKIE);
-    }
-    s_eState = STATE_INTRO_WAIT;
+      printIntroPage(1);
 
     break;
 
@@ -151,19 +174,9 @@ void stateIntroCreate(void)
     {
       page2CleanUp = 1;
       lineCount = 0;
-      blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 21);
-      blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 21);
+      blitBlueAtariScreen2();
     }
-    fontFillTextBitMap(s_pFont, s_pBmText, s_pLines[lineCount + 21]);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 10, (lineCount * 9) + 10, 23, FONT_COOKIE);
-    ++lineCount;
-    if (lineCount == 14)
-    {
-      lineCount = 0;
-      fontFillTextBitMap(s_pFont, s_pBmText, IntroContinue);
-      fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 10, 200, 23, FONT_COOKIE);
-    }
-    s_eState = STATE_INTRO_WAIT;
+    printIntroPage(2);
     break;
   }
 

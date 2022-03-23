@@ -17,12 +17,7 @@ static tBitMap *s_pGameOver;
 extern tState g_sStateMenu;
 extern tStateManager *g_pStateMachineGame;
 
-extern BYTE startingCoal;
-
 void waitFrames();
-
-extern BYTE youWin;
-
 
 void stateGameOverCreate(void){
 

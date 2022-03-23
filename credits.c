@@ -19,6 +19,8 @@ static tSimpleBufferManager *s_pVpManager;
 extern tState g_sStateMenu;
 extern tStateManager *g_pStateMachineGame;
 
+void blitBlueAtariScreen();
+
 static tFont *s_pFont;
 static tTextBitMap *s_pBmText;
 static UWORD s_pPaletteAtariBasic[32];
@@ -90,8 +92,7 @@ void stateCreditsLoop(void)
     if (printOnce == 0)
     {
       ++printOnce;
-      blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 21);
-      blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 21);
+      blitBlueAtariScreen();
       paletteDim(s_pPaletteAtariBasic, s_pVp->pPalette, 32, 15); // 0 - czarno, 15 - pe�na paleta
       viewUpdateCLUT(s_pView);
       
