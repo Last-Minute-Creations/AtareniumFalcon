@@ -127,10 +127,6 @@ BYTE redCapacitorsAnimTileCheck = 0;
 BYTE blueCapacitorsAnimTick = 0;
 BYTE blueCapacitorsAnimTileCheck = 0;
 
-BYTE portalGlowTick = 0;
-
-BYTE portalGlowFrame = 0;
-
 BYTE levelScoreTick = 0;
 BYTE levelScoreTempo = 8;
 extern tEndLevelState levelScoreControl = LEVEL_SCORE_OFF;
@@ -147,11 +143,8 @@ BOOL hudFullyUp = FALSE;
 BYTE hudScrollingControl = 0;
 BYTE hudScrollingTick = 0;
 
-//BYTE portalAnimControl = 0;
-BYTE portalAnimTick = 0;
 
-BYTE portalGlowX = 0;
-BYTE portalGlowY = 0;
+
 BYTE portalGlowDB = 0;
 
 BYTE stonehitAnimControl = 0;
@@ -181,6 +174,11 @@ struct anim
   UBYTE robboFrame;
   UBYTE robboTick;
   UBYTE robboTempo;
+
+  UBYTE portalGlowTick;
+  UBYTE portalGlowFrame;
+  UBYTE portalGlowX;
+  UBYTE portalGlowY;
 };
 
 struct anim anim;
@@ -256,6 +254,11 @@ void initialSetupDeclarationOfData(void)
   anim.robboFrame = 0;
   anim.robboTick = 0;
   anim.robboTempo = 24;
+
+  anim.portalGlowTick = 0;
+  anim.portalGlowFrame = 0;
+  anim.portalGlowX = 0;
+  anim.portalGlowY = 0;
 }
 
 void waitFrames(tVPort *pVPort, UBYTE ubHowMany, UWORD uwPosY)
@@ -270,9 +273,9 @@ void waitFrames(tVPort *pVPort, UBYTE ubHowMany, UWORD uwPosY)
 
 void portalGlowAnim(void) // animacja portalu na planszy
 {
-  blitCopy(s_pBg, portalGlowX * 32, portalGlowY * 32, s_pBgPortalGlow, 0, 0, 32, 32, MINTERM_COOKIE);                 // wytnij tlo w miejscu gdzie jest portal do s_pBgPortalGlow
-  blitCopyMask(s_pTiles, portalGlowFrame * 32, 352, s_pBgPortalGlow, 0, 0, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // wytnij klatke tile'a i doklej do s_pBgPortalGlow z zachowaniem transparentnosci - maska
-  blitCopy(s_pBgPortalGlow, 0, 0, s_pVpManager->pBack, portalGlowX * 32, portalGlowY * 32, 32, 32, MINTERM_COPY);     // wrzuc gotowe s_pBgPortalGlow na ekran pBack
+  blitCopy(s_pBg, anim.portalGlowX * 32, anim.portalGlowY * 32, s_pBgPortalGlow, 0, 0, 32, 32, MINTERM_COOKIE);                 // wytnij tlo w miejscu gdzie jest portal do s_pBgPortalGlow
+  blitCopyMask(s_pTiles, anim.portalGlowFrame * 32, 352, s_pBgPortalGlow, 0, 0, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // wytnij klatke tile'a i doklej do s_pBgPortalGlow z zachowaniem transparentnosci - maska
+  blitCopy(s_pBgPortalGlow, 0, 0, s_pVpManager->pBack, anim.portalGlowX * 32, anim.portalGlowY * 32, 32, 32, MINTERM_COPY);     // wrzuc gotowe s_pBgPortalGlow na ekran pBack
 }
 
 void endLevelFadeOut(void)
@@ -413,8 +416,8 @@ void drawTiles(void)
     else if (gameLevels[level][i] == PORTAL) // PORTAL 0x45
     {
       kamyki[x][y] = 10;
-      portalGlowX = x;
-      portalGlowY = y;
+      anim.portalGlowX = x;
+      anim.portalGlowY = y;
       blitCopyMask(s_pTiles, 0, 352, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
 
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
@@ -750,7 +753,6 @@ void levelScore(void) // WITH PORTAL OPEN AND FALKON IN PORTAL ANIM !!!
     levelScoreControl = LEVEL_SCORE_OFF;
     endLevelFadeOut();
     falkonIdleControl = 1;
-    portalAnimTick = 0;
 
     ++level;
     if (level == LAST_LEVEL_NUMBER + 1)
@@ -1950,16 +1952,16 @@ void stateGameLoop(void)
     portalGlowDB = 0;
   }
 
-  ++portalGlowTick;
-  if (portalGlowTick > portalTickTempo)
+  ++anim.portalGlowTick;
+  if (anim.portalGlowTick > portalTickTempo)
   {
-    ++portalGlowFrame;
+    ++anim.portalGlowFrame;
     portalGlowAnim();
-    portalGlowTick = 0;
+    anim.portalGlowTick = 0;
     portalGlowDB = 1;
-    if (portalGlowFrame == 7)
+    if (anim.portalGlowFrame == 7)
     {
-      portalGlowFrame = 0;
+      anim.portalGlowFrame = 0;
     }
   }
 
