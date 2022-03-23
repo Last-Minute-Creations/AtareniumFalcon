@@ -12,40 +12,16 @@
 
 #define CREDITS_LINE_COUNT 23
 
-enum StatesCredits
-{
-  STATE_LMC_FADE_IN,
-  STATE_LMC_WAIT,
-  STATE_LMC_FADE_OUT,
-  STATE_ACE_FADE_IN,
-  STATE_ACE_WAIT,
-  STATE_ACE_FADE_OUT,
-  STATE_CREDITS,
-};
-
-static enum StatesCredits s_eState;
-
 static tView *s_pView;
 static tVPort *s_pVp;
 static tSimpleBufferManager *s_pVpManager;
 
-static tBitMap *s_pLMC;
-static tBitMap *s_pACE;
-
-static tPtplayerSfx *s_pACEsfx;
-static tPtplayerSfx *s_pLMCsfx;
-
 extern tState g_sStateMenu;
 extern tStateManager *g_pStateMachineGame;
-extern tState g_sStateIntro;
 
 static tFont *s_pFont;
 static tTextBitMap *s_pBmText;
-
-static UWORD s_pPaletteLMC_ACE[32];
 static UWORD s_pPaletteAtariBasic[32];
-
-extern UBYTE creditsControl;
 
 UBYTE printOnce = 0;
 
@@ -96,7 +72,6 @@ void stateCreditsCreate(void)
   joyOpen();
   keyCreate();
   viewLoad(s_pView);
-  ptplayerCreate(1);
 
   printOnce = 0;
 
@@ -131,17 +106,9 @@ void stateCreditsLoop(void)
     }
   
 
-  if (joyUse(JOY1_FIRE) || keyUse(KEY_RETURN)){
-    //if (creditsControl == 0)
-    //{
-      //stateChange(g_pStateMachineGame, &g_sStateIntro);
-      //return;
-    //}
-    //else if (creditsControl == 1)
-    //{
+  if (joyUse(JOY1_FIRE) || keyUse(KEY_RETURN)){ 
       stateChange(g_pStateMachineGame, &g_sStateMenu);
       return;
-    //}
   }
 
   viewProcessManagers(s_pView);
@@ -152,13 +119,11 @@ void stateCreditsLoop(void)
 void stateCreditsDestroy(void)
 {
   systemUse();
-
   fontDestroy(s_pFont);
   fontDestroyTextBitMap(s_pBmText);
   joyClose();
   keyDestroy();
   viewDestroy(s_pView);
-  ptplayerDestroy();
 }
 
 tState g_sStateCredits = {

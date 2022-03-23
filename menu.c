@@ -28,9 +28,7 @@ static tSimpleBufferManager *s_pVpManagerMenu;
 #define STAR_COUNT 60
 #define STAR_STEPS 64
 
-// extern tState g_sStateGame;
 extern tState g_sStateIntro;
-extern tState g_sStateCredits;
 extern tStateManager *g_pStateMachineGame;
 
 UBYTE cheatmodeEnablerWhenEqual3 = 0;
@@ -38,8 +36,6 @@ UBYTE secondCheatEnablerWhenEqual3 = 0;
 UBYTE thirdCheatEnablerWhenEqual3 = 0;
 UBYTE cheatModeStarColor = 0;
 BOOL tutorialLevelsSkip = FALSE;
-
-UBYTE creditsControl = 0;
 
 UBYTE pxColor[] = {1, 2, 3, 4, 5};
 UBYTE bgColor = 0;
@@ -139,7 +135,6 @@ void stateMenuCreate(void)
 	systemUnuse();
 	viewLoad(s_pView);
 
-	creditsControl = 1;
 }
 
 void stateMenuLoop(void)
@@ -160,6 +155,7 @@ void stateMenuLoop(void)
 		return;
 	}
 
+	/*
 	if (keyUse(KEY_I))
 	{
 		stateChange(g_pStateMachineGame, &g_sStateIntro);
@@ -170,6 +166,7 @@ void stateMenuLoop(void)
 		stateChange(g_pStateMachineGame, &g_sStateCredits);
 		return;
 	}
+	*/
 
 	if (keyUse(KEY_W) && cheatmodeEnablerWhenEqual3 == 0){
 		++cheatmodeEnablerWhenEqual3;
