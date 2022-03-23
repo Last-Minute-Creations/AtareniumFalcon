@@ -29,8 +29,11 @@ static tPtplayerSfx *s_pAtari;
 
 UBYTE typingRandomizer = 0;
 
+#define LOAD 1
+#define RUN 2
 
 char szWungiel[50];
+char lineToPass[50];
 
 const char *s1 = "if (system.hacked == TRUE){";
 const char *s2 = "atariMode = ON }";
@@ -43,6 +46,48 @@ const char dots[] = "...";
 const char *w3 = "WUNGIEL DETECTED";
 const char *w4 = "DONE";
 const char run[] = "RUN";
+
+void printLineOfAtariText(lineToPass, textPositionY){
+        sprintf(szWungiel, lineToPass);
+        fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
+        fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 10, textPositionY, 23, FONT_COOKIE);
+}
+
+void printThreeDots(dotsPositionY){
+    for (BYTE i = 0; i < 3; ++i) {
+        sprintf(szWungiel, "%c", dots[i]);
+        fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
+        fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, (i * 7) + 10, dotsPositionY, 23, FONT_COOKIE);
+        waitFrames(s_pVp, 50, 200);
+    }
+}
+
+void typingAtariLineWithSound(line, typingPositionY){
+    UWORD uwX = 10;
+    switch (line){
+        case LOAD:
+            for (UBYTE i = 0; i < strlen(load1); ++i) {
+                sprintf(szWungiel, "%c", load1[i]);
+                fontFillTextBitMap(s_pFont, s_pBmText, szWungiel); 
+                fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, uwX, typingPositionY, 23, FONT_COOKIE);
+                uwX += fontGlyphWidth(s_pFont, load1[i]) + 1;
+                ptplayerSfxPlay(s_pAtari, 3, 64, 100);
+                typingRandomizer = ulRandMinMax(10, 20);
+                waitFrames(s_pVp, typingRandomizer, 200);
+            }
+            break;
+        case RUN:
+            for (BYTE i = 0; i < 3; ++i) {
+                sprintf(szWungiel, "%c", run[i]);
+                fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
+                fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, (i * 7) + 10, 120, 23, FONT_COOKIE);
+                ptplayerSfxPlay(s_pAtari, 3, 64, 100);
+                typingRandomizer = ulRandMinMax(10, 20);
+                waitFrames(s_pVp, typingRandomizer, 200);
+            }
+            break;
+    }
+}
 
 void stateWungielCreate(void)
 {
@@ -82,102 +127,49 @@ void stateWungielCreate(void)
     blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 21);
     blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 21);
 
-    sprintf(szWungiel, s1);
-    fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 10, 10, 23, FONT_COOKIE);
-
-    sprintf(szWungiel, s2);
-    fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 10, 20, 23, FONT_COOKIE);
-
-    sprintf(szWungiel, s3);
-    fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 10, 30, 23, FONT_COOKIE);
-
-
-    sprintf(szWungiel, w1);
-    fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 10, 40, 23, FONT_COOKIE);
-
+    for (UBYTE i = 1; i < 5; ++i){
+        switch (i){
+            case 1:
+                sprintf(lineToPass, s1);
+                break;
+            case 2:
+                sprintf(lineToPass, s2);
+                break;
+            case 3:
+                sprintf(lineToPass, s3);
+                break;
+            case 4:
+                sprintf(lineToPass, w1);
+                break;
+        }
+        printLineOfAtariText(lineToPass, i * 10);   
+    }
     waitFrames(s_pVp, 50, 200);
 
-    UWORD uwX = 10;
-    for (UBYTE i = 0; i < strlen(load1); ++i) {
-        sprintf(szWungiel, "%c", load1[i]);
-        fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
-        fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, uwX, 50, 23, FONT_COOKIE);
-        uwX += fontGlyphWidth(s_pFont, load1[i]) + 1;
-        ptplayerSfxPlay(s_pAtari, 3, 64, 100);
-        typingRandomizer = ulRandMinMax(10, 20);
-        waitFrames(s_pVp, typingRandomizer, 200);
-        
-    }
-
-
+    typingAtariLineWithSound(LOAD, 50);
     waitFrames(s_pVp, 50, 200);
 
-    sprintf(szWungiel, w2);
-    fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 10, 60, 23, FONT_COOKIE);
-
+    printLineOfAtariText(w2, 60);   // 'insert wincy wungla' ...
     waitFrames(s_pVp, 50, 200);
 
-    for (BYTE i = 0; i < 3; ++i) {
-        sprintf(szWungiel, "%c", dots[i]);
-        fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
-        fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, (i * 7) + 10, 70, 23, FONT_COOKIE);
-        waitFrames(s_pVp, 50, 200);
-    }
-    sprintf(szWungiel, w3);
-    fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 10, 80, 23, FONT_COOKIE);
-
+    printThreeDots(70);
+    
+    printLineOfAtariText(w3, 80);  // 'wungiel detected'
     waitFrames(s_pVp, 50, 200);
 
-    uwX = 10;
-    for (UBYTE i = 0; i < strlen(load1); ++i) {
-        sprintf(szWungiel, "%c", load1[i]);
-        fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
-        fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, uwX, 90, 23, FONT_COOKIE);
-        uwX += fontGlyphWidth(s_pFont, load1[i]) + 1;
-        ptplayerSfxPlay(s_pAtari, 3, 64, 100);
-        typingRandomizer = ulRandMinMax(10, 20);
-        waitFrames(s_pVp, typingRandomizer, 200);
-    }
+    typingAtariLineWithSound(LOAD, 90);
 
+    printThreeDots(100);
 
-    for (BYTE i = 0; i < 3; ++i) {
-        sprintf(szWungiel, "%c", dots[i]);
-        fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
-        fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, (i * 7) + 10, 100, 23, FONT_COOKIE);
-        waitFrames(s_pVp, 50, 200);
-    }
-
-    sprintf(szWungiel, w4);
-    fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 10, 110, 23, FONT_COOKIE);
-
+    printLineOfAtariText(w4, 110);  // 'done'
     waitFrames(s_pVp, 50, 200);
 
-    for (BYTE i = 0; i < 3; ++i) {
-        sprintf(szWungiel, "%c", run[i]);
-        fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
-        fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, (i * 7) + 10, 120, 23, FONT_COOKIE);
-        ptplayerSfxPlay(s_pAtari, 3, 64, 100);
-        typingRandomizer = ulRandMinMax(10, 20);
-        waitFrames(s_pVp, typingRandomizer, 200);
-    }
+    typingAtariLineWithSound(RUN, 120);
 
-    for (BYTE i = 0; i < 3; ++i) {
-        sprintf(szWungiel, "%c", dots[i]);
-        fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
-        fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, (i * 7) + 10, 130, 23, FONT_COOKIE);
-        waitFrames(s_pVp, 50, 200);
-    }
+    printThreeDots(130);
 
 
 }
-
 
 
 void stateWungielLoop(void)

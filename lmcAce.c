@@ -42,7 +42,14 @@ extern UBYTE creditsControl;
 
 UBYTE bRatio = 0;
 UBYTE waitTime = 0;
-UBYTE drawOnce = 0;
+UBYTE drawOnce = 0;  // to draw gfx one time and then do fades in loop
+                     // at 0 draw LMC, at 1 draw ACE
+
+void blitBlackBacground(void)
+{
+  blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 0);  
+  blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 0);
+}
 
 void stateLmcAceCreate(void)
 {
@@ -92,15 +99,14 @@ void stateLmcAceLoop(void)
   switch (s_eState)
   {
   case STATE_LMC_FADE_IN:
-    if (drawOnce == 0)
+    if (drawOnce == 0)  // draw gfx and then continue with fade in
     {
       ++drawOnce;
       paletteDim(s_pPaletteLMC_ACE, s_pVp->pPalette, 32, 0); // 0 - czarno, 15 - pe�na paleta
       viewUpdateCLUT(s_pView);
 
       ptplayerSfxPlay(s_pLMCsfx, -1, 64, 100);
-      blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 0);
-      blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 0);
+      blitBlackBacground();
       blitCopy(s_pLMC, 0, 0, s_pVpManager->pBack, 104, 40, 112, 153, MINTERM_COOKIE);
     }
 
@@ -133,15 +139,14 @@ void stateLmcAceLoop(void)
     break;
 
   case STATE_ACE_FADE_IN:
-    if (drawOnce == 1)
+    if (drawOnce == 1) 
     {
       ++drawOnce;
       paletteDim(s_pPaletteLMC_ACE, s_pVp->pPalette, 32, 0); // 0 - czarno, 15 - pe�na paleta
       viewUpdateCLUT(s_pView);
 
       ptplayerSfxPlay(s_pACEsfx, -1, 64, 100);
-      blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 0);
-      blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 0);
+      blitBlackBacground();
       blitCopy(s_pACE, 0, 0, s_pVpManager->pBack, 80, 95, 160, 69, MINTERM_COOKIE);
     }
 
