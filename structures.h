@@ -1,6 +1,58 @@
 #ifndef STRUCTURES_H 
 #define STRUCTURES_H 
  
+struct collected { 
+  UBYTE coal; 
+  UBYTE excesscoal; 
+  UBYTE capacitors; 
+  UBYTE robboMsgCount; 
+};
+
+struct moveControls { 
+  BOOL stoneHit; 
+  BOOL frameHit; 
+  UBYTE anotherHit; // sprawdzam czy po uderzeniu w kamien chce jeszcze raz, zeby sie HUD 2 razy nie rozwijal 
+  UBYTE kierunek;  
+  UBYTE kierunekHold; 
+}; 
+
+struct anim { 
+  UBYTE robboFrame;
+  UBYTE robboTick;
+  UBYTE robboTempo;
+
+  UBYTE portalGlowTick;
+  UBYTE portalGlowFrame; 
+  UBYTE portalGlowX;
+  UBYTE portalGlowY;
+
+  UBYTE redCapacitorsAnimTileCheck;
+  UBYTE redCapacitorsAnimTick;
+  UBYTE blueCapacitorsAnimTileCheck; 
+  UBYTE blueCapacitorsAnimTick;
+
+  UBYTE stonehitAnimTick;
+  UBYTE stonehitAnimFrame;
+
+  UBYTE flyingTick;
+  UBYTE flyingFrame;
+
+  UBYTE falkonIdle;
+  UBYTE idleFrame;
+   /*
+  UBYTE portalTempo; 
+  UBYTE redCapacitorTempo; 
+  UBYTE blueCapacitorTempo; 
+  UBYTE falconTick; 
+  UBYTE falconTempo; 
+  UBYTE falconFrame; 
+   
+   
+  UBYTE flyingTempo; 
+  */
+}; 
+
+ /*
 struct coords { 
   UBYTE falconFace; 
   UBYTE falkonx; 
@@ -21,39 +73,14 @@ struct coords {
   UBYTE newPosY; 
 }; 
  
-struct anim { 
-  UBYTE portalFrame; 
-  UBYTE portalTick; 
-  UBYTE portalTempo; 
-  UBYTE redCapacitorTick; 
-  UBYTE redCapacitorTempo; 
-  UBYTE redCapacitorTileCheck; 
-  UBYTE blueCapacitorTick; 
-  UBYTE blueCapacitorTempo; 
-  UBYTE blueCapacitorTileCheck; 
-  UBYTE robboFrame; 
-  UBYTE robboTick; 
-  UBYTE robboTempo; 
-  UBYTE falconTick; 
-  UBYTE falconTempo; 
-  UBYTE falconFrame; 
-  UBYTE flyingTick; 
-  UBYTE flyingFrame; 
-  UBYTE flyingTempo; 
-}; 
+
  
 struct animStateControls { 
   BOOL falconIdle; 
   UBYTE falconFlyingAnim; 
   UBYTE stoneHitAnim; 
 }; 
- 
-struct moveControls { 
-  BOOL stoneHit; 
-  BOOL frameHit; 
-  UBYTE kierunek;  
-  UBYTE kierunekHold; 
-}; 
+  
  
 struct doubleBuffering { 
   UBYTE portal; 
@@ -78,14 +105,8 @@ struct robboMsg {
   char szText[80]; 
   char *szCollision1stLine; 
   char *szCollision2ndLine; 
-}; 
+}; */
  
-struct collected { 
-  UBYTE coal; 
-  UBYTE excessCoal; 
-  UBYTE capacitors; 
-  UBYTE robbo; 
-}; 
  
  
  
