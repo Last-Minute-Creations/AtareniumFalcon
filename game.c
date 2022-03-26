@@ -114,18 +114,15 @@ UWORD uwPreviousY = 0;
 UWORD HitPosX = 0;
 UWORD HitPosY = 0;
 
-BYTE stoneHit = 0;
+BYTE stoneHit = FALSE; // 
 BYTE frameHit = 0;
 BYTE anotherHit = 0; // sprawdzam czy po uderzeniu w kamien chce jeszcze raz, zeby sie HUD 2 razy nie rozwijal na
 
 UBYTE falkonIdle = 0;
 UBYTE falkonIdleTempo = 12;
 BYTE falkonIdleControl = 1;
-BYTE redCapacitorsAnimTick = 0;
+
 BYTE tickTempo = 8;
-BYTE redCapacitorsAnimTileCheck = 0;
-BYTE blueCapacitorsAnimTick = 0;
-BYTE blueCapacitorsAnimTileCheck = 0;
 
 BYTE levelScoreTick = 0;
 BYTE levelScoreTempo = 8;
@@ -143,9 +140,7 @@ BOOL hudFullyUp = FALSE;
 BYTE hudScrollingControl = 0;
 BYTE hudScrollingTick = 0;
 
-
-
-BYTE portalGlowDB = 0;
+BYTE portalGlowDB = FALSE;   // handling double buffer, if true then will be drawn again in next frame
 
 BYTE stonehitAnimControl = 0;
 UBYTE stonehitAnimTick = 0;
@@ -179,6 +174,11 @@ struct anim
   UBYTE portalGlowFrame;
   UBYTE portalGlowX;
   UBYTE portalGlowY;
+
+  UBYTE redCapacitorsAnimTileCheck;
+  UBYTE redCapacitorsAnimTick;
+  UBYTE blueCapacitorsAnimTileCheck;
+  UBYTE blueCapacitorsAnimTick;
 };
 
 struct anim anim;
@@ -193,8 +193,8 @@ UBYTE doubleBufferFrameControl = 2;
 UBYTE idleFrame = 0;
 BYTE kierunekHold = 0;
 
-UBYTE tempX = 0;
-UBYTE tempY = 0;
+UBYTE tempX = 0;   // remember to use meaningful names next time ! !
+UBYTE tempY = 0;   // lesson learned ... 
 
 extern UBYTE cheatmodeEnablerWhenEqual3;
 extern UBYTE secondCheatEnablerWhenEqual3;
@@ -223,7 +223,7 @@ void initialSetupDeclarationOfData(void)
   uwPosX = 0;
   uwPosY = 0;
 
-  stoneHit = 0;
+  stoneHit = FALSE;
   frameHit = 0;
   anotherHit = 0;
   hudScrollingControl = 0;
@@ -259,6 +259,10 @@ void initialSetupDeclarationOfData(void)
   anim.portalGlowFrame = 0;
   anim.portalGlowX = 0;
   anim.portalGlowY = 0;
+  anim.redCapacitorsAnimTileCheck = 0;
+  anim.redCapacitorsAnimTick = 0;
+  anim.blueCapacitorsAnimTileCheck = 0;
+  anim.blueCapacitorsAnimTick = 0;
 }
 
 void waitFrames(tVPort *pVPort, UBYTE ubHowMany, UWORD uwPosY)
@@ -824,28 +828,28 @@ void isThisStone(void)
     stoneX = falkonx + 1;             // przypisz do stoneX docelowa wspolrzedna
     if (kamyki[stoneX][falkony] == 3) // jesli pole docelowe to 3 (kamien)
     {
-      stoneHit = 1; // oznacz ze chciales walnac w kamyk dla dalszego procesowania
+      stoneHit = TRUE; // oznacz ze chciales walnac w kamyk dla dalszego procesowania
     }
     break;
   case 2: // i tak dalej dla reszty kierunkow
     stoneX = falkonx - 1;
     if (kamyki[stoneX][falkony] == 3)
     {
-      stoneHit = 1;
+      stoneHit = TRUE;
     }
     break;
   case 3:
     stoneY = falkony - 1;
     if (kamyki[falkonx][stoneY] == 3)
     {
-      stoneHit = 1;
+      stoneHit = TRUE;
     }
     break;
   case 4:
     stoneY = falkony + 1;
     if (kamyki[falkonx][stoneY] == 3)
     {
-      stoneHit = 1;
+      stoneHit = TRUE;
     }
     break;
   }
@@ -1392,7 +1396,7 @@ void falconCollisionCheck(void)
 {
 
   // jesli byl kamien to brak ruchu
-  if (stoneHit == 1)
+  if (stoneHit == TRUE)
   {
     ++anotherHit;
     //--coal;
@@ -1418,7 +1422,7 @@ void falconCollisionCheck(void)
       break;
     }
 
-    stoneHit = 0;
+    stoneHit = FALSE;
     //printOnHUD();
     return;
   }
@@ -1449,7 +1453,7 @@ void falconIdleAnimation(void)
     return;
   }
 
-  if (kierunek != 0 && stoneHit == 0)
+  if (kierunek != 0 && stoneHit == FALSE)
   {
     return;
   }
@@ -1624,7 +1628,7 @@ void redCapacitorsAnimation(void)
 {
   UBYTE i = 0, k = 0;
 
-  if (redCapacitorsAnimTick == tickTempo)
+  if (anim.redCapacitorsAnimTick == tickTempo)
   {
 
     for (i = 0; i < 10; ++i)
@@ -1635,14 +1639,14 @@ void redCapacitorsAnimation(void)
         {
           blitCopy(s_pBg, i * 32, k * 32, s_pAnimBg, 0, 0, 32, 32, MINTERM_COOKIE);
           blitCopy(s_pAnimBg, 0, 0, s_pVpManager->pBack, i * 32, k * 32, 32, 32, MINTERM_COOKIE);
-          blitCopyMask(s_pTiles, redCapacitorsAnimTileCheck * 32, 288, s_pVpManager->pBack, i * 32, k * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+          blitCopyMask(s_pTiles, anim.redCapacitorsAnimTileCheck * 32, 288, s_pVpManager->pBack, i * 32, k * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
         }
       }
     }
-    ++redCapacitorsAnimTileCheck;
-    if (redCapacitorsAnimTileCheck == 7)
+    ++anim.redCapacitorsAnimTileCheck;
+    if (anim.redCapacitorsAnimTileCheck == 7)
     {
-      redCapacitorsAnimTileCheck = 0;
+      anim.redCapacitorsAnimTileCheck = 0;
     }
   }
 }
@@ -1650,7 +1654,7 @@ void redCapacitorsAnimation(void)
 void blueCapacitorsAnimation(void)
 {
 
-  if (blueCapacitorsAnimTick == tickTempo)
+  if (anim.blueCapacitorsAnimTick == tickTempo)
   {
 
     for (UBYTE i = 0; i < 10; ++i)
@@ -1661,14 +1665,14 @@ void blueCapacitorsAnimation(void)
         {
           blitCopy(s_pBg, i * 32, k * 32, s_pAnimBg, 0, 0, 32, 32, MINTERM_COOKIE);
           blitCopy(s_pAnimBg, 0, 0, s_pVpManager->pBack, i * 32, k * 32, 32, 32, MINTERM_COOKIE);
-          blitCopyMask(s_pTiles, blueCapacitorsAnimTileCheck * 32, 256, s_pVpManager->pBack, i * 32, k * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+          blitCopyMask(s_pTiles, anim.blueCapacitorsAnimTileCheck * 32, 256, s_pVpManager->pBack, i * 32, k * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
         }
       }
     }
-    ++blueCapacitorsAnimTileCheck;
-    if (blueCapacitorsAnimTileCheck == 7)
+    ++anim.blueCapacitorsAnimTileCheck;
+    if (anim.blueCapacitorsAnimTileCheck == 7)
     {
-      blueCapacitorsAnimTileCheck = 0;
+      anim.blueCapacitorsAnimTileCheck = 0;
     }
   }
 }
@@ -1946,10 +1950,10 @@ void stateGameLoop(void)
     }
   }
 
-  if (portalGlowDB == 1)
+  if (portalGlowDB == TRUE)
   {
     portalGlowAnim();
-    portalGlowDB = 0;
+    portalGlowDB = FALSE;
   }
 
   ++anim.portalGlowTick;
@@ -1958,22 +1962,22 @@ void stateGameLoop(void)
     ++anim.portalGlowFrame;
     portalGlowAnim();
     anim.portalGlowTick = 0;
-    portalGlowDB = 1;
+    portalGlowDB = TRUE;
     if (anim.portalGlowFrame == 7)
     {
       anim.portalGlowFrame = 0;
     }
   }
 
-  ++redCapacitorsAnimTick;
-  if (redCapacitorsAnimTick > tickTempo)
+  ++anim.redCapacitorsAnimTick;
+  if (anim.redCapacitorsAnimTick > tickTempo)
   {
-    redCapacitorsAnimTick = 0;
+    anim.redCapacitorsAnimTick = 0;
   }
-  ++blueCapacitorsAnimTick;
-  if (blueCapacitorsAnimTick > tickTempo)
+  ++anim.blueCapacitorsAnimTick;
+  if (anim.blueCapacitorsAnimTick > tickTempo)
   {
-    blueCapacitorsAnimTick = 0;
+    anim.blueCapacitorsAnimTick = 0;
   }
 
   if (falkonIdleControl == 1)
