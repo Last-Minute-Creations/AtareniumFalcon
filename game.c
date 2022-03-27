@@ -75,6 +75,10 @@ char szMsg4[50];
 char levelFilePath[20];
 char szLvl[50];
 
+char lineToPass1[50];
+char lineToPass2[50];
+char szBuffer[50];
+
 char szRobboMsg[80];
 char *szRobbo1stLine = "ROBBO says:";
 char *szCollisionMsg1stLine = "Collision course detected, ESP enabled.";
@@ -86,12 +90,16 @@ extern tMusicState musicPlay = MUSIC_HEAVY;
 extern tAmigaMode amigaMode = AMIGA_MODE_OFF;
 extern tDrawingTilesetElements;
 extern tIntTilesetElementsControl;
+extern tFlyingState;
 
-BYTE youWin = 0;
-BYTE ubStoneImg = 0;
+UBYTE kamyki[10][7];
+UBYTE collectiblesAnim[10][7];
 
-BYTE kamyki[10][7];
-BYTE collectiblesAnim[10][7];
+UBYTE tickTempo = 8;
+UBYTE level = 1;
+UBYTE doubleBufferFrameControl = 2;
+UBYTE youWin = 0;
+UBYTE ubStoneImg = 0;
 
 // coordsy do rysowania falkona i kontrolowania zeby sie nie wypierdolil za ekran
 BYTE falkonx = 0;
@@ -103,7 +111,7 @@ BYTE falkonFace = 0; // kierunek dziobem
 // managing the tiles position for blitting
 UWORD pAnim[] = {0, 32, 64, 96, 128, 160, 192, 224};
 
-BYTE tickTempo = 8;
+
 
 BYTE levelScoreTick = 0;
 BYTE levelScoreTempo = 8;
@@ -124,13 +132,7 @@ BYTE hudScrollingTick = 0;
 BOOL portalGlowDB = FALSE;   // handling double buffer, if true then will be drawn again in next frame
 
 
-BYTE flyingAnimControl = 0;
 
-
-
-
-
-UBYTE level = 1;
 
 BYTE robboMsgNr = 0;
 BYTE robboMsgCtrl = 0;
@@ -149,10 +151,8 @@ struct db
 };
 struct db db;
 
-UBYTE doubleBufferFrameControl = 2;
 
-UBYTE tempX = 0;   // remember to use meaningful names next time ! !
-UBYTE tempY = 0;   // lesson learned ... 
+
 
 extern UBYTE cheatmodeEnablerWhenEqual3;
 extern UBYTE secondCheatEnablerWhenEqual3;
@@ -176,7 +176,7 @@ void initialSetupDeclarationOfData(void)
 {
   state.falkonIdleControl = TRUE;
   state.stonehitAnimControl = FALSE; // if true then handling animation for stone and frame collision
-
+  state.flyingAnimControl = FLY_OFF;
 
   falkonx = 0;
   falkony = 0;
@@ -194,6 +194,8 @@ void initialSetupDeclarationOfData(void)
   flying.newPosY = 0;
   flying.HitPosX = 0;
   flying.HitPosY = 0;
+  flying.tempX = 0;
+  flying.tempY = 0;
 
   move.stoneHit = FALSE;
   move.frameHit = FALSE;
@@ -213,7 +215,7 @@ void initialSetupDeclarationOfData(void)
   levelScoreControl = LEVEL_SCORE_OFF;
   levelAnimFrame = 0;
   levelScoreTick = 0;
-  flyingAnimControl = 0;
+  state.flyingAnimControl = FLY_OFF;
   
 
   setGameOverInNextLoopIter = FALSE;
@@ -447,8 +449,8 @@ void drawTiles(void)
       krawedzy = y;
       flying.uwPosX = falkonx * 32;
       flying.uwPosY = falkony * 32;
-      tempX = falkonx;
-      tempY = falkony;
+      flying.tempX = falkonx;
+      flying.tempY = falkony;
     }
 
     ++x;
@@ -933,6 +935,15 @@ void robboScrollDown(void)
   }
 }
 
+void printRobboMsgOnHUD(lineToPass1, lineToPass2){
+        sprintf(szBuffer, lineToPass1);
+        fontFillTextBitMap(s_pFont, s_pBmText, szBuffer);
+        fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 8, 230, 23, FONT_COOKIE);
+        sprintf(szBuffer, lineToPass2);
+        fontFillTextBitMap(s_pFont, s_pBmText, szBuffer);
+        fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 8, 240, 23, FONT_COOKIE);
+    }
+
 void robboSays(void)
 {
 
@@ -1016,27 +1027,19 @@ void robboSays(void)
       break;
     }
   }
-  if (robbo1stLineExceptionModificator == FALSE && HUDcollisionMsg == 0)
+  if (robbo1stLineExceptionModificator == FALSE && HUDcollisionMsg != 1)
   {
-    fontFillTextBitMap(s_pFont, s_pBmText, szRobbo1stLine);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 8, 230, 23, FONT_COOKIE);
-    fontFillTextBitMap(s_pFont, s_pBmText, szRobboMsg);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 8, 240, 23, FONT_COOKIE);
+    printRobboMsgOnHUD(szRobbo1stLine, szRobboMsg);
   }
   else if (robbo1stLineExceptionModificator == TRUE && HUDcollisionMsg == 0)
   {
-    fontFillTextBitMap(s_pFont, s_pBmText, szTribute1stLine);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 8, 230, 23, FONT_COOKIE);
-    fontFillTextBitMap(s_pFont, s_pBmText, szTribute2ndLine);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 8, 240, 23, FONT_COOKIE);
+    printRobboMsgOnHUD(szTribute1stLine, szTribute2ndLine);
     robbo1stLineExceptionModificator = FALSE;
   }
   if (HUDcollisionMsg == 1)
   {
-    fontFillTextBitMap(s_pFont, s_pBmText, szCollisionMsg1stLine);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 8, 230, 23, FONT_COOKIE);
-    fontFillTextBitMap(s_pFont, s_pBmText, szCollisionMsg2ndLine);
-    fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 8, 240, 23, FONT_COOKIE);
+    printRobboMsgOnHUD(szCollisionMsg1stLine, szCollisionMsg2ndLine);
+    noCheatLevelSkipWhenRobboMessageOn = TRUE;
   }
 }
 
@@ -1266,23 +1269,23 @@ void prepareFalconFlying(void)
   switch (move.kierunekHold)
   {
   case 1:
-    tempX = falkonx + 1;
-    flying.uwPosX = tempX * 32;
+    flying.tempX = falkonx + 1;
+    flying.uwPosX = flying.tempX * 32;
     break;
 
   case 2:
-    tempX = falkonx - 1;
-    flying.uwPosX = tempX * 32;
+    flying.tempX = falkonx - 1;
+    flying.uwPosX = flying.tempX * 32;
     break;
 
   case 3:
-    tempY = falkony - 1;
-    flying.uwPosY = tempY * 32;
+    flying.tempY = falkony - 1;
+    flying.uwPosY = flying.tempY * 32;
     break;
 
   case 4:
-    tempY = falkony + 1;
-    flying.uwPosY = tempY * 32;
+    flying.tempY = falkony + 1;
+    flying.uwPosY = flying.tempY * 32;
     break;
   }
 }
@@ -1333,16 +1336,16 @@ void robboAnimBlit(void)
 void blitFlyingAnimFrame(void)
 {
   blitCopy(s_pBg, flying.uwPreviousX, flying.uwPreviousY, s_pVpManager->pBack, flying.uwPreviousX, flying.uwPreviousY, 32, 32, MINTERM_COOKIE);
-  if (kamyki[tempX][tempY] > 3 && kamyki[tempX][tempY] != 10 && kamyki[tempX][tempY] != 11)
+  if (kamyki[flying.tempX][flying.tempY] > 3 && kamyki[flying.tempX][flying.tempY] != 10 && kamyki[flying.tempX][flying.tempY] != 11)
   {
     blitCopy(s_pBgWithTile, flying.newPosX, flying.newPosY, s_pVpManager->pBack, flying.newPosX, flying.newPosY, 32, 32, MINTERM_COOKIE);
   }
-  if (kamyki[tempX][tempY] == ROBBO_INT)
+  if (kamyki[flying.tempX][flying.tempY] == ROBBO_INT)
   {
     robboAnimBlit();
   }
 
-  else if (kamyki[tempX][tempY] < 4)
+  else if (kamyki[flying.tempX][flying.tempY] < 4)
   {
     UWORD uwPrevPosX = flying.uwPosX;
     UWORD uwPrevPosY = flying.uwPosY;
@@ -1374,7 +1377,7 @@ void blitFlyingAnimFrame(void)
 
 void falkonFlying2Db(void)
 {
-  flyingAnimControl = 4;
+  state.flyingAnimControl = FLY_PROCEED;
   blitFlyingAnimFrame();
 }
 
@@ -1427,7 +1430,7 @@ void falconCollisionCheck(void)
     return;
   }
   prepareFalconFlying();
-  flyingAnimControl = 1;
+  state.flyingAnimControl = FLY_PREP;
   move.anotherHit = 0;
   HUDcollisionMsg = 0;
 }
@@ -1545,15 +1548,15 @@ void falconIdleAnimation(void)  // AND pyr pyr SFX if IN SFX AUDIO MODE
 
 void falkonFlying(void)
 {
-  if (flyingAnimControl == 0)
+  if (state.flyingAnimControl == FLY_OFF)
   {
     return;
   }
 
-  if (flyingAnimControl == 1)
+  if (state.flyingAnimControl == FLY_PREP)
   {
     state.falkonIdleControl = FALSE;
-    flyingAnimControl = 3;
+    state.flyingAnimControl = FLY_DB;
 
     switch (move.kierunekHold)
     {
@@ -1586,19 +1589,19 @@ void falkonFlying(void)
     if (anim.flyingTick >= 32)
     {
       anim.flyingTick = 0;
-      flyingAnimControl = 2;
+      state.flyingAnimControl = FLY_ENDING;
       //falkonIdleControl = TRUE;
     }
   }
 
-  else if (flyingAnimControl == 2)
+  else if (state.flyingAnimControl == FLY_ENDING)
   {
     blitCopy(s_pBg, flying.uwPreviousX, flying.uwPreviousY, s_pVpManager->pBack, flying.uwPreviousX, flying.uwPreviousY, 32, 32, MINTERM_COOKIE);
     isIgnoreNextFrame = 2;
     endFalconFlying();
     doubleBufferFrameControl = 2;
     coalAndCollect();
-    flyingAnimControl = 0;
+    state.flyingAnimControl = FLY_OFF;
     state.falkonIdleControl = TRUE;
   }
 
@@ -1970,15 +1973,15 @@ void stateGameLoop(void)
     ++anim.falkonIdle;
   }
 
-  if (flyingAnimControl == 1)
+  if (state.flyingAnimControl == FLY_PREP)
   {
     ++anim.flyingTick;
   }
 
-  if (flyingAnimControl == 2)
+  if (state.flyingAnimControl == FLY_ENDING)
   {
     falkonFlying();
-    flyingAnimControl = 0;
+    state.flyingAnimControl = FLY_OFF;
   }
 
   falkonHittingStone();
@@ -1987,7 +1990,7 @@ void stateGameLoop(void)
 
   //portalAnim();
 
-  if (flyingAnimControl == 3)
+  if (state.flyingAnimControl == FLY_DB)
   {
     falkonFlying2Db();
   }
@@ -2007,9 +2010,9 @@ void stateGameLoop(void)
     levelScoreDB = 1;
   }
 
-  if (flyingAnimControl == 4)
+  if (state.flyingAnimControl == FLY_PROCEED)
   {
-    flyingAnimControl = 1;
+    state.flyingAnimControl = FLY_PREP;
   }
 
   if (hudScrollingControl == 1)
@@ -2045,7 +2048,7 @@ void stateGameLoop(void)
     setGameOverInNextLoopIter = FALSE;
   }
 
-  if (col.coal == 0 && levelScoreControl != LEVEL_SCORE_NOCOAL && flyingAnimControl == 0)
+  if (col.coal == 0 && levelScoreControl != LEVEL_SCORE_NOCOAL && state.flyingAnimControl == FLY_OFF)
   {
     setGameOverInNextLoopIter = TRUE; // HACK FOR DOUBLE BUFFER WHEN GOING TO ROBBO ON 0 COAL
   }
@@ -2131,7 +2134,7 @@ void stateGameLoop(void)
 
   if (move.kierunek != 0)
   {
-    if (flyingAnimControl != 0)
+    if (state.flyingAnimControl != 0)
     {
       return;
     }

@@ -18,7 +18,7 @@ struct moveControls {
 
 struct animStateControls { 
   BOOL falkonIdleControl; 
-  UBYTE falconFlyingAnim; 
+  UBYTE flyingAnimControl; 
   BOOL stonehitAnimControl; 
 }; 
 
@@ -61,6 +61,9 @@ struct flyingAnim {
   UWORD newPosY;
   UWORD HitPosX;
   UWORD HitPosY;
+  UBYTE tempX;   // remember to use meaningful names next time ! !
+  UBYTE tempY;   // lesson learned ... 
+
 };
 
 

@@ -11,6 +11,14 @@ typedef enum {
 } tAmigaMode;
 
 typedef enum {
+  FLY_OFF = 0,
+  FLY_PREP = 1,
+  FLY_ENDING = 2,
+  FLY_DB = 3,
+  FLY_PROCEED = 4,
+} tFlyingState;
+
+typedef enum {
   LEVEL_SCORE_OFF = 0,
   LEVEL_SCORE_COUNT = 1,
   LEVEL_SCORE_PORTAL_OPEN = 2,
