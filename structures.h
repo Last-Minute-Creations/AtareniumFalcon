@@ -16,6 +16,12 @@ struct moveControls {
   UBYTE kierunekHold; 
 }; 
 
+struct animStateControls { 
+  BOOL falkonIdleControl; 
+  UBYTE falconFlyingAnim; 
+  BOOL stonehitAnimControl; 
+}; 
+
 struct anim { 
   UBYTE robboFrame;
   UBYTE robboTick;
@@ -39,18 +45,24 @@ struct anim {
 
   UBYTE falkonIdle;
   UBYTE idleFrame;
-   /*
-  UBYTE portalTempo; 
-  UBYTE redCapacitorTempo; 
-  UBYTE blueCapacitorTempo; 
-  UBYTE falconTick; 
-  UBYTE falconTempo; 
-  UBYTE falconFrame; 
-   
-   
-  UBYTE flyingTempo; 
-  */
+  UBYTE falkonIdleTempo;
 }; 
+
+struct flyingAnim { 
+  // bad naming, but these are variables for drawing flying animation
+  // frame by frame moving per pixel:
+  // drawing Background on previous position, then
+  // drawing animation tile on the new position
+  UWORD uwPosX;
+  UWORD uwPosY;
+  UWORD uwPreviousX;
+  UWORD uwPreviousY;
+  UWORD newPosX;
+  UWORD newPosY;
+  UWORD HitPosX;
+  UWORD HitPosY;
+};
+
 
  /*
 struct coords { 
@@ -59,27 +71,17 @@ struct coords {
   UBYTE falkony; 
   BYTE krawedzx; 
   BYTE krawedzy; 
-  UWORD uwPosX; 
-  UWORD uwPosY; 
   UBYTE targetTileX; 
   UBYTE targetTileY; 
   UBYTE portalX; 
   UBYTE portalY; 
   UBYTE robboX; 
   UBYTE robboY; 
-  UBYTE uwPreviousX; 
-  UBYTE uwPreviousY; 
-  UBYTE newPosX; 
-  UBYTE newPosY; 
 }; 
  
 
  
-struct animStateControls { 
-  BOOL falconIdle; 
-  UBYTE falconFlyingAnim; 
-  UBYTE stoneHitAnim; 
-}; 
+
   
  
 struct doubleBuffering { 
@@ -100,12 +102,7 @@ struct hud {
   UBYTE stateCtrl; 
 }; 
  
-struct robboMsg { 
-  char *sz1stLine; 
-  char szText[80]; 
-  char *szCollision1stLine; 
-  char *szCollision2ndLine; 
-}; */
+ */
  
  
  
