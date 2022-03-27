@@ -35,3 +35,19 @@ typedef enum {
   FALCON_START_POSITION = '1',
   EMPTY_TILE = '0' 
 } tDrawingTilesetElements;
+
+typedef enum {
+  METEORITE_INT = 3,
+  COAL_2_INT = 4,
+  COAL_3_INT = 5,
+  COAL_4_INT = 6,
+  COAL_5_INT = 7,
+  CAPACITOR_BLUE_INT = 8,
+  CAPACITOR_RED_INT = 9,
+  PORTAL_INT = 10,
+  ROBBO_INT = 11,
+  CAPACITOR_BROKEN_INT = 12,
+  SABERMANS_GUMBOOT_INT = 13,
+  FALCON_START_POSITION_INT = 1,
+  EMPTY_TILE_INT = 0
+} tIntTilesetElementsControl;

@@ -87,6 +87,7 @@ BYTE youWin = 0;
 extern tMusicState musicPlay = MUSIC_HEAVY;
 extern tAmigaMode amigaMode = AMIGA_MODE_OFF;
 extern tDrawingTilesetElements;
+extern tIntTilesetElementsControl;
 
 BYTE ubStoneImg = 0;
 
@@ -337,14 +338,14 @@ void drawTiles(void)
     ++endlineCounter;
     if (gameLevels[level][i] == EMPTY_TILE) // ONLY BG 0x30
     {
-      kamyki[x][y] = 0;
+      kamyki[x][y] = EMPTY_TILE_INT;
       blitCopy(s_pBg, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopy(s_pBg, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
     }
 
     else if (gameLevels[level][i] == METEORITE) // RANDOM 1-3 METEORITE 0x33
     {
-      kamyki[x][y] = 3;
+      kamyki[x][y] = METEORITE_INT;
       ubStoneImg = ulRandMinMax(0, 2);
       blitCopy(s_pBg, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopy(s_pBg, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
@@ -353,7 +354,7 @@ void drawTiles(void)
     }
     else if (gameLevels[level][i] == COAL_2) // 2 COAL 0x34
     {
-      kamyki[x][y] = 4;
+      kamyki[x][y] = COAL_2_INT;
       blitCopyMask(s_pTiles, 96, 0, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
 
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
@@ -362,7 +363,7 @@ void drawTiles(void)
 
     else if (gameLevels[level][i] == COAL_3) // 3 COAL  0x35
     {
-      kamyki[x][y] = 5;
+      kamyki[x][y] = COAL_3_INT;
       blitCopyMask(s_pTiles, 128, 0, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
 
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
@@ -371,7 +372,7 @@ void drawTiles(void)
 
     else if (gameLevels[level][i] == COAL_4) // 4 COAL 0x36
     {
-      kamyki[x][y] = 6;
+      kamyki[x][y] = COAL_4_INT;
       blitCopyMask(s_pTiles, 160, 0, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
 
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
@@ -379,7 +380,7 @@ void drawTiles(void)
     }
     else if (gameLevels[level][i] == COAL_5) // 5 COAL 0x37
     {
-      kamyki[x][y] = 7;
+      kamyki[x][y] = COAL_5_INT;
       blitCopyMask(s_pTiles, 192, 0, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
 
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
@@ -387,8 +388,8 @@ void drawTiles(void)
     }
     else if (gameLevels[level][i] == CAPACITOR_BLUE) // BLUE CAPACITOR 0x38
     {
-      kamyki[x][y] = 8;
-      collectiblesAnim[x][y] = 8;
+      kamyki[x][y] = CAPACITOR_BLUE_INT;
+      collectiblesAnim[x][y] = CAPACITOR_BLUE_INT;
       blitCopyMask(s_pTiles, 0, 256, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
 
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
@@ -396,15 +397,15 @@ void drawTiles(void)
     }
     else if (gameLevels[level][i] == CAPACITOR_RED) // RED CAPACITOR 0x39
     {
-      kamyki[x][y] = 9;
-      collectiblesAnim[x][y] = 9;
+      kamyki[x][y] = CAPACITOR_RED_INT;
+      collectiblesAnim[x][y] = CAPACITOR_RED_INT;
       blitCopyMask(s_pTiles, 0, 288, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
     }
     else if (gameLevels[level][i] == PORTAL) // PORTAL 0x45
     {
-      kamyki[x][y] = 10;
+      kamyki[x][y] = PORTAL_INT;
       anim.portalGlowX = x;
       anim.portalGlowY = y;
       blitCopyMask(s_pTiles, 0, 352, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
@@ -414,7 +415,7 @@ void drawTiles(void)
     }
     else if (gameLevels[level][i] == ROBBO) // ROBBO  0x52
     {
-      kamyki[x][y] = 11;
+      kamyki[x][y] = ROBBO_INT;
       collectiblesAnim[x][y] = 11;
       blitCopyMask(s_pTiles, 0, 32, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
 
@@ -423,7 +424,7 @@ void drawTiles(void)
     }
     else if (gameLevels[level][i] == CAPACITOR_BROKEN) // BROKEN CAPACITOR 0x42
     {
-      kamyki[x][y] = 12;
+      kamyki[x][y] = CAPACITOR_BROKEN_INT;
       blitCopyMask(s_pTiles, 224, 0, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
 
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
@@ -431,7 +432,7 @@ void drawTiles(void)
     }
     else if (gameLevels[level][i] == SABERMANS_GUMBOOT) // S -  SABERMAN TRIBUTE BOOT OF GLORY   0x53 
     {
-      kamyki[x][y] = 13;
+      kamyki[x][y] = SABERMANS_GUMBOOT_INT;
       blitCopyMask(s_pSabermanTribute, 0, 0, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pSabermanTributeMask->Planes[0]);
 
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
@@ -439,7 +440,7 @@ void drawTiles(void)
     }
     else if (gameLevels[level][i] == FALCON_START_POSITION) // FALCON START POSITION 0x31
     {
-      kamyki[x][y] = 1;
+      kamyki[x][y] = FALCON_START_POSITION_INT;
       falkonx = x;
       falkony = y;
       krawedzx = x;
@@ -811,28 +812,28 @@ void isThisStone(void)
   {
   case 1:                             // gdy w prawo
     stoneX = falkonx + 1;             // przypisz do stoneX docelowa wspolrzedna
-    if (kamyki[stoneX][falkony] == 3) // jesli pole docelowe to 3 (kamien)
+    if (kamyki[stoneX][falkony] == METEORITE_INT) // jesli pole docelowe to 3 (kamien)
     {
       move.stoneHit = TRUE; // oznacz ze chciales walnac w kamyk dla dalszego procesowania
     }
     break;
   case 2: // i tak dalej dla reszty kierunkow
     stoneX = falkonx - 1;
-    if (kamyki[stoneX][falkony] == 3)
+    if (kamyki[stoneX][falkony] == METEORITE_INT)
     {
       move.stoneHit = TRUE;
     }
     break;
   case 3:
     stoneY = falkony - 1;
-    if (kamyki[falkonx][stoneY] == 3)
+    if (kamyki[falkonx][stoneY] == METEORITE_INT)
     {
       move.stoneHit = TRUE;
     }
     break;
   case 4:
     stoneY = falkony + 1;
-    if (kamyki[falkonx][stoneY] == 3)
+    if (kamyki[falkonx][stoneY] == METEORITE_INT)
     {
       move.stoneHit = TRUE;
     }
@@ -1050,8 +1051,8 @@ void coalAndCollect(void)
   pickSthY = falkony;
 
   BYTE what = kamyki[pickSthX][pickSthY];
-  kamyki[pickSthX][pickSthY] = 0;
-  collectiblesAnim[pickSthX][pickSthY] = 0;
+  kamyki[pickSthX][pickSthY] = EMPTY_TILE_INT;
+  collectiblesAnim[pickSthX][pickSthY] = EMPTY_TILE_INT;
 
   //--coal;
 
@@ -1336,7 +1337,7 @@ void blitFlyingAnimFrame(void)
   {
     blitCopy(s_pBgWithTile, newPosX, newPosY, s_pVpManager->pBack, newPosX, newPosY, 32, 32, MINTERM_COOKIE);
   }
-  if (kamyki[tempX][tempY] == 11)
+  if (kamyki[tempX][tempY] == ROBBO_INT)
   {
     robboAnimBlit();
   }
@@ -1431,7 +1432,7 @@ void falconCollisionCheck(void)
   HUDcollisionMsg = 0;
 }
 
-void falconIdleAnimation(void)
+void falconIdleAnimation(void)  // AND pyr pyr SFX if IN SFX AUDIO MODE 
 {
   if (falkonIdleControl != 1)
   {
@@ -1479,10 +1480,8 @@ void falconIdleAnimation(void)
 
   if (musicPlay == MUSIC_AMBIENT_SFX)
   {
-    //UBYTE everySecondAnimFrame;
-    //everySecondAnimFrame = anim.idleFrame % 2;
-    //if (everySecondAnimFrame == 0)
-    if (anim.idleFrame == 0 || anim.idleFrame == 4)
+    
+    if (anim.idleFrame == 0 || anim.idleFrame == 2 || anim.idleFrame == 4 || anim.idleFrame == 6)
     {
       if (amigaMode == AMIGA_MODE_OFF){
       ptplayerSfxPlay(s_pFalkonEngineSound, 3, 64, 50);
@@ -1492,7 +1491,8 @@ void falconIdleAnimation(void)
       }
 
     }
-    else if (anim.idleFrame == 2 || anim.idleFrame == 6)
+    /*
+    else if (anim.idleFrame == 1 || anim.idleFrame == 3 || anim.idleFrame == 5)
     {
       if (amigaMode == AMIGA_MODE_OFF){
       ptplayerSfxPlay(s_pFalkonEngineSound, 3, 0, 50);
@@ -1501,6 +1501,7 @@ void falconIdleAnimation(void)
       ptplayerSfxPlay(s_pWicherEngineSound, 3, 0, 50);  
       }
     }
+    */
   }
 
   UWORD uwPrevPosX = uwPosX;
@@ -2122,6 +2123,7 @@ void stateGameLoop(void)
     {
       musicPlay = MUSIC_OFF;
       ptplayerSfxPlay(s_pFalkonEngineSound, 3, 0, 50);
+      ptplayerStop();
       ptplayerSetMasterVolume(0); // cisza
       ptplayerEnableMusic(0);
     }
