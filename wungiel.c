@@ -36,7 +36,7 @@ char szWungiel[50];
 char lineToPass[50];
 
 const char *s1 = "if (system.hacked == TRUE){";
-const char *s2 = "atariMode = ON }";
+const char *s2 = "atariMode = ON };";
 const char *s3 = "";
 
 const char *w1 = "READY";

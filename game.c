@@ -100,6 +100,8 @@ UBYTE level = 1;
 UBYTE doubleBufferFrameControl = 2;
 UBYTE youWin = 0;
 UBYTE ubStoneImg = 0;
+UBYTE audioFadeIn = 0;
+UBYTE audioLoopCount = 0;
 
 // coordsy do rysowania falkona i kontrolowania zeby sie nie wypierdolil za ekran
 BYTE falkonx = 0;
@@ -110,6 +112,8 @@ BYTE falkonFace = 0; // kierunek dziobem
 
 // managing the tiles position for blitting
 UWORD pAnim[] = {0, 32, 64, 96, 128, 160, 192, 224};
+
+
 
 
 
@@ -151,16 +155,10 @@ struct db
 };
 struct db db;
 
-
-
-
 extern UBYTE cheatmodeEnablerWhenEqual3;
 extern UBYTE secondCheatEnablerWhenEqual3;
 extern UBYTE thirdCheatEnablerWhenEqual3;
 extern BOOL tutorialLevelsSkip;
-
-UBYTE audioFadeIn = 0;
-UBYTE audioLoopCount = 0;
 
 // HACKS
 BOOL gameOverWhenAnotherCollisionHack = FALSE;
@@ -2056,81 +2054,84 @@ void stateGameLoop(void)
   joyProcess();
   keyProcess();
 
-  if (joyUse(JOY1_RIGHT) || keyUse(KEY_D) || keyUse(KEY_RIGHT))
-  {
-    move.kierunek = 1;
-    falkonFace = 0;
-  }
-  else if (joyUse(JOY1_LEFT) || keyUse(KEY_A) || keyUse(KEY_LEFT))
-  {
-    move.kierunek = 2;
-    falkonFace = 32;
-  }
-  else if (joyUse(JOY1_UP) || keyUse(KEY_W) || keyUse(KEY_UP))
-  {
-    move.kierunek = 3;
-  }
-  else if (joyUse(JOY1_DOWN) || keyUse(KEY_S) || keyUse(KEY_DOWN))
-  {
-    move.kierunek = 4;
-  }
-  else if (keyUse(KEY_ESCAPE))
-  {
-    ptplayerStop();
-    clearTiles();
-    stateChange(g_pStateMachineGame, &g_sStateMenu);
-    return;
-  }
-  else if (keyUse(KEY_N) && level < LAST_LEVEL_NUMBER)
-  {
-    if (cheatmodeEnablerWhenEqual3 != 3)
+if (col.coal > 0){
+
+    if (joyUse(JOY1_RIGHT) || keyUse(KEY_D) || keyUse(KEY_RIGHT))
     {
-      return;
+      move.kierunek = 1;
+      falkonFace = 0;
     }
-    if (noCheatLevelSkipWhenRobboMessageOn == TRUE)
+    else if (joyUse(JOY1_LEFT) || keyUse(KEY_A) || keyUse(KEY_LEFT))
     {
-      return;
+      move.kierunek = 2;
+      falkonFace = 32;
     }
-    if (state.falkonIdleControl != TRUE)
+    else if (joyUse(JOY1_UP) || keyUse(KEY_W) || keyUse(KEY_UP))
     {
-    return;
+      move.kierunek = 3;
     }
-    if (musicPlay == MUSIC_AMBIENT_SFX)
+    else if (joyUse(JOY1_DOWN) || keyUse(KEY_S) || keyUse(KEY_DOWN))
     {
-        ptplayerSfxPlay(s_pFalkonEngineSound, 3, 0, 50);
+      move.kierunek = 4;
     }
-    ++level;
-    nextLevel();
-    return;
-  }
-  else if (keyUse(KEY_M)) // wczesniej wlaczony jest modek i gra
-  {
-    if (musicPlay == MUSIC_HEAVY) // stan domyslny
+    else if (keyUse(KEY_ESCAPE))
     {
-      musicPlay = MUSIC_AMBIENT_SFX;
-      ptplayerEnableMusic(0);
-      ptplayerLoadMod(s_pModAmbient, 0, 0); // chce nowy modek
-      ptplayerSetMasterVolume(64);
-      ptplayerEnableMusic(1);
-    }
-    else if (musicPlay == MUSIC_OFF) // teraz wracam do pierwszego modka
-    {
-      musicPlay = MUSIC_HEAVY;
-      ptplayerEnableMusic(0);
-      ptplayerLoadMod(s_pMod, 0, 0);
-      ptplayerEnableMusic(1);
-      ptplayerSetMasterVolume(64); // modek gra tak na ucho w 2x szybszym tempie
-    }
-    else if (musicPlay == MUSIC_AMBIENT_SFX)
-    {
-      musicPlay = MUSIC_OFF;
-      ptplayerSfxPlay(s_pFalkonEngineSound, 3, 0, 50);
       ptplayerStop();
-      ptplayerSetMasterVolume(0); // cisza
-      ptplayerEnableMusic(0);
+      clearTiles();
+      stateChange(g_pStateMachineGame, &g_sStateMenu);
+      return;
     }
-    //}
-  }
+    else if (keyUse(KEY_N) && level < LAST_LEVEL_NUMBER)
+    {
+      if (cheatmodeEnablerWhenEqual3 != 3)
+      {
+        return;
+      }
+      if (noCheatLevelSkipWhenRobboMessageOn == TRUE)
+      {
+        return;
+      }
+      if (state.falkonIdleControl != TRUE)
+      {
+      return;
+      }
+      if (musicPlay == MUSIC_AMBIENT_SFX)
+      {
+          ptplayerSfxPlay(s_pFalkonEngineSound, 3, 0, 50);
+      }
+      ++level;
+      nextLevel();
+      return;
+    }
+    else if (keyUse(KEY_M)) // wczesniej wlaczony jest modek i gra
+    {
+      if (musicPlay == MUSIC_HEAVY) // stan domyslny
+      {
+        musicPlay = MUSIC_AMBIENT_SFX;
+        ptplayerEnableMusic(0);
+        ptplayerLoadMod(s_pModAmbient, 0, 0); // chce nowy modek
+        ptplayerSetMasterVolume(64);
+        ptplayerEnableMusic(1);
+      }
+      else if (musicPlay == MUSIC_OFF) // teraz wracam do pierwszego modka
+      {
+        musicPlay = MUSIC_HEAVY;
+        ptplayerEnableMusic(0);
+        ptplayerLoadMod(s_pMod, 0, 0);
+        ptplayerEnableMusic(1);
+        ptplayerSetMasterVolume(64); // modek gra tak na ucho w 2x szybszym tempie
+      }
+      else if (musicPlay == MUSIC_AMBIENT_SFX)
+      {
+        musicPlay = MUSIC_OFF;
+        ptplayerSfxPlay(s_pFalkonEngineSound, 3, 0, 50);
+        ptplayerStop();
+        ptplayerSetMasterVolume(0); // cisza
+        ptplayerEnableMusic(0);
+      }
+      //}
+    }
+}
 
   if (move.kierunek != 0)
   {
