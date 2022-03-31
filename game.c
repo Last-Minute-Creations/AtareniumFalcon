@@ -976,7 +976,7 @@ void robboSays(void)
       sprintf(szRobboMsg, "Amigans call that place Magazyn.");  // 
       break;
     case 8:
-      sprintf(szRobboMsg, "Training passed, skip it with X in menu.");
+      sprintf(szRobboMsg, "Training completed, skip it with X in menu.");
       break;
     case 9:
       robbo1stLineExceptionModificator = TRUE;
