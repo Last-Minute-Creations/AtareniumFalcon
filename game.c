@@ -486,34 +486,34 @@ void nextLevel(void) // ladowanie kolejnego levela
   switch (level)
   {
 
-  case 4:                                                    // na 4 levelu:
+  case 5:                                                    // na 4 levelu:
     bitmapDestroy(s_pBg);                                    // usun dotychczasowe tlo
     bitmapDestroy(s_pBgWithTile);                            // JW. tlo z doklejonymi tile'ami
     s_pBg = bitmapCreateFromFile("data/tlo2.bm", 0);         // wczytaj nowe tlo
     s_pBgWithTile = bitmapCreateFromFile("data/tlo2.bm", 0); // JW dla zmiennej gdzie beda doklejane tile
     break;
 
-  case 8: // calosc JW na 8 levelu
+  case 10: // calosc JW na 8 levelu
     bitmapDestroy(s_pBg);
     bitmapDestroy(s_pBgWithTile);
     s_pBg = bitmapCreateFromFile("data/tlo3.bm", 0);
     s_pBgWithTile = bitmapCreateFromFile("data/tlo3.bm", 0);
     break;
 
-  case 12: // calosc JW na 12 levelu
+  case 15: // calosc JW na 12 levelu
     bitmapDestroy(s_pBg);
     bitmapDestroy(s_pBgWithTile);
     s_pBg = bitmapCreateFromFile("data/tlo4.bm", 0);
     s_pBgWithTile = bitmapCreateFromFile("data/tlo4.bm", 0);
     break;
 
-  case 17: // calosc JW na 17 levelu
+  case 20: // calosc JW na 17 levelu
     bitmapDestroy(s_pBg);
     bitmapDestroy(s_pBgWithTile);
     s_pBg = bitmapCreateFromFile("data/tlo5.bm", 0);
     s_pBgWithTile = bitmapCreateFromFile("data/tlo5.bm", 0);
     break;
-  case 22: // calosc JW na 22 levelu
+  case 25: // calosc JW na 22 levelu
     bitmapDestroy(s_pBg);
     bitmapDestroy(s_pBgWithTile);
     s_pBg = bitmapCreateFromFile("data/tlo6.bm", 0);
