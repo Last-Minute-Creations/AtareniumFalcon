@@ -16,6 +16,14 @@ struct moveControls {
   UBYTE kierunekHold; 
 }; 
 
+struct coordinates { // coordsy do rysowania falkona i kontrolowania zeby sie nie wypierdolil za ekran
+  UBYTE falkonx;
+  UBYTE falkony; // pozycja falkona na tablicy z tilesami 32x32
+  UBYTE falkonFace; // kierunek dziobem
+  BYTE krawedzx; // do sprawdzania czy chcemy wyleciec za ekran, BYTE - ze znakiem bo moze byc -1
+  BYTE krawedzy;
+};
+
 struct animStateControls { 
   BOOL falkonIdleControl; 
   UBYTE flyingAnimControl; 

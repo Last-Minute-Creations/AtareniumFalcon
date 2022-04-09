@@ -103,24 +103,14 @@ UBYTE ubStoneImg = 0;
 UBYTE audioFadeIn = 0;
 UBYTE audioLoopCount = 0;
 
-// coordsy do rysowania falkona i kontrolowania zeby sie nie wypierdolil za ekran
-BYTE falkonx = 0;
-BYTE falkony = 0;
-BYTE krawedzx = 0;
-BYTE krawedzy = 0;
-BYTE falkonFace = 0; // kierunek dziobem
-
 // managing the tiles position for blitting
 UWORD pAnim[] = {0, 32, 64, 96, 128, 160, 192, 224};
-
-
-
 
 
 BYTE levelScoreTick = 0;
 BYTE levelScoreTempo = 8;
 extern tEndLevelState levelScoreControl = LEVEL_SCORE_OFF;
-BYTE levelScoreDB = 0;
+
 BYTE levelAnimFrame = 0;
 BYTE portalTickTempo = 4;
 
@@ -128,14 +118,10 @@ BYTE hudAnimTick = 0;
 BYTE hudTickTempo = 60;
 BYTE hudTickFrame = 0;
 BYTE hudAnimDB = 0;
-BOOL hudFullyUp = FALSE;
+
 
 BYTE hudScrollingControl = 0;
 BYTE hudScrollingTick = 0;
-
-BOOL portalGlowDB = FALSE;   // handling double buffer, if true then will be drawn again in next frame
-
-
 
 
 BYTE robboMsgNr = 0;
@@ -146,12 +132,15 @@ BYTE HUDfontColor = 23; //23
 struct collected col;
 struct anim anim;
 struct moveControls move;
+struct coordinates coord;
 struct flyingAnim flying;
 struct animStateControls state;
 
 struct db
 {
-  UBYTE robbo;
+  BOOL robbo;
+  BOOL levelScoreDB;
+  BOOL portalGlowDB;   // handling double buffer, if true then will be drawn again in next frame
 };
 struct db db;
 
@@ -168,6 +157,8 @@ BOOL noCheatLevelSkipWhenRobboMessageOn = FALSE;
 BOOL robbo1stLineExceptionModificator = FALSE;
 BOOL setGameOverInNextLoopIter = FALSE;
 
+BOOL hudFullyUp = FALSE;
+
 UBYTE isIgnoreNextFrame = 0; // zmienna do naprawienia glicza graficznego !
 
 void initialSetupDeclarationOfData(void)
@@ -176,13 +167,13 @@ void initialSetupDeclarationOfData(void)
   state.stonehitAnimControl = FALSE; // if true then handling animation for stone and frame collision
   state.flyingAnimControl = FLY_OFF;
 
-  falkonx = 0;
-  falkony = 0;
-  krawedzx = 0;
-  krawedzy = 0;
+  coord.falkonx = 0;
+  coord.falkony = 0;
+  coord.krawedzx = 0;
+  coord.krawedzy = 0;
   move.kierunek = 0;
   move.kierunekHold = 0;
-  falkonFace = 0;
+  coord.falkonFace = 0;
 
   flying.uwPosX = 0;
   flying.uwPosY = 0;
@@ -249,6 +240,10 @@ void initialSetupDeclarationOfData(void)
   anim.falkonIdle = 0;
   anim.idleFrame = 0;
   anim.falkonIdleTempo = 12;
+
+  db.levelScoreDB = FALSE;
+  db.portalGlowDB = FALSE;
+  db.robbo = FALSE;
 }
 
 void waitFrames(tVPort *pVPort, UBYTE ubHowMany, UWORD uwPosY)
@@ -327,10 +322,10 @@ void drawTiles(void)
   BYTE y = 0;
   BYTE endlineCounter = 0;
 
-  falkonx = 0;
-  falkony = 0;
-  krawedzx = 0;
-  krawedzy = 0;
+  coord.falkonx = 0;
+  coord.falkony = 0;
+  coord.krawedzx = 0;
+  coord.krawedzy = 0;
   move.kierunek = 0;
 
   for (BYTE i = 0; i < 72; ++i)
@@ -441,14 +436,14 @@ void drawTiles(void)
     else if (gameLevels[level][i] == FALCON_START_POSITION) // FALCON START POSITION 0x31
     {
       kamyki[x][y] = FALCON_START_POSITION_INT;
-      falkonx = x;
-      falkony = y;
-      krawedzx = x;
-      krawedzy = y;
-      flying.uwPosX = falkonx * 32;
-      flying.uwPosY = falkony * 32;
-      flying.tempX = falkonx;
-      flying.tempY = falkony;
+      coord.falkonx = x;
+      coord.falkony = y;
+      coord.krawedzx = x;
+      coord.krawedzy = y;
+      flying.uwPosX = coord.falkonx * 32;
+      flying.uwPosY = coord.falkony * 32;
+      flying.tempX = coord.falkonx;
+      flying.tempY = coord.falkony;
     }
 
     ++x;
@@ -561,19 +556,19 @@ void levelScoreDBredraw(void) // odrysowanie tego co w levelScore ale bez oblicz
   if (levelScoreControl == LEVEL_SCORE_PORTAL_OPEN)
   {
     blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, flying.uwPosX, flying.uwPosY, 32, 32, MINTERM_COOKIE);
-    blitCopyMask(s_pTiles, 32 * levelAnimFrame, 320, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-    blitCopyMask(s_pTiles, 32, 192 + falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+    blitCopyMask(s_pTiles, 32 * levelAnimFrame, 320, s_pVpManager->pBack, coord.falkonx * 32, coord.falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+    blitCopyMask(s_pTiles, 32, 192 + coord.falkonFace, s_pVpManager->pBack, coord.falkonx * 32, coord.falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
   }
   if (levelScoreControl == LEVEL_SCORE_PORTAL_ANIM)
   {
     blitCopy(s_pBg, flying.uwPosX, flying.uwPosY, s_pVpManager->pBack, flying.uwPosX, flying.uwPosY, 32, 32, MINTERM_COOKIE);
-    blitCopyMask(s_pTiles, levelAnimFrame * 32, 128 + falkonFace, s_pVpManager->pBack, flying.uwPosX, flying.uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+    blitCopyMask(s_pTiles, levelAnimFrame * 32, 128 + coord.falkonFace, s_pVpManager->pBack, flying.uwPosX, flying.uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
   }
   if (levelScoreControl == LEVEL_SCORE_PORTAL_CLOSE)
   {
 
     blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, flying.uwPosX, flying.uwPosY, 32, 32, MINTERM_COOKIE);
-    blitCopyMask(s_pTiles, 224 - (32 * levelAnimFrame), 320, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+    blitCopyMask(s_pTiles, 224 - (32 * levelAnimFrame), 320, s_pVpManager->pBack, coord.falkonx * 32, coord.falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
   }
   if (amigaMode == AMIGA_MODE_OFF && levelScoreControl == LEVEL_SCORE_NOCOAL)
   {
@@ -650,8 +645,8 @@ void levelScore(void) // WITH PORTAL OPEN AND FALKON IN PORTAL ANIM !!!
   {
     levelScoreTick = 0;
     blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, flying.uwPosX, flying.uwPosY, 32, 32, MINTERM_COOKIE);
-    blitCopyMask(s_pTiles, 32 * levelAnimFrame, 320, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-    blitCopyMask(s_pTiles, 32, 192 + falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+    blitCopyMask(s_pTiles, 32 * levelAnimFrame, 320, s_pVpManager->pBack, coord.falkonx * 32, coord.falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+    blitCopyMask(s_pTiles, 32, 192 + coord.falkonFace, s_pVpManager->pBack, coord.falkonx * 32, coord.falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
     ++levelAnimFrame;
     if (levelAnimFrame == 8)
     {
@@ -667,7 +662,7 @@ void levelScore(void) // WITH PORTAL OPEN AND FALKON IN PORTAL ANIM !!!
   {
     levelScoreTick = 0;
     blitCopy(s_pBg, flying.uwPosX, flying.uwPosY, s_pVpManager->pBack, flying.uwPosX, flying.uwPosY, 32, 32, MINTERM_COOKIE);
-    blitCopyMask(s_pTiles, levelAnimFrame * 32, 128 + falkonFace, s_pVpManager->pBack, flying.uwPosX, flying.uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+    blitCopyMask(s_pTiles, levelAnimFrame * 32, 128 + coord.falkonFace, s_pVpManager->pBack, flying.uwPosX, flying.uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
 
     ++levelAnimFrame;
     if (levelAnimFrame == 8)
@@ -680,7 +675,7 @@ void levelScore(void) // WITH PORTAL OPEN AND FALKON IN PORTAL ANIM !!!
   {
     levelScoreTick = 0;
     blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, flying.uwPosX, flying.uwPosY, 32, 32, MINTERM_COOKIE);
-    blitCopyMask(s_pTiles, 224 - (32 * levelAnimFrame), 320, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+    blitCopyMask(s_pTiles, 224 - (32 * levelAnimFrame), 320, s_pVpManager->pBack, coord.falkonx * 32, coord.falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
     ++levelAnimFrame;
     if (levelAnimFrame == 8)
     {
@@ -763,38 +758,38 @@ void czyRamka(void)
   switch (move.kierunek)
   {
   case 1:                    // gdy w prawo
-    krawedzx = krawedzx + 1; // pole docelowe
-    if (krawedzx == 10)      // jesli za ekranem (bo fruwamy od 0 do 9)
+    coord.krawedzx = coord.krawedzx + 1; // pole docelowe
+    if (coord.krawedzx == 10)      // jesli za ekranem (bo fruwamy od 0 do 9)
     {
-      krawedzx = 9; // ustaw znow na 9
-      falkonx = 9;  // zatrzymaj falkona tez na 9
+      coord.krawedzx = 9; // ustaw znow na 9
+      coord.falkonx = 9;  // zatrzymaj falkona tez na 9
       move.frameHit = TRUE; // oznacz ze chciales walnac w ramke dla dalszego procesowania, animka i tak dalej
     }
     break;
   case 2: // JW w lewo
-    krawedzx = krawedzx - 1;
-    if (krawedzx == -1)
+    coord.krawedzx = coord.krawedzx - 1;
+    if (coord.krawedzx == -1)
     {
-      krawedzx = 0;
-      falkonx = 0;
+      coord.krawedzx = 0;
+      coord.falkonx = 0;
       move.frameHit = TRUE;
     }
     break;
   case 3: // JW w gore
-    krawedzy = krawedzy - 1;
-    if (krawedzy == -1)
+    coord.krawedzy = coord.krawedzy - 1;
+    if (coord.krawedzy == -1)
     {
-      krawedzy = 0;
-      falkony = 0;
+      coord.krawedzy = 0;
+      coord.falkony = 0;
       move.frameHit = TRUE;
     }
     break;
   case 4: // JW w dol
-    krawedzy = krawedzy + 1;
-    if (krawedzy == 7)
+    coord.krawedzy = coord.krawedzy + 1;
+    if (coord.krawedzy == 7)
     {
-      krawedzy = 6;
-      falkony = 6;
+      coord.krawedzy = 6;
+      coord.falkony = 6;
       move.frameHit = TRUE;
     }
     break;
@@ -811,29 +806,29 @@ void isThisStone(void)
   switch (move.kierunek)
   {
   case 1:                             // gdy w prawo
-    stoneX = falkonx + 1;             // przypisz do stoneX docelowa wspolrzedna
-    if (kamyki[stoneX][falkony] == METEORITE_INT) // jesli pole docelowe to 3 (kamien)
+    stoneX = coord.falkonx + 1;             // przypisz do stoneX docelowa wspolrzedna
+    if (kamyki[stoneX][coord.falkony] == METEORITE_INT) // jesli pole docelowe to 3 (kamien)
     {
       move.stoneHit = TRUE; // oznacz ze chciales walnac w kamyk dla dalszego procesowania
     }
     break;
   case 2: // i tak dalej dla reszty kierunkow
-    stoneX = falkonx - 1;
-    if (kamyki[stoneX][falkony] == METEORITE_INT)
+    stoneX = coord.falkonx - 1;
+    if (kamyki[stoneX][coord.falkony] == METEORITE_INT)
     {
       move.stoneHit = TRUE;
     }
     break;
   case 3:
-    stoneY = falkony - 1;
-    if (kamyki[falkonx][stoneY] == METEORITE_INT)
+    stoneY = coord.falkony - 1;
+    if (kamyki[coord.falkonx][stoneY] == METEORITE_INT)
     {
       move.stoneHit = TRUE;
     }
     break;
   case 4:
-    stoneY = falkony + 1;
-    if (kamyki[falkonx][stoneY] == METEORITE_INT)
+    stoneY = coord.falkony + 1;
+    if (kamyki[coord.falkonx][stoneY] == METEORITE_INT)
     {
       move.stoneHit = TRUE;
     }
@@ -1048,8 +1043,8 @@ void coalAndCollect(void)
   BYTE pickSthX = 0;
   BYTE pickSthY = 0;
 
-  pickSthX = falkonx;
-  pickSthY = falkony;
+  pickSthX = coord.falkonx;
+  pickSthY = coord.falkony;
 
   BYTE what = kamyki[pickSthX][pickSthY];
   kamyki[pickSthX][pickSthY] = EMPTY_TILE_INT;
@@ -1198,8 +1193,8 @@ void falkonHittingStone(void)
     return;
   }
 
-  flying.HitPosX = falkonx * 32;
-  flying.HitPosY = falkony * 32;
+  flying.HitPosX = coord.falkonx * 32;
+  flying.HitPosY = coord.falkony * 32;
 
   if (state.stonehitAnimControl == TRUE)
   {
@@ -1247,13 +1242,10 @@ void falkonHittingStone(void)
       state.falkonIdleControl = TRUE;
     }
 
-    // TODO animka trzeba dobrze blitowac, pomyslec
+    
     blitCopy(s_pBg, flying.HitPosX, flying.HitPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
     blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, flying.HitPosX, flying.HitPosY, 32, 32, MINTERM_COOKIE);
-    //blitCopy(s_pVpManager->pBack, HitPosX, HitPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
-    //blitCopy(s_pBgWithTile, HitPosX, HitPosY, s_pVpManager->pBack, HitPosX, HitPosY, 32, 32, MINTERM_COPY);                                                        // fragment tla wrzuca do zmiennej
-    blitCopyMask(s_pTiles, pAnim[anim.stonehitAnimFrame ], 64 + falkonFace, s_pVpManager->pBack, flying.HitPosX, flying.HitPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // rysuje falkona
-    //blitCopy(s_pBgWithTile, falkonx * 32, falkony * 32, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, MINTERM_COPY);                                                        // fragment tla wrzuca do zmiennej
+    blitCopyMask(s_pTiles, pAnim[anim.stonehitAnimFrame ], 64 + coord.falkonFace, s_pVpManager->pBack, flying.HitPosX, flying.HitPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]); // rysuje falkona
   }
 }
 
@@ -1267,22 +1259,22 @@ void prepareFalconFlying(void)
   switch (move.kierunekHold)
   {
   case 1:
-    flying.tempX = falkonx + 1;
+    flying.tempX = coord.falkonx + 1;
     flying.uwPosX = flying.tempX * 32;
     break;
 
   case 2:
-    flying.tempX = falkonx - 1;
+    flying.tempX = coord.falkonx - 1;
     flying.uwPosX = flying.tempX * 32;
     break;
 
   case 3:
-    flying.tempY = falkony - 1;
+    flying.tempY = coord.falkony - 1;
     flying.uwPosY = flying.tempY * 32;
     break;
 
   case 4:
-    flying.tempY = falkony + 1;
+    flying.tempY = coord.falkony + 1;
     flying.uwPosY = flying.tempY * 32;
     break;
   }
@@ -1296,22 +1288,22 @@ void endFalconFlying(void)
   switch (move.kierunekHold)
   {
   case 1:
-    falkonx = falkonx + 1;
+    coord.falkonx = coord.falkonx + 1;
     break;
 
   case 2:
-    falkonx = falkonx - 1;
+    coord.falkonx = coord.falkonx - 1;
     break;
 
   case 3:
-    falkony = falkony - 1;
+    coord.falkony = coord.falkony - 1;
     break;
 
   case 4:
-    falkony = falkony + 1;
+    coord.falkony = coord.falkony + 1;
     break;
   }
-  // blitCopy(s_pBg, falkonx * 32, falkony * 32, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, MINTERM_COOKIE);
+  // blitCopy(s_pBg, coord.falkonx * 32, falkony * 32, s_pVpManager->pBack, coord.falkonx * 32, falkony * 32, 32, 32, MINTERM_COOKIE);
 }
 
 void robboAnimBlit(void)
@@ -1370,7 +1362,7 @@ void blitFlyingAnimFrame(void)
     //blitCopy(s_pBg, uwPrevPosX, uwPrevPosY, s_pVpManager->pFront, uwPrevPosX, uwPrevPosY, 32, 32, MINTERM_COOKIE);
     blitCopy(s_pBg, flying.newPosX, flying.newPosY, s_pVpManager->pBack, flying.newPosX, flying.newPosY, 32, 32, MINTERM_COOKIE);
   }
-  blitCopyMask(s_pTiles, pAnim[anim.flyingFrame], 64 + falkonFace, s_pVpManager->pBack, flying.newPosX, flying.newPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+  blitCopyMask(s_pTiles, pAnim[anim.flyingFrame], 64 + coord.falkonFace, s_pVpManager->pBack, flying.newPosX, flying.newPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
 }
 
 void falkonFlying2Db(void)
@@ -1396,16 +1388,16 @@ void falconCollisionCheck(void)
     switch (move.kierunek)
     {
     case 1:
-      krawedzx = krawedzx - 1;
+      coord.krawedzx = coord.krawedzx - 1;
       break;
     case 2:
-      krawedzx = krawedzx + 1;
+      coord.krawedzx = coord.krawedzx + 1;
       break;
     case 3:
-      krawedzy = krawedzy + 1;
+      coord.krawedzy = coord.krawedzy + 1;
       break;
     case 4:
-      krawedzy = krawedzy - 1;
+      coord.krawedzy = coord.krawedzy - 1;
       break;
     }
 
@@ -1541,7 +1533,7 @@ void falconIdleAnimation(void)  // AND pyr pyr SFX if IN SFX AUDIO MODE
   blitCopy(s_pBg, uwPrevPosX, uwPrevPosY, s_pVpManager->pBack, uwPrevPosX, uwPrevPosY, 32, 32, MINTERM_COOKIE);
   blitCopy(s_pBg, flying.uwPosX, flying.uwPosY, s_pFalconBg, 0, 0, 32, 32, MINTERM_COOKIE);
   blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, flying.uwPosX, flying.uwPosY, 32, 32, MINTERM_COOKIE);
-  blitCopyMask(s_pTiles, anim.idleFrame * 32, 192 + falkonFace, s_pVpManager->pBack, falkonx * 32, falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+  blitCopyMask(s_pTiles, anim.idleFrame * 32, 192 + coord.falkonFace, s_pVpManager->pBack, coord.falkonx * 32, coord.falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
 }
 
 void falkonFlying(void)
@@ -1721,7 +1713,7 @@ void robboAnimCounter(void)
 {
   if (anim.robboTick > anim.robboTempo)
   {
-    db.robbo = 1;
+    db.robbo = TRUE;
     ++anim.robboFrame;
     anim.robboTick = 0;
     if (anim.robboFrame == 8)
@@ -1754,10 +1746,10 @@ void doubleBufferingHandler(void)
   //   //redCapacitorsAnimation();
   //   db.redCap = 0;
   // }
-  if (db.robbo == 1)
+  if (db.robbo == TRUE)
   {
     robboAnimBlit();
-    db.robbo = 0;
+    db.robbo = FALSE;
   }
 }
 
@@ -1936,10 +1928,10 @@ void stateGameLoop(void)
     }
   }
 
-  if (portalGlowDB == TRUE)
+  if (db.portalGlowDB == TRUE)
   {
     portalGlowAnim();
-    portalGlowDB = FALSE;
+    db.portalGlowDB = FALSE;
   }
 
   ++anim.portalGlowTick;
@@ -1948,7 +1940,7 @@ void stateGameLoop(void)
     ++anim.portalGlowFrame;
     portalGlowAnim();
     anim.portalGlowTick = 0;
-    portalGlowDB = TRUE;
+    db.portalGlowDB = TRUE;
     if (anim.portalGlowFrame == 7)
     {
       anim.portalGlowFrame = 0;
@@ -1996,16 +1988,16 @@ void stateGameLoop(void)
   falkonFlying();
   falconIdleAnimation();
 
-  if (levelScoreDB == 1)
+  if (db.levelScoreDB == TRUE)
   {
     levelScoreDBredraw();
-    levelScoreDB = 0;
+    db.levelScoreDB = FALSE;
   }
   if (levelScoreControl != LEVEL_SCORE_OFF)
   {
     ++levelScoreTick;
     levelScore();
-    levelScoreDB = 1;
+    db.levelScoreDB = TRUE;
   }
 
   if (state.flyingAnimControl == FLY_PROCEED)
@@ -2059,12 +2051,12 @@ if (col.coal > 0){
     if (joyUse(JOY1_RIGHT) || keyUse(KEY_D) || keyUse(KEY_RIGHT))
     {
       move.kierunek = 1;
-      falkonFace = 0;
+      coord.falkonFace = 0;
     }
     else if (joyUse(JOY1_LEFT) || keyUse(KEY_A) || keyUse(KEY_LEFT))
     {
       move.kierunek = 2;
-      falkonFace = 32;
+      coord.falkonFace = 32;
     }
     else if (joyUse(JOY1_UP) || keyUse(KEY_W) || keyUse(KEY_UP))
     {
