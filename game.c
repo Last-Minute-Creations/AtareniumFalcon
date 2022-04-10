@@ -86,8 +86,8 @@ char *szCollisionMsg2ndLine = "1T of fuel used, danger avioded. Over.";
 char *szTribute1stLine = "Golden Gumboot with BASIC Code strings for";
 char *szTribute2ndLine = "Saberman - Great Atariman of the Galaxy.";
 
-UBYTE musicPlay = MUSIC_HEAVY;
-UBYTE amigaMode = AMIGA_MODE_OFF;
+tMusicState musicPlay = MUSIC_HEAVY;
+tAmigaMode amigaMode = AMIGA_MODE_OFF;
 //extern tDrawingTilesetElements;
 //extern tIntTilesetElementsControl;
 //extern tFlyingState;
