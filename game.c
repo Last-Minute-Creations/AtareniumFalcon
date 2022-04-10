@@ -103,7 +103,7 @@ UBYTE audioFadeIn = 0;
 UBYTE audioLoopCount = 0;
 
 UBYTE robboMsgNr = 0;
-UBYTE robboMsgCtrl = 0;
+
 UBYTE HUDcollisionMsg = 0;
 UBYTE HUDfontColor; //23
 
@@ -139,6 +139,7 @@ void initialSetupDeclarationOfData(void)
   state.hudScrollingControl = FALSE;
   state.levelScoreControl = LEVEL_SCORE_OFF;
   state.youWin = OFF;
+  state.robboMsgCtrl = PRINT_ON_HUD;
 
   coord.falkonx = 0;
   coord.falkony = 0;
@@ -167,7 +168,7 @@ void initialSetupDeclarationOfData(void)
   level = 1;
   robboMsgNr = 0;
   
-  robboMsgCtrl = 0;
+  
 
   HUDfontColor = HUD_FONT_COLOR;
 
@@ -815,7 +816,7 @@ void isThisStone(void)
 
 void robboScrollUp(void)
 {
-  if (robboMsgCtrl != 1 || col.coal == 0)
+  if (state.robboMsgCtrl != HUD_SCROLL_UP || col.coal == 0)
   {
     return;
   }
@@ -824,7 +825,7 @@ void robboScrollUp(void)
 
   if (move.anotherHit >= 2 && hudFullyUp == TRUE)
   {
-    robboMsgCtrl = 3;
+    state.robboMsgCtrl = HUD_ROBBO_MSG;
     state.hudScrollingControl = FALSE;
     anim.hudScrollingTick = 0;
     return;
@@ -853,7 +854,7 @@ void robboScrollUp(void)
     else if (anim.hudScrollingTick == 16)
     {
       blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 224, 320, 32, MINTERM_COOKIE);
-      robboMsgCtrl = 3;
+      state.robboMsgCtrl = HUD_ROBBO_MSG;
       state.hudScrollingControl = FALSE;
       anim.hudScrollingTick = 0;
       hudFullyUp = TRUE;
@@ -863,7 +864,7 @@ void robboScrollUp(void)
 
 void robboScrollDown(void)
 {
-  if (robboMsgCtrl != 2)
+  if (state.robboMsgCtrl != HUD_SCROLL_DOWN)
   {
     return;
   }
@@ -895,7 +896,7 @@ void robboScrollDown(void)
     else if (anim.hudScrollingTick == 16)
     {
       blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320, 32, MINTERM_COOKIE);
-      robboMsgCtrl = 0;
+      state.robboMsgCtrl = PRINT_ON_HUD;
       anim.hudScrollingTick = 0;
       state.hudScrollingControl = FALSE;
       HUDcollisionMsg = 2;
@@ -1102,7 +1103,7 @@ void coalAndCollect(void)
     {
       ptplayerSfxPlay(s_pRobbo8000, 2, 32, 100);
     }
-    robboMsgCtrl = 1;
+    state.robboMsgCtrl = HUD_SCROLL_UP;
     state.hudScrollingControl = TRUE;
     break;
 
@@ -1156,7 +1157,7 @@ void coalAndCollect(void)
     // {
     //   ptplayerSfxPlay(s_pRobbo8000, 3, 32, 100);
     // }
-    robboMsgCtrl = 1;
+    state.robboMsgCtrl = HUD_SCROLL_UP;
     state.hudScrollingControl = TRUE;
     break;
   }
@@ -1358,7 +1359,7 @@ void falconCollisionCheck(void)
     //--col.coal;
     state.stonehitAnimControl = TRUE;
     state.falkonIdleControl = FALSE;
-    robboMsgCtrl = 1;
+    state.robboMsgCtrl = HUD_SCROLL_UP;
     state.hudScrollingControl = TRUE;
     HUDcollisionMsg = 1;
 
@@ -1390,7 +1391,7 @@ void falconCollisionCheck(void)
     state.stonehitAnimControl = TRUE;
     state.falkonIdleControl = FALSE;
     move.frameHit = FALSE;
-    robboMsgCtrl = 1;
+    state.robboMsgCtrl = HUD_SCROLL_UP;
     state.hudScrollingControl = TRUE;
     HUDcollisionMsg = 1;
     //printOnHUD();
@@ -1571,9 +1572,9 @@ void falkonFlying(void)
     state.falkonIdleControl = TRUE;
   }
 
-  if (robboMsgCtrl == 3)
+  if (state.robboMsgCtrl == HUD_ROBBO_MSG)
   {
-    robboMsgCtrl = 2;
+    state.robboMsgCtrl = HUD_SCROLL_DOWN;
     state.hudScrollingControl = TRUE;
   }
 }
@@ -1635,7 +1636,7 @@ void hudAnim(void)
 {
   BYTE msgType;
 
-  if (state.hudScrollingControl > 0 || robboMsgCtrl > 0)
+  if (state.hudScrollingControl > 0 || state.robboMsgCtrl > PRINT_ON_HUD)
   {
     return;
   }
@@ -1993,7 +1994,7 @@ void stateGameLoop(void)
 
   if (hudFullyUp == TRUE && col.coal == 0)
   {
-    robboMsgCtrl = 2;
+    state.robboMsgCtrl = HUD_SCROLL_DOWN;
     state.hudScrollingControl = TRUE;
     gameOverWhenAnotherCollisionHack = TRUE;
   }
@@ -2138,20 +2139,20 @@ if (col.coal > 0){
 
   if (doubleBufferFrameControl > 0)
   {
-    if (robboMsgCtrl == 0)
+    if (state.robboMsgCtrl == PRINT_ON_HUD)
     {
       printOnHUD();
     }
-    else if (robboMsgCtrl == 1)
+    else if (state.robboMsgCtrl == HUD_SCROLL_UP)
     {
       robboScrollUp();
     }
-    else if (robboMsgCtrl == 2)
+    else if (state.robboMsgCtrl == HUD_SCROLL_DOWN)
     {
       robboScrollDown();
     }
 
-    if (robboMsgCtrl == 3)
+    if (state.robboMsgCtrl == HUD_ROBBO_MSG)
     {
       robboSays();
     }

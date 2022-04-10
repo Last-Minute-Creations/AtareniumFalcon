@@ -28,9 +28,10 @@ struct stateControls {   // checking the states of different
   BOOL falkonIdleControl;    // elements and situations
   UBYTE flyingAnimControl;   // to handle them correctly
   BOOL stonehitAnimControl;
-  BOOL hudScrollingControl; 
+  BOOL hudScrollingControl; // check hud up/down and what to do next
   UBYTE levelScoreControl;
   UBYTE youWin;  // bad naming - check which ending/gameover to proceed
+  UBYTE robboMsgCtrl; // checks if theres a need for scrolling hud etc.
 }; 
 
 struct anim {       // variables for handling animation

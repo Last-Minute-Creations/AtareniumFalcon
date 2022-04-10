@@ -73,3 +73,10 @@ typedef enum {
   GAME_OVER = 2,
   CHEATER_GAME_OVER = 3
 } tEndGameResult;
+
+typedef enum {
+  PRINT_ON_HUD = 0,
+  HUD_SCROLL_UP = 1,
+  HUD_SCROLL_DOWN = 2,
+  HUD_ROBBO_MSG = 3
+} tHUDScrollingHandler;
