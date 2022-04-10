@@ -27,7 +27,8 @@ struct coordinates { // coordsy do rysowania falkona i kontrolowania zeby sie ni
 struct animStateControls { 
   BOOL falkonIdleControl; 
   UBYTE flyingAnimControl; 
-  BOOL stonehitAnimControl; 
+  BOOL stonehitAnimControl;
+  BOOL hudScrollingControl; 
 }; 
 
 struct anim { 
@@ -44,6 +45,7 @@ struct anim {
   UBYTE redCapacitorsAnimTick;
   UBYTE blueCapacitorsAnimTileCheck; 
   UBYTE blueCapacitorsAnimTick;
+  UBYTE tickTempo;
 
   UBYTE stonehitAnimTick;
   UBYTE stonehitAnimFrame;

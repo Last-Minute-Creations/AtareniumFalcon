@@ -33,7 +33,7 @@ UBYTE typingRandomizer = 0;
 #define RUN 2
 
 char szWungiel[50];
-char lineToPass[50];
+char *lineToPass[50];
 
 const char *s1 = "if (system.hacked == TRUE){";
 const char *s2 = "atariMode = ON };";
@@ -52,13 +52,13 @@ void blitBlueAtariScreen(void){
     blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 21);
 }
 
-void printLineOfAtariText(lineToPass, textPositionY){
+void printLineOfAtariText(char *lineToPass, UBYTE textPositionY){
         sprintf(szWungiel, lineToPass);
         fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
         fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 10, textPositionY, 23, FONT_COOKIE);
 }
 
-void printThreeDots(dotsPositionY){
+void printThreeDots(UBYTE dotsPositionY){
     for (BYTE i = 0; i < 3; ++i) {
         sprintf(szWungiel, "%c", dots[i]);
         fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
@@ -67,7 +67,7 @@ void printThreeDots(dotsPositionY){
     }
 }
 
-void typingAtariLineWithSound(line, typingPositionY){
+void typingAtariLineWithSound(UBYTE line, UBYTE typingPositionY){
     UWORD uwX = 10;
     switch (line){
         case LOAD:

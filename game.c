@@ -72,11 +72,11 @@ char szMsg[50];  // do wyswietlania wegla na HUD
 char szMsg2[50]; // do wyswietlania kondkow na HUD
 char szMsg3[50];
 char szMsg4[50];
-char levelFilePath[20];
+
 char szLvl[50];
 
-char lineToPass1[50];
-char lineToPass2[50];
+char *lineToPass1[50];
+char *lineToPass2[50];
 char szBuffer[50];
 
 char szRobboMsg[80];
@@ -86,16 +86,15 @@ char *szCollisionMsg2ndLine = "1T of fuel used, danger avioded. Over.";
 char *szTribute1stLine = "Golden Gumboot with BASIC Code strings for";
 char *szTribute2ndLine = "Saberman - Great Atariman of the Galaxy.";
 
-extern tMusicState musicPlay = MUSIC_HEAVY;
-extern tAmigaMode amigaMode = AMIGA_MODE_OFF;
-extern tDrawingTilesetElements;
-extern tIntTilesetElementsControl;
-extern tFlyingState;
+UBYTE musicPlay = MUSIC_HEAVY;
+UBYTE amigaMode = AMIGA_MODE_OFF;
+//extern tDrawingTilesetElements;
+//extern tIntTilesetElementsControl;
+//extern tFlyingState;
 
 UBYTE kamyki[10][7];
 UBYTE collectiblesAnim[10][7];
 
-UBYTE tickTempo = 8;
 UBYTE level = 1;
 UBYTE doubleBufferFrameControl = 2;
 UBYTE youWin = 0;
@@ -109,7 +108,7 @@ UWORD pAnim[] = {0, 32, 64, 96, 128, 160, 192, 224};
 
 BYTE levelScoreTick = 0;
 BYTE levelScoreTempo = 8;
-extern tEndLevelState levelScoreControl = LEVEL_SCORE_OFF;
+UBYTE levelScoreControl = LEVEL_SCORE_OFF;
 
 BYTE levelAnimFrame = 0;
 BYTE portalTickTempo = 4;
@@ -120,7 +119,7 @@ BYTE hudTickFrame = 0;
 BYTE hudAnimDB = 0;
 
 
-BYTE hudScrollingControl = 0;
+
 BYTE hudScrollingTick = 0;
 
 
@@ -166,14 +165,19 @@ void initialSetupDeclarationOfData(void)
   state.falkonIdleControl = TRUE;
   state.stonehitAnimControl = FALSE; // if true then handling animation for stone and frame collision
   state.flyingAnimControl = FLY_OFF;
+  state.hudScrollingControl = FALSE;
 
   coord.falkonx = 0;
   coord.falkony = 0;
   coord.krawedzx = 0;
   coord.krawedzy = 0;
+  coord.falkonFace = 0;
+
   move.kierunek = 0;
   move.kierunekHold = 0;
-  coord.falkonFace = 0;
+  move.stoneHit = FALSE;
+  move.frameHit = FALSE;
+  move.anotherHit = 0;
 
   flying.uwPosX = 0;
   flying.uwPosY = 0;
@@ -186,13 +190,6 @@ void initialSetupDeclarationOfData(void)
   flying.tempX = 0;
   flying.tempY = 0;
 
-  move.stoneHit = FALSE;
-  move.frameHit = FALSE;
-  move.anotherHit = 0;
-  hudScrollingControl = 0;
-  state.stonehitAnimControl = FALSE;
-  
-  
   
   level = 1;
   robboMsgNr = 0;
@@ -227,6 +224,7 @@ void initialSetupDeclarationOfData(void)
   anim.portalGlowX = 0;
   anim.portalGlowY = 0;
 
+  anim.tickTempo = 8;
   anim.redCapacitorsAnimTileCheck = 0;
   anim.redCapacitorsAnimTick = 0;
   anim.blueCapacitorsAnimTileCheck = 0;
@@ -848,12 +846,12 @@ void robboScrollUp(void)
   if (move.anotherHit >= 2 && hudFullyUp == TRUE)
   {
     robboMsgCtrl = 3;
-    hudScrollingControl = 0;
+    state.hudScrollingControl = FALSE;
     hudScrollingTick = 0;
     return;
   }
 
-  if (hudScrollingControl == 1)
+  if (state.hudScrollingControl == TRUE)
   {
 
     if (hudScrollingTick == 0 || hudScrollingTick == 1)
@@ -877,7 +875,7 @@ void robboScrollUp(void)
     {
       blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 224, 320, 32, MINTERM_COOKIE);
       robboMsgCtrl = 3;
-      hudScrollingControl = 0;
+      state.hudScrollingControl = FALSE;
       hudScrollingTick = 0;
       hudFullyUp = TRUE;
     }
@@ -893,7 +891,7 @@ void robboScrollDown(void)
 
   hudFullyUp = FALSE;
   doubleBufferFrameControl = 2;
-  if (hudScrollingControl == 1)
+  if (state.hudScrollingControl == TRUE)
   {
 
     if (hudScrollingTick == 0 || hudScrollingTick == 1)
@@ -920,7 +918,7 @@ void robboScrollDown(void)
       blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320, 32, MINTERM_COOKIE);
       robboMsgCtrl = 0;
       hudScrollingTick = 0;
-      hudScrollingControl = 0;
+      state.hudScrollingControl = FALSE;
       HUDcollisionMsg = 2;
       gameOverWhenAnotherCollisionHack = FALSE;
       printOnHUD();
@@ -928,7 +926,7 @@ void robboScrollDown(void)
   }
 }
 
-void printRobboMsgOnHUD(lineToPass1, lineToPass2){
+void printRobboMsgOnHUD(char *lineToPass1, char *lineToPass2){
         sprintf(szBuffer, lineToPass1);
         fontFillTextBitMap(s_pFont, s_pBmText, szBuffer);
         fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 8, 230, 23, FONT_COOKIE);
@@ -1126,7 +1124,7 @@ void coalAndCollect(void)
       ptplayerSfxPlay(s_pRobbo8000, 2, 32, 100);
     }
     robboMsgCtrl = 1;
-    hudScrollingControl = 1;
+    state.hudScrollingControl = TRUE;
     break;
 
   case 12:
@@ -1180,7 +1178,7 @@ void coalAndCollect(void)
     //   ptplayerSfxPlay(s_pRobbo8000, 3, 32, 100);
     // }
     robboMsgCtrl = 1;
-    hudScrollingControl = 1;
+    state.hudScrollingControl = TRUE;
     break;
   }
   printOnHUD();
@@ -1382,7 +1380,7 @@ void falconCollisionCheck(void)
     state.stonehitAnimControl = TRUE;
     state.falkonIdleControl = FALSE;
     robboMsgCtrl = 1;
-    hudScrollingControl = 1;
+    state.hudScrollingControl = TRUE;
     HUDcollisionMsg = 1;
 
     switch (move.kierunek)
@@ -1414,7 +1412,7 @@ void falconCollisionCheck(void)
     state.falkonIdleControl = FALSE;
     move.frameHit = FALSE;
     robboMsgCtrl = 1;
-    hudScrollingControl = 1;
+    state.hudScrollingControl = TRUE;
     HUDcollisionMsg = 1;
     //printOnHUD();
     return;
@@ -1598,7 +1596,7 @@ void falkonFlying(void)
   if (robboMsgCtrl == 3)
   {
     robboMsgCtrl = 2;
-    hudScrollingControl = 1;
+    state.hudScrollingControl = TRUE;
   }
 }
 
@@ -1606,7 +1604,7 @@ void redCapacitorsAnimation(void)
 {
   UBYTE i = 0, k = 0;
 
-  if (anim.redCapacitorsAnimTick == tickTempo)
+  if (anim.redCapacitorsAnimTick == anim.tickTempo)
   {
 
     for (i = 0; i < 10; ++i)
@@ -1632,7 +1630,7 @@ void redCapacitorsAnimation(void)
 void blueCapacitorsAnimation(void)
 {
 
-  if (anim.blueCapacitorsAnimTick == tickTempo)
+  if (anim.blueCapacitorsAnimTick == anim.tickTempo)
   {
 
     for (UBYTE i = 0; i < 10; ++i)
@@ -1659,7 +1657,7 @@ void hudAnim(void)
 {
   BYTE msgType;
 
-  if (hudScrollingControl > 0 || robboMsgCtrl > 0)
+  if (state.hudScrollingControl > 0 || robboMsgCtrl > 0)
   {
     return;
   }
@@ -1948,12 +1946,12 @@ void stateGameLoop(void)
   }
 
   ++anim.redCapacitorsAnimTick;
-  if (anim.redCapacitorsAnimTick > tickTempo)
+  if (anim.redCapacitorsAnimTick > anim.tickTempo)
   {
     anim.redCapacitorsAnimTick = 0;
   }
   ++anim.blueCapacitorsAnimTick;
-  if (anim.blueCapacitorsAnimTick > tickTempo)
+  if (anim.blueCapacitorsAnimTick > anim.tickTempo)
   {
     anim.blueCapacitorsAnimTick = 0;
   }
@@ -2005,7 +2003,7 @@ void stateGameLoop(void)
     state.flyingAnimControl = FLY_PREP;
   }
 
-  if (hudScrollingControl == 1)
+  if (state.hudScrollingControl == TRUE)
   {
     ++hudScrollingTick;
   }
@@ -2018,7 +2016,7 @@ void stateGameLoop(void)
   if (hudFullyUp == TRUE && col.coal == 0)
   {
     robboMsgCtrl = 2;
-    hudScrollingControl = 1;
+    state.hudScrollingControl = TRUE;
     gameOverWhenAnotherCollisionHack = TRUE;
   }
 

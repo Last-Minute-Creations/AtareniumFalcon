@@ -83,7 +83,7 @@ const char *s_pLines[INTRO_LINE_COUNT] = {
     "Let electrolyte eat out their PCBs.",
     "HAR! HAR! HAR!"};
 
-void printIntroPage(pageNr){ // p1:21 p2:14 
+void printIntroPage(UBYTE pageNr){ // p1:21 p2:14 
     UBYTE totalLines;
     UBYTE page2setup;
     switch (pageNr){
