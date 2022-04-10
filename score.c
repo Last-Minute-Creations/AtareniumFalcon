@@ -29,7 +29,7 @@ extern tAmigaMode amigaMode;
 static tFont *s_pFont;
 static tTextBitMap *s_pBmText;
 
-BYTE vampire = 0;
+UBYTE vampire = 0;
 
 
 char szScore[80];
@@ -82,7 +82,7 @@ s_pBmText = fontCreateTextBitMap(300, s_pFont->uwHeight);
 blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 21);
 blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 21);
 
-if (amigaMode == 0){
+if (amigaMode == AMIGA_MODE_OFF){
 for(BYTE i = 0 ; i < 17 ; ++i){
 
   switch (i){
@@ -144,7 +144,7 @@ for(BYTE i = 0 ; i < 17 ; ++i){
       waitFrames(s_pVp, 50, 0);
   }
 }
-else if (amigaMode == 2){
+else if (amigaMode == AMIGA_MODE_CHECK){
 for(BYTE i = 0 ; i < 17 ; ++i){
 
   switch (i){

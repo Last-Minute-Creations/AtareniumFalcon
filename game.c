@@ -89,33 +89,31 @@ char *szTribute2ndLine = "Saberman - Great Atariman of the Galaxy.";
 tMusicState musicPlay;
 tAmigaMode amigaMode;
 
-
 UBYTE kamyki[10][7];
 UBYTE collectiblesAnim[10][7];
-
-UBYTE level = 1;
-UBYTE doubleBufferFrameControl = 2;
-UBYTE youWin = 0;
-UBYTE ubStoneImg = 0;
-UBYTE audioFadeIn = 0;
-UBYTE audioLoopCount = 0;
 
 // managing the tiles position for blitting
 UWORD pAnim[] = {0, 32, 64, 96, 128, 160, 192, 224};
 
-BYTE robboMsgNr = 0;
-BYTE robboMsgCtrl = 0;
-BYTE HUDcollisionMsg = 0;
-BYTE HUDfontColor = 23; //23
+UBYTE level = 1;
+UBYTE doubleBufferFrameControl = 2;
+
+UBYTE ubStoneImg = 0;
+UBYTE audioFadeIn = 0;
+UBYTE audioLoopCount = 0;
+
+UBYTE robboMsgNr = 0;
+UBYTE robboMsgCtrl = 0;
+UBYTE HUDcollisionMsg = 0;
+UBYTE HUDfontColor; //23
 
 struct collected col;
 struct anim anim;
 struct moveControls move;
 struct coordinates coord;
 struct flyingAnim flying;
-struct animStateControls state;
+struct stateControls state;
 struct db db;
-
 
 extern UBYTE cheatmodeEnablerWhenEqual3;
 extern UBYTE secondCheatEnablerWhenEqual3;
@@ -140,6 +138,7 @@ void initialSetupDeclarationOfData(void)
   state.flyingAnimControl = FLY_OFF;
   state.hudScrollingControl = FALSE;
   state.levelScoreControl = LEVEL_SCORE_OFF;
+  state.youWin = OFF;
 
   coord.falkonx = 0;
   coord.falkony = 0;
@@ -169,8 +168,8 @@ void initialSetupDeclarationOfData(void)
   robboMsgNr = 0;
   
   robboMsgCtrl = 0;
-  
-  HUDfontColor = 23;
+
+  HUDfontColor = HUD_FONT_COLOR;
 
   
   
@@ -676,8 +675,8 @@ void levelScore(void) // WITH PORTAL OPEN AND FALKON IN PORTAL ANIM !!!
 
     if (anim.levelAnimFrame == 2)
     {
-      youWin = 2;
-      HUDfontColor = 23;
+      state.youWin = GAME_OVER;
+      HUDfontColor = HUD_FONT_COLOR;
       anim.levelAnimFrame = 0;
       state.levelScoreControl = LEVEL_SCORE_OFF;
       ptplayerStop();
@@ -703,8 +702,8 @@ void levelScore(void) // WITH PORTAL OPEN AND FALKON IN PORTAL ANIM !!!
     }
     if (anim.levelAnimFrame == 4)
     {
-      youWin = 2;
-      HUDfontColor = 23;
+      state.youWin = GAME_OVER;
+      HUDfontColor = HUD_FONT_COLOR;
       anim.levelAnimFrame = 0;
       state.levelScoreControl = LEVEL_SCORE_OFF;
       ptplayerStop();
@@ -721,7 +720,7 @@ void levelScore(void) // WITH PORTAL OPEN AND FALKON IN PORTAL ANIM !!!
     if (level == LAST_LEVEL_NUMBER + 1)
     {
       ptplayerStop();
-      youWin = 1;
+      state.youWin = END;
     }
     else
     {
@@ -1110,7 +1109,7 @@ void coalAndCollect(void)
   case 12:
     if (thirdCheatEnablerWhenEqual3 == 3)
     {
-      youWin = 3;
+      state.youWin = CHEATER_GAME_OVER;
       return;
     }
     if (thirdCheatEnablerWhenEqual3 != 3)
@@ -2160,20 +2159,20 @@ if (col.coal > 0){
     --doubleBufferFrameControl;
   }
 
-  if (youWin == 1) // sprawdzenie ktore zakonczenie uruchomic
+  if (state.youWin == END) // sprawdzenie ktore zakonczenie uruchomic
   {
-    youWin = 0;
+    state.youWin = OFF;
     stateChange(g_pStateMachineGame, &g_sStateScore); // atari ending
   }
-  else if (youWin == 2)
+  else if (state.youWin == GAME_OVER)
   {
-    youWin = 0;
+    state.youWin = OFF;
     stateChange(g_pStateMachineGame, &g_sStateGameOver);
     return;
   }
-  else if (youWin == 3)
+  else if (state.youWin == CHEATER_GAME_OVER)
   {
-    youWin = 0;
+    state.youWin = OFF;
     stateChange(g_pStateMachineGame, &g_sStateLeakedGameOver);
     return;
   }

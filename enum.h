@@ -7,7 +7,7 @@ typedef enum {
 typedef enum {
   AMIGA_MODE_OFF = 0,
   AMIGA_MODE_ON = 1,
-  AMIGA_MODE_CHECK = 2,
+  AMIGA_MODE_CHECK = 2, // check if amiga mode reached w/o cheating
 } tAmigaMode;
 
 typedef enum {
@@ -63,5 +63,13 @@ typedef enum {
 typedef enum {
   AMIGA_HUD_TICK_TEMPO = 60,
   PORTAL_TICK_TEMPO = 4,
-  LEVEL_SCORE_TEMPO = 8
+  LEVEL_SCORE_TEMPO = 8,
+  HUD_FONT_COLOR = 23
 } tMiscSetupValues;
+
+typedef enum {
+  OFF = 0,
+  END = 1,
+  GAME_OVER = 2,
+  CHEATER_GAME_OVER = 3
+} tEndGameResult;

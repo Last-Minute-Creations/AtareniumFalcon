@@ -24,12 +24,13 @@ struct coordinates { // coordsy do rysowania falkona i kontrolowania zeby sie ni
   BYTE krawedzy;
 };
 
-struct animStateControls {   // checking the states of different 
+struct stateControls {   // checking the states of different 
   BOOL falkonIdleControl;    // elements and situations
   UBYTE flyingAnimControl;   // to handle them correctly
   BOOL stonehitAnimControl;
   BOOL hudScrollingControl; 
   UBYTE levelScoreControl;
+  UBYTE youWin;  // bad naming - check which ending/gameover to proceed
 }; 
 
 struct anim {       // variables for handling animation
@@ -96,49 +97,4 @@ struct db // handling double buffer, if true then will be drawn again in next fr
   BOOL portalGlowDB;   
 };
 
-
-
- /*
-struct coords { 
-  UBYTE falconFace; 
-  UBYTE falkonx; 
-  UBYTE falkony; 
-  BYTE krawedzx; 
-  BYTE krawedzy; 
-  UBYTE targetTileX; 
-  UBYTE targetTileY; 
-  UBYTE portalX; 
-  UBYTE portalY; 
-  UBYTE robboX; 
-  UBYTE robboY; 
-}; 
- 
-
- 
-
-  
- 
-struct doubleBuffering { 
-  UBYTE portal; 
-  UBYTE blueCap; 
-  UBYTE redCap; 
-  UBYTE robbo; 
-  UBYTE flyingAnimFrame; 
-}; 
- 
-struct hud { 
-  char fuelCoalDisplay[50];   
-  char capacitorsDisplay[50];  
-  char excessCoalDisplay[50]; 
-  char robboCountDisplay[50]; 
-  char levelNumber[50];   // test-only display level number on hud botom right corner 
-  UBYTE fontColor;  // 23 
-  UBYTE stateCtrl; 
-}; 
- 
- */
- 
- 
- 
- 
 #endif // STRUCTURES_H 
