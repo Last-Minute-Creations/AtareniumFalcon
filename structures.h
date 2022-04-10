@@ -24,15 +24,15 @@ struct coordinates { // coordsy do rysowania falkona i kontrolowania zeby sie ni
   BYTE krawedzy;
 };
 
-struct animStateControls { 
-  BOOL falkonIdleControl; 
-  UBYTE flyingAnimControl; 
+struct animStateControls {   // checking the states of different 
+  BOOL falkonIdleControl;    // elements and situations
+  UBYTE flyingAnimControl;   // to handle them correctly
   BOOL stonehitAnimControl;
   BOOL hudScrollingControl; 
 }; 
 
-struct anim { 
-  UBYTE robboFrame;
+struct anim {       // variables for handling animation
+  UBYTE robboFrame; // of various elements on screen
   UBYTE robboTick;
   UBYTE robboTempo;
 
@@ -40,6 +40,7 @@ struct anim {
   UBYTE portalGlowFrame; 
   UBYTE portalGlowX;
   UBYTE portalGlowY;
+  UBYTE portalTickTempo;
 
   UBYTE redCapacitorsAnimTileCheck;
   UBYTE redCapacitorsAnimTick;
@@ -62,6 +63,10 @@ struct anim {
   UBYTE hudTickTempo;  // amiga mode hud animation variables
   UBYTE hudAnimTick;
   UBYTE hudTickFrame;
+
+  BYTE levelScoreTick;
+  UBYTE levelAnimFrame;
+  UBYTE levelScoreTempo;
 }; 
 
 struct flyingAnim { 
@@ -81,6 +86,15 @@ struct flyingAnim {
   UBYTE tempY;   // lesson learned ... 
 
 };
+
+struct db // handling double buffer, if true then will be drawn again in next frame
+{
+  BOOL robbo;
+  BOOL hudAnimDB;
+  BOOL levelScoreDB;
+  BOOL portalGlowDB;   
+};
+
 
 
  /*

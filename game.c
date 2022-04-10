@@ -88,9 +88,7 @@ char *szTribute2ndLine = "Saberman - Great Atariman of the Galaxy.";
 
 tMusicState musicPlay;
 tAmigaMode amigaMode;
-//extern tDrawingTilesetElements;
-//extern tIntTilesetElementsControl;
-//extern tFlyingState;
+
 
 UBYTE kamyki[10][7];
 UBYTE collectiblesAnim[10][7];
@@ -106,22 +104,8 @@ UBYTE audioLoopCount = 0;
 UWORD pAnim[] = {0, 32, 64, 96, 128, 160, 192, 224};
 
 
-BYTE levelScoreTick = 0;
-BYTE levelScoreTempo = 8;
+
 UBYTE levelScoreControl = LEVEL_SCORE_OFF;
-
-BYTE levelAnimFrame = 0;
-BYTE portalTickTempo = 4;
-
-
-
-
-
-
-
-
-
-
 
 BYTE robboMsgNr = 0;
 BYTE robboMsgCtrl = 0;
@@ -134,15 +118,8 @@ struct moveControls move;
 struct coordinates coord;
 struct flyingAnim flying;
 struct animStateControls state;
-
-struct db
-{
-  BOOL robbo;
-  BOOL hudAnimDB;
-  BOOL levelScoreDB;
-  BOOL portalGlowDB;   // handling double buffer, if true then will be drawn again in next frame
-};
 struct db db;
+
 
 extern UBYTE cheatmodeEnablerWhenEqual3;
 extern UBYTE secondCheatEnablerWhenEqual3;
@@ -200,8 +177,8 @@ void initialSetupDeclarationOfData(void)
   HUDfontColor = 23;
 
   levelScoreControl = LEVEL_SCORE_OFF;
-  levelAnimFrame = 0;
-  levelScoreTick = 0;
+  
+ 
   state.flyingAnimControl = FLY_OFF;
   
 
@@ -224,6 +201,7 @@ void initialSetupDeclarationOfData(void)
   anim.portalGlowFrame = 0;
   anim.portalGlowX = 0;
   anim.portalGlowY = 0;
+  anim.portalTickTempo = PORTAL_TICK_TEMPO;
 
   anim.tickTempo = 8;
   anim.redCapacitorsAnimTileCheck = 0;
@@ -246,13 +224,17 @@ void initialSetupDeclarationOfData(void)
   
   anim.hudScrollingTick = 0;
 
+  anim.levelScoreTick = 0;
+  anim.levelAnimFrame = 0;
+  anim.levelScoreTempo = LEVEL_SCORE_TEMPO;
+
   db.levelScoreDB = FALSE;
   db.portalGlowDB = FALSE;
   db.robbo = FALSE;
   db.hudAnimDB = FALSE;
 }
 
-void waitFrames(tVPort *pVPort, UBYTE ubHowMany, UWORD uwPosY)
+void waitFrames(tVPort *pVPort, UBYTE ubHowMany)
 {
   for (UBYTE i = 0; i < ubHowMany; ++i)
   {
@@ -282,7 +264,7 @@ void endLevelFadeOut(void)
     paletteDim(s_pPalette, s_pVp->pPalette, 32, bRatioGame); // przyciemnij palete o wartosc zmiennej
     viewUpdateCLUT(s_pView);                                 // aktualizuj ekran
     --bRatioGame;                                            // zmiejsz zmienna
-    waitFrames(s_pVp, 4, flying.uwPosY + FALCON_HEIGHT);            // zaczekaj 10 klatek
+    waitFrames(s_pVp, 4);            // zaczekaj 10 klatek
   }
 }
 
@@ -562,19 +544,19 @@ void levelScoreDBredraw(void) // odrysowanie tego co w levelScore ale bez oblicz
   if (levelScoreControl == LEVEL_SCORE_PORTAL_OPEN)
   {
     blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, flying.uwPosX, flying.uwPosY, 32, 32, MINTERM_COOKIE);
-    blitCopyMask(s_pTiles, 32 * levelAnimFrame, 320, s_pVpManager->pBack, coord.falkonx * 32, coord.falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+    blitCopyMask(s_pTiles, 32 * anim.levelAnimFrame, 320, s_pVpManager->pBack, coord.falkonx * 32, coord.falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
     blitCopyMask(s_pTiles, 32, 192 + coord.falkonFace, s_pVpManager->pBack, coord.falkonx * 32, coord.falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
   }
   if (levelScoreControl == LEVEL_SCORE_PORTAL_ANIM)
   {
     blitCopy(s_pBg, flying.uwPosX, flying.uwPosY, s_pVpManager->pBack, flying.uwPosX, flying.uwPosY, 32, 32, MINTERM_COOKIE);
-    blitCopyMask(s_pTiles, levelAnimFrame * 32, 128 + coord.falkonFace, s_pVpManager->pBack, flying.uwPosX, flying.uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+    blitCopyMask(s_pTiles, anim.levelAnimFrame * 32, 128 + coord.falkonFace, s_pVpManager->pBack, flying.uwPosX, flying.uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
   }
   if (levelScoreControl == LEVEL_SCORE_PORTAL_CLOSE)
   {
 
     blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, flying.uwPosX, flying.uwPosY, 32, 32, MINTERM_COOKIE);
-    blitCopyMask(s_pTiles, 224 - (32 * levelAnimFrame), 320, s_pVpManager->pBack, coord.falkonx * 32, coord.falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+    blitCopyMask(s_pTiles, 224 - (32 * anim.levelAnimFrame), 320, s_pVpManager->pBack, coord.falkonx * 32, coord.falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
   }
   if (amigaMode == AMIGA_MODE_OFF && levelScoreControl == LEVEL_SCORE_NOCOAL)
   {
@@ -610,9 +592,9 @@ void levelScore(void) // WITH PORTAL OPEN AND FALKON IN PORTAL ANIM !!!
     state.falkonIdleControl = FALSE;
   }
 
-  if (amigaMode == AMIGA_MODE_OFF && levelScoreTick == levelScoreTempo && levelScoreControl == LEVEL_SCORE_COUNT)
+  if (amigaMode == AMIGA_MODE_OFF && anim.levelScoreTick == anim.levelScoreTempo && levelScoreControl == LEVEL_SCORE_COUNT)
   {
-    levelScoreTick = 0;
+    anim.levelScoreTick = 0;
     --col.coal;
     ++col.excesscoal;
     if (musicPlay == MUSIC_AMBIENT_SFX)
@@ -631,9 +613,9 @@ void levelScore(void) // WITH PORTAL OPEN AND FALKON IN PORTAL ANIM !!!
   }
 
 
-  if (amigaMode != AMIGA_MODE_OFF && levelScoreTick == levelScoreTempo && levelScoreControl == LEVEL_SCORE_COUNT)
+  if (amigaMode != AMIGA_MODE_OFF && anim.levelScoreTick == anim.levelScoreTempo && levelScoreControl == LEVEL_SCORE_COUNT)
   {
-    levelScoreTick = 0;
+    anim.levelScoreTick = 0;
     --col.coal;
     ++col.excesscoal;
     //blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 96, 32, MINTERM_COOKIE);
@@ -647,16 +629,16 @@ void levelScore(void) // WITH PORTAL OPEN AND FALKON IN PORTAL ANIM !!!
     fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 239, HUDfontColor, FONT_COOKIE);
   }
 
-  if (levelScoreTick == portalTickTempo && levelScoreControl == LEVEL_SCORE_PORTAL_OPEN)
+  if (anim.levelScoreTick == anim.portalTickTempo && levelScoreControl == LEVEL_SCORE_PORTAL_OPEN)
   {
-    levelScoreTick = 0;
+    anim.levelScoreTick = 0;
     blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, flying.uwPosX, flying.uwPosY, 32, 32, MINTERM_COOKIE);
-    blitCopyMask(s_pTiles, 32 * levelAnimFrame, 320, s_pVpManager->pBack, coord.falkonx * 32, coord.falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+    blitCopyMask(s_pTiles, 32 * anim.levelAnimFrame, 320, s_pVpManager->pBack, coord.falkonx * 32, coord.falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
     blitCopyMask(s_pTiles, 32, 192 + coord.falkonFace, s_pVpManager->pBack, coord.falkonx * 32, coord.falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-    ++levelAnimFrame;
-    if (levelAnimFrame == 8)
+    ++anim.levelAnimFrame;
+    if (anim.levelAnimFrame == 8)
     {
-      levelAnimFrame = 0;
+      anim.levelAnimFrame = 0;
       levelScoreControl = LEVEL_SCORE_PORTAL_ANIM;
       if (musicPlay == MUSIC_AMBIENT_SFX){
       ptplayerSfxPlay(s_pPortal8000, 3, 64, 70);
@@ -664,60 +646,57 @@ void levelScore(void) // WITH PORTAL OPEN AND FALKON IN PORTAL ANIM !!!
     }
   }
 
-  if (levelScoreTick == portalTickTempo && levelScoreControl == LEVEL_SCORE_PORTAL_ANIM)
+  if (anim.levelScoreTick == anim.portalTickTempo && levelScoreControl == LEVEL_SCORE_PORTAL_ANIM)
   {
-    levelScoreTick = 0;
+    anim.levelScoreTick = 0;
     blitCopy(s_pBg, flying.uwPosX, flying.uwPosY, s_pVpManager->pBack, flying.uwPosX, flying.uwPosY, 32, 32, MINTERM_COOKIE);
-    blitCopyMask(s_pTiles, levelAnimFrame * 32, 128 + coord.falkonFace, s_pVpManager->pBack, flying.uwPosX, flying.uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+    blitCopyMask(s_pTiles, anim.levelAnimFrame * 32, 128 + coord.falkonFace, s_pVpManager->pBack, flying.uwPosX, flying.uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
 
-    ++levelAnimFrame;
-    if (levelAnimFrame == 8)
+    ++anim.levelAnimFrame;
+    if (anim.levelAnimFrame == 8)
     {
-      levelAnimFrame = 0;
+      anim.levelAnimFrame = 0;
       levelScoreControl = LEVEL_SCORE_PORTAL_CLOSE;
     }
   }
-  if (levelScoreTick == portalTickTempo && levelScoreControl == LEVEL_SCORE_PORTAL_CLOSE)
+  if (anim.levelScoreTick == anim.portalTickTempo && levelScoreControl == LEVEL_SCORE_PORTAL_CLOSE)
   {
-    levelScoreTick = 0;
+    anim.levelScoreTick = 0;
     blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, flying.uwPosX, flying.uwPosY, 32, 32, MINTERM_COOKIE);
-    blitCopyMask(s_pTiles, 224 - (32 * levelAnimFrame), 320, s_pVpManager->pBack, coord.falkonx * 32, coord.falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
-    ++levelAnimFrame;
-    if (levelAnimFrame == 8)
+    blitCopyMask(s_pTiles, 224 - (32 * anim.levelAnimFrame), 320, s_pVpManager->pBack, coord.falkonx * 32, coord.falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
+    ++anim.levelAnimFrame;
+    if (anim.levelAnimFrame == 8)
     {
-      levelAnimFrame = 0;
+      anim.levelAnimFrame = 0;
       levelScoreControl = LEVEL_SCORE_END;
     }
   }
 
-  if (amigaMode == AMIGA_MODE_OFF && levelScoreTick == 64 && levelScoreControl == LEVEL_SCORE_NOCOAL)
+  if (amigaMode == AMIGA_MODE_OFF && anim.levelScoreTick == 64 && levelScoreControl == LEVEL_SCORE_NOCOAL)
   {
-    levelScoreTick = 0;
+    anim.levelScoreTick = 0;
     blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 32, 32, MINTERM_COOKIE);
     sprintf(szMsg, "%d", col.coal);
     fontFillTextBitMap(s_pFont, s_pBmText, szMsg);
     fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 232, HUDfontColor, FONT_COOKIE);
-    ++levelAnimFrame;
+    ++anim.levelAnimFrame;
 
-    if (levelAnimFrame == 2)
+    if (anim.levelAnimFrame == 2)
     {
       youWin = 2;
       HUDfontColor = 23;
-      levelAnimFrame = 0;
+      anim.levelAnimFrame = 0;
       levelScoreControl = LEVEL_SCORE_OFF;
       ptplayerStop();
     }
-  }
-
- 
-    
+  }  
 
   if (amigaMode != AMIGA_MODE_OFF && levelScoreControl == LEVEL_SCORE_NOCOAL)
   {
-    if (levelScoreTick >= 0 && levelScoreTick < 32){
+    if (anim.levelScoreTick >= 0 && anim.levelScoreTick < 32){
       blitCopy(s_pAmiHUDblinkGreen, 0, 0, s_pVpManager->pBack, 288, 224, 32, 32, MINTERM_COOKIE);
     }
-    if (levelScoreTick >= 32 && levelScoreTick < 64){
+    if (anim.levelScoreTick >= 32 && anim.levelScoreTick < 64){
       blitCopy(s_pHUD, 288, 0, s_pVpManager->pBack, 288, 224, 32, 32, MINTERM_COOKIE);
       blitCopy(s_pAmiHUDblinkYellow, 0, 0, s_pVpManager->pBack, 288, 224, 32, 32, MINTERM_COOKIE);
       //blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 96, 32, MINTERM_COOKIE);  // to byly standardowe swiatelka
@@ -725,15 +704,15 @@ void levelScore(void) // WITH PORTAL OPEN AND FALKON IN PORTAL ANIM !!!
       fontFillTextBitMap(s_pGotekFont, s_pBmText, szMsg3);
       fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 239, HUDfontColor, FONT_COOKIE);
     }
-    if (levelScoreTick >= 64){
-    levelScoreTick = 0;
-    ++levelAnimFrame;
+    if (anim.levelScoreTick >= 64){
+    anim.levelScoreTick = 0;
+    ++anim.levelAnimFrame;
     }
-    if (levelAnimFrame == 4)
+    if (anim.levelAnimFrame == 4)
     {
       youWin = 2;
       HUDfontColor = 23;
-      levelAnimFrame = 0;
+      anim.levelAnimFrame = 0;
       levelScoreControl = LEVEL_SCORE_OFF;
       ptplayerStop();
     }
@@ -1941,7 +1920,7 @@ void stateGameLoop(void)
   }
 
   ++anim.portalGlowTick;
-  if (anim.portalGlowTick > portalTickTempo)
+  if (anim.portalGlowTick > anim.portalTickTempo)
   {
     ++anim.portalGlowFrame;
     portalGlowAnim();
@@ -2001,7 +1980,7 @@ void stateGameLoop(void)
   }
   if (levelScoreControl != LEVEL_SCORE_OFF)
   {
-    ++levelScoreTick;
+    ++anim.levelScoreTick;
     levelScore();
     db.levelScoreDB = TRUE;
   }

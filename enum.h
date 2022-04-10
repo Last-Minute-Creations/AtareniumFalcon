@@ -62,4 +62,6 @@ typedef enum {
 
 typedef enum {
   AMIGA_HUD_TICK_TEMPO = 60,
+  PORTAL_TICK_TEMPO = 4,
+  LEVEL_SCORE_TEMPO = 8
 } tMiscSetupValues;
