@@ -103,10 +103,6 @@ UBYTE audioLoopCount = 0;
 // managing the tiles position for blitting
 UWORD pAnim[] = {0, 32, 64, 96, 128, 160, 192, 224};
 
-
-
-UBYTE levelScoreControl = LEVEL_SCORE_OFF;
-
 BYTE robboMsgNr = 0;
 BYTE robboMsgCtrl = 0;
 BYTE HUDcollisionMsg = 0;
@@ -136,7 +132,6 @@ BOOL setGameOverInNextLoopIter = FALSE;
 
 BOOL hudFullyUp = FALSE;
 
-UBYTE isIgnoreNextFrame = 0; // zmienna do naprawienia glicza graficznego !
 
 void initialSetupDeclarationOfData(void)
 {
@@ -144,6 +139,7 @@ void initialSetupDeclarationOfData(void)
   state.stonehitAnimControl = FALSE; // if true then handling animation for stone and frame collision
   state.flyingAnimControl = FLY_OFF;
   state.hudScrollingControl = FALSE;
+  state.levelScoreControl = LEVEL_SCORE_OFF;
 
   coord.falkonx = 0;
   coord.falkony = 0;
@@ -176,10 +172,7 @@ void initialSetupDeclarationOfData(void)
   
   HUDfontColor = 23;
 
-  levelScoreControl = LEVEL_SCORE_OFF;
   
- 
-  state.flyingAnimControl = FLY_OFF;
   
 
   setGameOverInNextLoopIter = FALSE;
@@ -523,7 +516,7 @@ void nextLevel(void) // ladowanie kolejnego levela
 
 void levelScoreDBredraw(void) // odrysowanie tego co w levelScore ale bez obliczen, tylko dla podwojnego buforowania
 {
-  if (amigaMode == AMIGA_MODE_OFF && levelScoreControl == LEVEL_SCORE_COUNT)
+  if (amigaMode == AMIGA_MODE_OFF && state.levelScoreControl == LEVEL_SCORE_COUNT)
   {
     blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 32, 32, MINTERM_COOKIE);
     sprintf(szMsg, "%d", col.coal);
@@ -534,31 +527,31 @@ void levelScoreDBredraw(void) // odrysowanie tego co w levelScore ale bez oblicz
     fontFillTextBitMap(s_pFont, s_pBmText, szMsg3);
     fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 130, 232, HUDfontColor, FONT_COOKIE);
   }
-  if (amigaMode != AMIGA_MODE_OFF && levelScoreControl == LEVEL_SCORE_COUNT)
+  if (amigaMode != AMIGA_MODE_OFF && state.levelScoreControl == LEVEL_SCORE_COUNT)
   {
     blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 96, 32, MINTERM_COOKIE);
     sprintf(szMsg3, "RESERVE %d", col.excesscoal);
     fontFillTextBitMap(s_pGotekFont, s_pBmText, szMsg3);
     fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 239, HUDfontColor, FONT_COOKIE);
   }
-  if (levelScoreControl == LEVEL_SCORE_PORTAL_OPEN)
+  if (state.levelScoreControl == LEVEL_SCORE_PORTAL_OPEN)
   {
     blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, flying.uwPosX, flying.uwPosY, 32, 32, MINTERM_COOKIE);
     blitCopyMask(s_pTiles, 32 * anim.levelAnimFrame, 320, s_pVpManager->pBack, coord.falkonx * 32, coord.falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
     blitCopyMask(s_pTiles, 32, 192 + coord.falkonFace, s_pVpManager->pBack, coord.falkonx * 32, coord.falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
   }
-  if (levelScoreControl == LEVEL_SCORE_PORTAL_ANIM)
+  if (state.levelScoreControl == LEVEL_SCORE_PORTAL_ANIM)
   {
     blitCopy(s_pBg, flying.uwPosX, flying.uwPosY, s_pVpManager->pBack, flying.uwPosX, flying.uwPosY, 32, 32, MINTERM_COOKIE);
     blitCopyMask(s_pTiles, anim.levelAnimFrame * 32, 128 + coord.falkonFace, s_pVpManager->pBack, flying.uwPosX, flying.uwPosY, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
   }
-  if (levelScoreControl == LEVEL_SCORE_PORTAL_CLOSE)
+  if (state.levelScoreControl == LEVEL_SCORE_PORTAL_CLOSE)
   {
 
     blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, flying.uwPosX, flying.uwPosY, 32, 32, MINTERM_COOKIE);
     blitCopyMask(s_pTiles, 224 - (32 * anim.levelAnimFrame), 320, s_pVpManager->pBack, coord.falkonx * 32, coord.falkony * 32, 32, 32, (UWORD *)s_pTilesMask->Planes[0]);
   }
-  if (amigaMode == AMIGA_MODE_OFF && levelScoreControl == LEVEL_SCORE_NOCOAL)
+  if (amigaMode == AMIGA_MODE_OFF && state.levelScoreControl == LEVEL_SCORE_NOCOAL)
   {
     blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 32, 32, MINTERM_COOKIE);
     sprintf(szMsg, "%d", col.coal);
@@ -566,7 +559,7 @@ void levelScoreDBredraw(void) // odrysowanie tego co w levelScore ale bez oblicz
     fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 232, HUDfontColor, FONT_COOKIE);
     --HUDfontColor;
   }
-  if (amigaMode != AMIGA_MODE_OFF && levelScoreControl == LEVEL_SCORE_NOCOAL)
+  if (amigaMode != AMIGA_MODE_OFF && state.levelScoreControl == LEVEL_SCORE_NOCOAL)
   {
     blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 96, 32, MINTERM_COOKIE);
     sprintf(szMsg3, "NO COAL");
@@ -578,7 +571,7 @@ void levelScoreDBredraw(void) // odrysowanie tego co w levelScore ale bez oblicz
 
 void levelScore(void) // WITH PORTAL OPEN AND FALKON IN PORTAL ANIM !!!
 {
-  if (levelScoreControl == LEVEL_SCORE_OFF)
+  if (state.levelScoreControl == LEVEL_SCORE_OFF)
   {
     return;
   }
@@ -586,13 +579,13 @@ void levelScore(void) // WITH PORTAL OPEN AND FALKON IN PORTAL ANIM !!!
   {
     return;
   }
-  if (col.coal == 1 && levelScoreControl == LEVEL_SCORE_COUNT)
+  if (col.coal == 1 && state.levelScoreControl == LEVEL_SCORE_COUNT)
   {
-    levelScoreControl = LEVEL_SCORE_PORTAL_OPEN;
+    state.levelScoreControl = LEVEL_SCORE_PORTAL_OPEN;
     state.falkonIdleControl = FALSE;
   }
 
-  if (amigaMode == AMIGA_MODE_OFF && anim.levelScoreTick == anim.levelScoreTempo && levelScoreControl == LEVEL_SCORE_COUNT)
+  if (amigaMode == AMIGA_MODE_OFF && anim.levelScoreTick == anim.levelScoreTempo && state.levelScoreControl == LEVEL_SCORE_COUNT)
   {
     anim.levelScoreTick = 0;
     --col.coal;
@@ -613,7 +606,7 @@ void levelScore(void) // WITH PORTAL OPEN AND FALKON IN PORTAL ANIM !!!
   }
 
 
-  if (amigaMode != AMIGA_MODE_OFF && anim.levelScoreTick == anim.levelScoreTempo && levelScoreControl == LEVEL_SCORE_COUNT)
+  if (amigaMode != AMIGA_MODE_OFF && anim.levelScoreTick == anim.levelScoreTempo && state.levelScoreControl == LEVEL_SCORE_COUNT)
   {
     anim.levelScoreTick = 0;
     --col.coal;
@@ -629,7 +622,7 @@ void levelScore(void) // WITH PORTAL OPEN AND FALKON IN PORTAL ANIM !!!
     fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 42, 239, HUDfontColor, FONT_COOKIE);
   }
 
-  if (anim.levelScoreTick == anim.portalTickTempo && levelScoreControl == LEVEL_SCORE_PORTAL_OPEN)
+  if (anim.levelScoreTick == anim.portalTickTempo && state.levelScoreControl == LEVEL_SCORE_PORTAL_OPEN)
   {
     anim.levelScoreTick = 0;
     blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, flying.uwPosX, flying.uwPosY, 32, 32, MINTERM_COOKIE);
@@ -639,14 +632,14 @@ void levelScore(void) // WITH PORTAL OPEN AND FALKON IN PORTAL ANIM !!!
     if (anim.levelAnimFrame == 8)
     {
       anim.levelAnimFrame = 0;
-      levelScoreControl = LEVEL_SCORE_PORTAL_ANIM;
+      state.levelScoreControl = LEVEL_SCORE_PORTAL_ANIM;
       if (musicPlay == MUSIC_AMBIENT_SFX){
       ptplayerSfxPlay(s_pPortal8000, 3, 64, 70);
       }
     }
   }
 
-  if (anim.levelScoreTick == anim.portalTickTempo && levelScoreControl == LEVEL_SCORE_PORTAL_ANIM)
+  if (anim.levelScoreTick == anim.portalTickTempo && state.levelScoreControl == LEVEL_SCORE_PORTAL_ANIM)
   {
     anim.levelScoreTick = 0;
     blitCopy(s_pBg, flying.uwPosX, flying.uwPosY, s_pVpManager->pBack, flying.uwPosX, flying.uwPosY, 32, 32, MINTERM_COOKIE);
@@ -656,10 +649,10 @@ void levelScore(void) // WITH PORTAL OPEN AND FALKON IN PORTAL ANIM !!!
     if (anim.levelAnimFrame == 8)
     {
       anim.levelAnimFrame = 0;
-      levelScoreControl = LEVEL_SCORE_PORTAL_CLOSE;
+      state.levelScoreControl = LEVEL_SCORE_PORTAL_CLOSE;
     }
   }
-  if (anim.levelScoreTick == anim.portalTickTempo && levelScoreControl == LEVEL_SCORE_PORTAL_CLOSE)
+  if (anim.levelScoreTick == anim.portalTickTempo && state.levelScoreControl == LEVEL_SCORE_PORTAL_CLOSE)
   {
     anim.levelScoreTick = 0;
     blitCopy(s_pFalconBg, 0, 0, s_pVpManager->pBack, flying.uwPosX, flying.uwPosY, 32, 32, MINTERM_COOKIE);
@@ -668,11 +661,11 @@ void levelScore(void) // WITH PORTAL OPEN AND FALKON IN PORTAL ANIM !!!
     if (anim.levelAnimFrame == 8)
     {
       anim.levelAnimFrame = 0;
-      levelScoreControl = LEVEL_SCORE_END;
+      state.levelScoreControl = LEVEL_SCORE_END;
     }
   }
 
-  if (amigaMode == AMIGA_MODE_OFF && anim.levelScoreTick == 64 && levelScoreControl == LEVEL_SCORE_NOCOAL)
+  if (amigaMode == AMIGA_MODE_OFF && anim.levelScoreTick == 64 && state.levelScoreControl == LEVEL_SCORE_NOCOAL)
   {
     anim.levelScoreTick = 0;
     blitCopy(s_pHUD, 32, 0, s_pVpManager->pBack, 32, 224, 32, 32, MINTERM_COOKIE);
@@ -686,12 +679,12 @@ void levelScore(void) // WITH PORTAL OPEN AND FALKON IN PORTAL ANIM !!!
       youWin = 2;
       HUDfontColor = 23;
       anim.levelAnimFrame = 0;
-      levelScoreControl = LEVEL_SCORE_OFF;
+      state.levelScoreControl = LEVEL_SCORE_OFF;
       ptplayerStop();
     }
   }  
 
-  if (amigaMode != AMIGA_MODE_OFF && levelScoreControl == LEVEL_SCORE_NOCOAL)
+  if (amigaMode != AMIGA_MODE_OFF && state.levelScoreControl == LEVEL_SCORE_NOCOAL)
   {
     if (anim.levelScoreTick >= 0 && anim.levelScoreTick < 32){
       blitCopy(s_pAmiHUDblinkGreen, 0, 0, s_pVpManager->pBack, 288, 224, 32, 32, MINTERM_COOKIE);
@@ -713,14 +706,14 @@ void levelScore(void) // WITH PORTAL OPEN AND FALKON IN PORTAL ANIM !!!
       youWin = 2;
       HUDfontColor = 23;
       anim.levelAnimFrame = 0;
-      levelScoreControl = LEVEL_SCORE_OFF;
+      state.levelScoreControl = LEVEL_SCORE_OFF;
       ptplayerStop();
     }
   }
 
-  if (levelScoreControl == LEVEL_SCORE_END)
+  if (state.levelScoreControl == LEVEL_SCORE_END)
   {
-    levelScoreControl = LEVEL_SCORE_OFF;
+    state.levelScoreControl = LEVEL_SCORE_OFF;
     endLevelFadeOut();
     state.falkonIdleControl = TRUE;
 
@@ -1097,7 +1090,7 @@ void coalAndCollect(void)
 
   case 10:
     noFlyingWhenCountingCoalInPortalHack = TRUE;
-    levelScoreControl = LEVEL_SCORE_COUNT;
+    state.levelScoreControl = LEVEL_SCORE_COUNT;
     state.falkonIdleControl = TRUE;
     //portalAnimControl = 1;
     break;
@@ -1572,7 +1565,6 @@ void falkonFlying(void)
   else if (state.flyingAnimControl == FLY_ENDING)
   {
     blitCopy(s_pBg, flying.uwPreviousX, flying.uwPreviousY, s_pVpManager->pBack, flying.uwPreviousX, flying.uwPreviousY, 32, 32, MINTERM_COOKIE);
-    isIgnoreNextFrame = 2;
     endFalconFlying();
     doubleBufferFrameControl = 2;
     coalAndCollect();
@@ -1978,7 +1970,7 @@ void stateGameLoop(void)
     levelScoreDBredraw();
     db.levelScoreDB = FALSE;
   }
-  if (levelScoreControl != LEVEL_SCORE_OFF)
+  if (state.levelScoreControl != LEVEL_SCORE_OFF)
   {
     ++anim.levelScoreTick;
     levelScore();
@@ -2009,21 +2001,14 @@ void stateGameLoop(void)
 
   move.kierunek = 0;
 
-  //if (isIgnoreNextFrame > 0)
-  //{
-  //  falconIdleAnimation();
-  //  --isIgnoreNextFrame;
-  //}
-  //else if(isIgnoreNextFrame == 0)
-  //{
   if (setGameOverInNextLoopIter == TRUE) // HACK FROM BELOW (L.1979) RESOLVING !
   {
     printOnHUD();
-    levelScoreControl = LEVEL_SCORE_NOCOAL;
+    state.levelScoreControl = LEVEL_SCORE_NOCOAL;
     setGameOverInNextLoopIter = FALSE;
   }
 
-  if (col.coal == 0 && levelScoreControl != LEVEL_SCORE_NOCOAL && state.flyingAnimControl == FLY_OFF)
+  if (col.coal == 0 && state.levelScoreControl != LEVEL_SCORE_NOCOAL && state.flyingAnimControl == FLY_OFF)
   {
     setGameOverInNextLoopIter = TRUE; // HACK FOR DOUBLE BUFFER WHEN GOING TO ROBBO ON 0 COAL
   }

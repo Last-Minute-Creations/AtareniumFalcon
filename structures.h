@@ -29,6 +29,7 @@ struct animStateControls {   // checking the states of different
   UBYTE flyingAnimControl;   // to handle them correctly
   BOOL stonehitAnimControl;
   BOOL hudScrollingControl; 
+  UBYTE levelScoreControl;
 }; 
 
 struct anim {       // variables for handling animation
