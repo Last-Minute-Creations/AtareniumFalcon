@@ -59,3 +59,7 @@ typedef enum {
   FALCON_START_POSITION_INT = 1,
   EMPTY_TILE_INT = 0
 } tIntTilesetElementsControl;
+
+typedef enum {
+  AMIGA_HUD_TICK_TEMPO = 60,
+} tMiscSetupValues;

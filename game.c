@@ -86,8 +86,8 @@ char *szCollisionMsg2ndLine = "1T of fuel used, danger avioded. Over.";
 char *szTribute1stLine = "Golden Gumboot with BASIC Code strings for";
 char *szTribute2ndLine = "Saberman - Great Atariman of the Galaxy.";
 
-tMusicState musicPlay = MUSIC_HEAVY;
-tAmigaMode amigaMode = AMIGA_MODE_OFF;
+tMusicState musicPlay;
+tAmigaMode amigaMode;
 //extern tDrawingTilesetElements;
 //extern tIntTilesetElementsControl;
 //extern tFlyingState;
@@ -113,14 +113,14 @@ UBYTE levelScoreControl = LEVEL_SCORE_OFF;
 BYTE levelAnimFrame = 0;
 BYTE portalTickTempo = 4;
 
-BYTE hudAnimTick = 0;
-BYTE hudTickTempo = 60;
-BYTE hudTickFrame = 0;
-BYTE hudAnimDB = 0;
 
 
 
-BYTE hudScrollingTick = 0;
+
+
+
+
+
 
 
 BYTE robboMsgNr = 0;
@@ -138,6 +138,7 @@ struct animStateControls state;
 struct db
 {
   BOOL robbo;
+  BOOL hudAnimDB;
   BOOL levelScoreDB;
   BOOL portalGlowDB;   // handling double buffer, if true then will be drawn again in next frame
 };
@@ -239,9 +240,16 @@ void initialSetupDeclarationOfData(void)
   anim.idleFrame = 0;
   anim.falkonIdleTempo = 12;
 
+  anim.hudTickTempo = AMIGA_HUD_TICK_TEMPO;
+  anim.hudAnimTick = 0;
+  anim.hudTickFrame = 0;
+  
+  anim.hudScrollingTick = 0;
+
   db.levelScoreDB = FALSE;
   db.portalGlowDB = FALSE;
   db.robbo = FALSE;
+  db.hudAnimDB = FALSE;
 }
 
 void waitFrames(tVPort *pVPort, UBYTE ubHowMany, UWORD uwPosY)
@@ -847,36 +855,36 @@ void robboScrollUp(void)
   {
     robboMsgCtrl = 3;
     state.hudScrollingControl = FALSE;
-    hudScrollingTick = 0;
+    anim.hudScrollingTick = 0;
     return;
   }
 
   if (state.hudScrollingControl == TRUE)
   {
 
-    if (hudScrollingTick == 0 || hudScrollingTick == 1)
+    if (anim.hudScrollingTick == 0 || anim.hudScrollingTick == 1)
     {
       printOnHUD(); // HACK SIMILAR TO L.1979 - HUD DOUBLE BUFFER DISPLAY
       blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 248, 320, 8, MINTERM_COOKIE);
     }
-    else if (hudScrollingTick == 4 || hudScrollingTick == 5)
+    else if (anim.hudScrollingTick == 4 || anim.hudScrollingTick == 5)
     {
       blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 240, 320, 16, MINTERM_COOKIE);
     }
-    else if (hudScrollingTick == 8 || hudScrollingTick == 9)
+    else if (anim.hudScrollingTick == 8 || anim.hudScrollingTick == 9)
     {
       blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 232, 320, 24, MINTERM_COOKIE);
     }
-    else if (hudScrollingTick == 12 || hudScrollingTick == 13)
+    else if (anim.hudScrollingTick == 12 || anim.hudScrollingTick == 13)
     {
       blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 224, 320, 32, MINTERM_COOKIE);
     }
-    else if (hudScrollingTick == 16)
+    else if (anim.hudScrollingTick == 16)
     {
       blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 224, 320, 32, MINTERM_COOKIE);
       robboMsgCtrl = 3;
       state.hudScrollingControl = FALSE;
-      hudScrollingTick = 0;
+      anim.hudScrollingTick = 0;
       hudFullyUp = TRUE;
     }
   }
@@ -894,30 +902,30 @@ void robboScrollDown(void)
   if (state.hudScrollingControl == TRUE)
   {
 
-    if (hudScrollingTick == 0 || hudScrollingTick == 1)
+    if (anim.hudScrollingTick == 0 || anim.hudScrollingTick == 1)
     {
       blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320, 8, MINTERM_COOKIE);
       blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 232, 320, 24, MINTERM_COOKIE);
     }
-    else if (hudScrollingTick == 4 || hudScrollingTick == 5)
+    else if (anim.hudScrollingTick == 4 || anim.hudScrollingTick == 5)
     {
       blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320, 16, MINTERM_COOKIE);
       blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 240, 320, 16, MINTERM_COOKIE);
     }
-    else if (hudScrollingTick == 8 || hudScrollingTick == 9)
+    else if (anim.hudScrollingTick == 8 || anim.hudScrollingTick == 9)
     {
       blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320, 32, MINTERM_COOKIE);
       blitCopy(s_pRobbo, 0, 0, s_pVpManager->pBack, 0, 248, 320, 8, MINTERM_COOKIE);
     }
-    else if (hudScrollingTick == 12 || hudScrollingTick == 13)
+    else if (anim.hudScrollingTick == 12 || anim.hudScrollingTick == 13)
     {
       blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320, 32, MINTERM_COOKIE);
     }
-    else if (hudScrollingTick == 16)
+    else if (anim.hudScrollingTick == 16)
     {
       blitCopy(s_pHUD, 0, 0, s_pVpManager->pBack, 0, 224, 320, 32, MINTERM_COOKIE);
       robboMsgCtrl = 0;
-      hudScrollingTick = 0;
+      anim.hudScrollingTick = 0;
       state.hudScrollingControl = FALSE;
       HUDcollisionMsg = 2;
       gameOverWhenAnotherCollisionHack = FALSE;
@@ -1662,7 +1670,7 @@ void hudAnim(void)
     return;
   }
 
-  switch (hudTickFrame)
+  switch (anim.hudTickFrame)
   {
   case 1:
     msgType = col.coal;
@@ -1906,23 +1914,23 @@ void stateGameLoop(void)
   }
   if (amigaMode != AMIGA_MODE_OFF)
   {
-    if (hudAnimDB == 1)
+    if (db.hudAnimDB == TRUE)
     {
       hudAnim();
-      hudAnimDB = 0;
-      if (hudTickFrame == 8)
+      db.hudAnimDB = FALSE;
+      if (anim.hudTickFrame == 8)
       {
-        hudTickFrame = 0;
+        anim.hudTickFrame = 0;
       }
     }
 
-    ++hudAnimTick;
-    if (hudAnimTick > hudTickTempo)
+    ++anim.hudAnimTick;
+    if (anim.hudAnimTick > anim.hudTickTempo)
     {
-      ++hudTickFrame;
+      ++anim.hudTickFrame;
       hudAnim();
-      hudAnimTick = 0;
-      hudAnimDB = 1;
+      anim.hudAnimTick = 0;
+      db.hudAnimDB = TRUE;
     }
   }
 
@@ -2005,7 +2013,7 @@ void stateGameLoop(void)
 
   if (state.hudScrollingControl == TRUE)
   {
-    ++hudScrollingTick;
+    ++anim.hudScrollingTick;
   }
 
   if (state.stonehitAnimControl == TRUE)

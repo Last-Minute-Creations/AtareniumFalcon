@@ -56,6 +56,12 @@ struct anim {
   UBYTE falkonIdle;
   UBYTE idleFrame;
   UBYTE falkonIdleTempo;
+
+  UBYTE hudScrollingTick; // scrolling up/down on Robbo & ESP tick
+
+  UBYTE hudTickTempo;  // amiga mode hud animation variables
+  UBYTE hudAnimTick;
+  UBYTE hudTickFrame;
 }; 
 
 struct flyingAnim { 
