@@ -90,6 +90,15 @@ struct flyingAnim {
 
 };
 
+struct misc { // other but important variables
+  UBYTE level;
+  UBYTE doubleBufferFrameControl;
+  UBYTE audioFadeIn;
+  UBYTE robboMsgNr;
+  UBYTE HUDfontColor; //23
+  UBYTE HUDcollisionMsg;
+};
+
 struct db // handling double buffer, if true then will be drawn again in next frame
 {
   BOOL robbo;
