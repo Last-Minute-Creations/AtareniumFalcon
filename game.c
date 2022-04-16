@@ -1786,7 +1786,7 @@ void stateGameCreate(void)
   paletteLoad("data/falkon.plt", s_pVp->pPalette, 32);
   paletteLoad("data/falkon.plt", s_pPalette, 32);
 
-  g_pCustom->color[0] = 0x0FFF; // zmie� kolor zero aktualnie u�ywanej palety na 15,15,15
+  //g_pCustom->color[0] = 0x0FFF; // zmie� kolor zero aktualnie u�ywanej palety na 15,15,15
 
   if (thirdCheatEnablerWhenEqual3 != 3)
   {
