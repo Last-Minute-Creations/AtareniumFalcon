@@ -2021,6 +2021,12 @@ if (col.coal > 0){
     {
       move.kierunek = 4;
     }
+    else if (keyUse(KEY_RETURN) && hudFullyUp == TRUE)
+    {
+      state.hudScrollingControl = TRUE;
+      state.robboMsgCtrl = HUD_SCROLL_DOWN;
+      robboScrollDown();
+    }
     else if (keyUse(KEY_ESCAPE))
     {
       ptplayerStop();
@@ -2087,6 +2093,10 @@ if (col.coal > 0){
       return;
     }
     if (noFlyingWhenCountingCoalInPortalHack == TRUE){ // no flying when in portal hack !
+      return;
+    }
+    if (state.robboMsgCtrl == HUD_SCROLL_UP && hudFullyUp == FALSE)
+    { // no fly when hud scrolling up hacks
       return;
     }
     if (noCheatLevelSkipWhenRobboMessageOn == TRUE){
