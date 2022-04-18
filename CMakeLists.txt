@@ -29,7 +29,7 @@ file(MAKE_DIRECTORY ${DATA_DIR}) #za���my data
 
 set(LMC_PLT_PATH ${DATA_DIR}/lmcpalette.plt)
 set(ACE_GPL_PATH ${RES_DIR}/ace.gpl)
-convertPalette(falkon.elf ${RES_DIR}/lmcpalette.pal ${LMC_PLT_PATH})
+convertPalette(falkon.elf ${RES_DIR}/lmc.gpl ${LMC_PLT_PATH})
 
 convertBitmaps(
 	TARGET falkon.elf PALETTE ${LMC_PLT_PATH}

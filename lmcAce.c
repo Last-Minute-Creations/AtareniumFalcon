@@ -15,6 +15,7 @@
 #define FLASH_START_FRAME_E 30
 #define FLASH_START_FRAME_PWR 50
 #define FLASH_RATIO_INACTIVE -1
+#define LMC_COLOR_COUNT 5
 
 enum StatesLmcAce
 {
@@ -41,7 +42,7 @@ static tPtplayerSfx *s_pLMCsfx;
 extern tStateManager *g_pStateMachineGame;
 extern tState g_sStateWungiel;
 
-static UWORD s_pPaletteLMC_ACE[32];
+static UWORD s_pPaletteLMC_ACE[LMC_COLOR_COUNT];
 
 extern UBYTE creditsControl;
 
@@ -91,7 +92,7 @@ void stateLmcAceCreate(void)
 
   s_pVp = vPortCreate(0,
                       TAG_VPORT_VIEW, s_pView,
-                      TAG_VPORT_BPP, 5,
+                      TAG_VPORT_BPP, 3,
                       TAG_END);
 
   s_pVpManager = simpleBufferCreate(0,
@@ -105,6 +106,7 @@ void stateLmcAceCreate(void)
     copMove(s_pView->pCopList, s_pAceBlocks[i], &g_pCustom->color[1], 0x000);
     copMove(s_pView->pCopList, s_pAceBlocks[i], &g_pCustom->color[2], 0x000);
     copMove(s_pView->pCopList, s_pAceBlocks[i], &g_pCustom->color[3], 0x000);
+    copBlockDisable(s_pView->pCopList, s_pAceBlocks[i]);
   }
 
   systemUnuse();
@@ -119,7 +121,7 @@ void stateLmcAceCreate(void)
 
   s_eState = STATE_LMC_FADE_IN;
 
-  paletteLoad("data/lmcpalette.plt", s_pPaletteLMC_ACE, 32);
+  paletteLoad("data/lmcpalette.plt", s_pPaletteLMC_ACE, LMC_COLOR_COUNT);
 
   s_pLMC = bitmapCreateFromFile("data/LMC.bm", 0);
   s_pACE = bitmapCreateFromFile("data/ACE.bm", 0);
@@ -154,18 +156,21 @@ void stateLmcAceLoop(void)
     if (isDrawnOnce == FALSE)  // draw gfx and then continue with fade in
     {
       isDrawnOnce = TRUE;
-      paletteDim(s_pPaletteLMC_ACE, s_pVp->pPalette, 32, 0); // 0 - czarno, 15 - pe�na paleta
+      paletteDim(s_pPaletteLMC_ACE, s_pVp->pPalette, LMC_COLOR_COUNT, 0); // 0 - czarno, 15 - pe�na paleta
       viewUpdateCLUT(s_pView);
 
       ptplayerSfxPlay(s_pLMCsfx, -1, 64, 100);
       blitBlackBacground();
-      blitCopy(s_pLMC, 0, 0, s_pVpManager->pBack, 104, 40, 112, 153, MINTERM_COOKIE);
+      blitCopy(
+        s_pLMC, 0, 0, s_pVpManager->pBack, 104, 40,
+        bitmapGetByteWidth(s_pLMC) * 8, s_pLMC->Rows, MINTERM_COOKIE
+      );
     }
 
-    paletteDim(s_pPaletteLMC_ACE, s_pVp->pPalette, 32, s_bRatioFade); // 0 - czarno, 15 - pe?na paleta
+    paletteDim(s_pPaletteLMC_ACE, s_pVp->pPalette, LMC_COLOR_COUNT, s_bRatioFade); // 0 - czarno, 15 - pe?na paleta
     viewUpdateCLUT(s_pView);                             // we? palet? z viewporta i wrzu? j? na ekran
     ++s_bRatioFade;
-    if (s_bRatioFade == 15)
+    if (s_bRatioFade > 15)
     {
       s_eState = STATE_LMC_WAIT;
     }
@@ -181,7 +186,7 @@ void stateLmcAceLoop(void)
     break;
 
   case STATE_LMC_FADE_OUT:
-    paletteDim(s_pPaletteLMC_ACE, s_pVp->pPalette, 32, s_bRatioFade); // 0 - czarno, 15 - pe?na paleta
+    paletteDim(s_pPaletteLMC_ACE, s_pVp->pPalette, LMC_COLOR_COUNT, s_bRatioFade); // 0 - czarno, 15 - pe?na paleta
     viewUpdateCLUT(s_pView);                             // we? palet? z viewporta i wrzu? j? na ekran
     --s_bRatioFade;
     if (s_bRatioFade == 0)
@@ -199,6 +204,10 @@ void stateLmcAceLoop(void)
       s_bRatioFlashC = FLASH_RATIO_INACTIVE;
       s_bRatioFlashE = FLASH_RATIO_INACTIVE;
       s_bRatioFlashPwr = FLASH_RATIO_INACTIVE;
+      for(UBYTE i = 0; i < 30; ++i) {
+        s_pAceBlocks[i]->uwCurrCount = 0;
+        copBlockEnable(s_pView->pCopList, s_pAceBlocks[i]);
+      }
       isDrawnOnce = TRUE;
       ptplayerSfxPlay(s_pACEsfx, -1, 64, 100);
       blitBlackBacground();
