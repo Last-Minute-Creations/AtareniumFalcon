@@ -10,13 +10,18 @@
 #include <ace/utils/font.h>
 #include <ace/managers/ptplayer.h>
 
+#define FLASH_START_FRAME_A 1
+#define FLASH_START_FRAME_C 10
+#define FLASH_START_FRAME_E 30
+#define FLASH_START_FRAME_PWR 50
+#define FLASH_RATIO_INACTIVE -1
+
 enum StatesLmcAce
 {
   STATE_LMC_FADE_IN,
   STATE_LMC_WAIT,
   STATE_LMC_FADE_OUT,
-  STATE_ACE_FADE_IN,
-  STATE_ACE_WAIT,
+  STATE_ACE_FLASH,
   STATE_ACE_FADE_OUT,
 };
 
@@ -40,14 +45,39 @@ static UWORD s_pPaletteLMC_ACE[32];
 
 extern UBYTE creditsControl;
 
-UBYTE bRatio = 0;
+static tCopBlock *s_pAceBlocks[30];
+
+static const UWORD s_pAceColors[] = {
+  0xA00, 0xA00,
+  0xC00, 0xC00, 0xC00,
+  0xD40, 0xD40,
+  0xE80, 0xE80, 0xE80,
+  0xFB2, 0xFB2,
+  0xFE5, 0xFE5, 0xFE5,
+  0xCC2, 0xCC2,
+  0x990, 0x990, 0x990,
+  0x494, 0x494,
+  0x099, 0x099, 0x099,
+  0x077, 0x077,
+  0x055, 0x055,
+  0x055
+};
+
+static const UWORD s_uwColorPowered = 0x343;
+static UWORD s_uwFlashFrame;
+static BYTE s_bRatioFade = 0;
+static BYTE s_bRatioFlashA;
+static BYTE s_bRatioFlashC;
+static BYTE s_bRatioFlashE;
+static BYTE s_bRatioFlashPwr;
+
 UBYTE waitTime = 0;
-UBYTE drawOnce = 0;  // to draw gfx one time and then do fades in loop
-                     // at 0 draw LMC, at 1 draw ACE
+UBYTE isDrawnOnce = FALSE;  // to draw gfx one time and then do fades in loop
+                            // at 0 draw LMC, at 1 draw ACE
 
 void blitBlackBacground(void)
 {
-  blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 0);  
+  blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 0);
   blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 0);
 }
 
@@ -70,15 +100,22 @@ void stateLmcAceCreate(void)
                                     TAG_SIMPLEBUFFER_IS_DBLBUF, 0,
                                     TAG_END);
 
+  for(UBYTE i = 0; i < 30; ++i) {
+    s_pAceBlocks[i] = copBlockCreate(s_pView->pCopList, 3, 0, s_pView->ubPosY + 95 + i * 2);
+    copMove(s_pView->pCopList, s_pAceBlocks[i], &g_pCustom->color[1], 0x000);
+    copMove(s_pView->pCopList, s_pAceBlocks[i], &g_pCustom->color[2], 0x000);
+    copMove(s_pView->pCopList, s_pAceBlocks[i], &g_pCustom->color[3], 0x000);
+  }
+
   systemUnuse();
   joyOpen();
   keyCreate();
   viewLoad(s_pView);
   ptplayerCreate(1);
 
-  bRatio = 0;
+  s_bRatioFade = 0;
   waitTime = 0;
-  drawOnce = 0;
+  isDrawnOnce = FALSE;
 
   s_eState = STATE_LMC_FADE_IN;
 
@@ -91,6 +128,21 @@ void stateLmcAceCreate(void)
   s_pLMCsfx = ptplayerSfxCreateFromFile("data/Morse_LMC8000.sfx");
 }
 
+static UWORD blendColors(UWORD uwColorSrc, UWORD uwColorDst, UBYTE ubRatio)
+{
+  BYTE bSrcR = (uwColorSrc >> 8);
+  BYTE bSrcG = ((uwColorSrc >> 4) & 0xF);
+  BYTE bSrcB = ((uwColorSrc >> 0) & 0xF);
+  BYTE bDstR = (uwColorDst >> 8);
+  BYTE bDstG = ((uwColorDst >> 4) & 0xF);
+  BYTE bDstB = ((uwColorDst >> 0) & 0xF);
+  UBYTE ubCurrentR = bSrcR + ((bDstR - bSrcR) * ubRatio) / 15;
+  UBYTE ubCurrentG = bSrcG + ((bDstG - bSrcG) * ubRatio) / 15;
+  UBYTE ubCurrentB = bSrcB + ((bDstB - bSrcB) * ubRatio) / 15;
+  UWORD uwColorOut = (ubCurrentR << 8) | (ubCurrentG << 4) | ubCurrentB;
+  return uwColorOut;
+}
+
 void stateLmcAceLoop(void)
 {
   joyProcess();
@@ -99,9 +151,9 @@ void stateLmcAceLoop(void)
   switch (s_eState)
   {
   case STATE_LMC_FADE_IN:
-    if (drawOnce == 0)  // draw gfx and then continue with fade in
+    if (isDrawnOnce == FALSE)  // draw gfx and then continue with fade in
     {
-      ++drawOnce;
+      isDrawnOnce = TRUE;
       paletteDim(s_pPaletteLMC_ACE, s_pVp->pPalette, 32, 0); // 0 - czarno, 15 - pe�na paleta
       viewUpdateCLUT(s_pView);
 
@@ -110,10 +162,10 @@ void stateLmcAceLoop(void)
       blitCopy(s_pLMC, 0, 0, s_pVpManager->pBack, 104, 40, 112, 153, MINTERM_COOKIE);
     }
 
-    paletteDim(s_pPaletteLMC_ACE, s_pVp->pPalette, 32, bRatio); // 0 - czarno, 15 - pe?na paleta
+    paletteDim(s_pPaletteLMC_ACE, s_pVp->pPalette, 32, s_bRatioFade); // 0 - czarno, 15 - pe?na paleta
     viewUpdateCLUT(s_pView);                             // we? palet? z viewporta i wrzu? j? na ekran
-    ++bRatio;
-    if (bRatio == 15)
+    ++s_bRatioFade;
+    if (s_bRatioFade == 15)
     {
       s_eState = STATE_LMC_WAIT;
     }
@@ -129,53 +181,108 @@ void stateLmcAceLoop(void)
     break;
 
   case STATE_LMC_FADE_OUT:
-    paletteDim(s_pPaletteLMC_ACE, s_pVp->pPalette, 32, bRatio); // 0 - czarno, 15 - pe?na paleta
+    paletteDim(s_pPaletteLMC_ACE, s_pVp->pPalette, 32, s_bRatioFade); // 0 - czarno, 15 - pe?na paleta
     viewUpdateCLUT(s_pView);                             // we? palet? z viewporta i wrzu? j? na ekran
-    --bRatio;
-    if (bRatio == 0)
+    --s_bRatioFade;
+    if (s_bRatioFade == 0)
     {
-      s_eState = STATE_ACE_FADE_IN;
+      isDrawnOnce = FALSE;
+      s_eState = STATE_ACE_FLASH;
     }
     break;
 
-  case STATE_ACE_FADE_IN:
-    if (drawOnce == 1) 
+  case STATE_ACE_FLASH:
+    if (isDrawnOnce == FALSE)
     {
-      ++drawOnce;
-      paletteDim(s_pPaletteLMC_ACE, s_pVp->pPalette, 32, 0); // 0 - czarno, 15 - pe�na paleta
-      viewUpdateCLUT(s_pView);
-
+      s_uwFlashFrame = 1;
+      s_bRatioFlashA = FLASH_RATIO_INACTIVE;
+      s_bRatioFlashC = FLASH_RATIO_INACTIVE;
+      s_bRatioFlashE = FLASH_RATIO_INACTIVE;
+      s_bRatioFlashPwr = FLASH_RATIO_INACTIVE;
+      isDrawnOnce = TRUE;
       ptplayerSfxPlay(s_pACEsfx, -1, 64, 100);
       blitBlackBacground();
-      blitCopy(s_pACE, 0, 0, s_pVpManager->pBack, 80, 95, 160, 69, MINTERM_COOKIE);
+      blitCopy(
+        s_pACE, 0, 0, s_pVpManager->pBack, 80, 95,
+        bitmapGetByteWidth(s_pACE) * 8, s_pACE->Rows, MINTERM_COOKIE
+      );
+    }
+    else {
+      ++s_uwFlashFrame;
     }
 
-    paletteDim(s_pPaletteLMC_ACE, s_pVp->pPalette, 32, bRatio); // 0 - czarno, 15 - pe?na paleta
-    viewUpdateCLUT(s_pView);                             // we? palet? z viewporta i wrzu? j? na ekran
-    ++bRatio;
-    if (bRatio == 15)
-    {
-      s_eState = STATE_ACE_WAIT;
+    if(s_uwFlashFrame >= FLASH_START_FRAME_A) {
+      s_bRatioFlashA = MIN(15, s_bRatioFlashA + 1);
     }
-    break;
-
-  case STATE_ACE_WAIT:
-    ++waitTime;
-    if (waitTime == 200)
-    {
+    if(s_uwFlashFrame >= FLASH_START_FRAME_C) {
+      s_bRatioFlashC = MIN(15, s_bRatioFlashC + 1);
+    }
+    if(s_uwFlashFrame >= FLASH_START_FRAME_E) {
+      s_bRatioFlashE = MIN(15, s_bRatioFlashE + 1);
+    }
+    if(s_uwFlashFrame >= FLASH_START_FRAME_PWR) {
+      s_bRatioFlashPwr = MIN(15, s_bRatioFlashPwr + 1);
+    }
+    if (s_uwFlashFrame >= 215) {
+      s_bRatioFade = 15;
       s_eState = STATE_ACE_FADE_OUT;
+    }
+
+    for(UBYTE i = 0; i < 30; ++i) {
+      s_pAceBlocks[i]->uwCurrCount = 0;
+      if(s_bRatioFlashA != FLASH_RATIO_INACTIVE) {
+        copMove(
+          s_pView->pCopList, s_pAceBlocks[i], &g_pCustom->color[1],
+          blendColors(0xFFF, s_pAceColors[i], s_bRatioFlashA)
+        );
+      }
+      if(s_bRatioFlashC != FLASH_RATIO_INACTIVE) {
+        copMove(
+          s_pView->pCopList, s_pAceBlocks[i], &g_pCustom->color[2],
+          blendColors(0xFFF, s_pAceColors[i], s_bRatioFlashC)
+        );
+      }
+      if(i < 9) {
+        // Watch out for "E" flash interfering here
+        UWORD uwColor = (
+          s_bRatioFlashPwr != FLASH_RATIO_INACTIVE ?
+          blendColors(0xFFF, s_uwColorPowered, s_bRatioFlashPwr) : 0
+        );
+        copMove(s_pView->pCopList, s_pAceBlocks[i], &g_pCustom->color[3], uwColor);
+      }
+      else {
+        if(s_bRatioFlashE != FLASH_RATIO_INACTIVE) {
+          copMove(
+            s_pView->pCopList, s_pAceBlocks[i], &g_pCustom->color[3],
+            blendColors(0xFFF, s_pAceColors[i], s_bRatioFlashE)
+          );
+        }
+      }
     }
     break;
 
   case STATE_ACE_FADE_OUT:
-    paletteDim(s_pPaletteLMC_ACE, s_pVp->pPalette, 32, bRatio); // 0 - czarno, 15 - pe?na paleta
-    viewUpdateCLUT(s_pView);                             // we? palet? z viewporta i wrzu? j? na ekran
-    --bRatio;
-    if (bRatio == 0)
+    for(UBYTE i = 0; i < 30; ++i) {
+      s_pAceBlocks[i]->uwCurrCount = 0;
+      copMove(
+        s_pView->pCopList, s_pAceBlocks[i], &g_pCustom->color[1],
+        blendColors(0x000, s_pAceColors[i], s_bRatioFade)
+      );
+      copMove(
+        s_pView->pCopList, s_pAceBlocks[i], &g_pCustom->color[2],
+        blendColors(0x000, s_pAceColors[i], s_bRatioFade)
+      );
+      copMove(
+        s_pView->pCopList, s_pAceBlocks[i], &g_pCustom->color[3],
+        blendColors(0x000, i < 9 ? s_uwColorPowered : s_pAceColors[i], s_bRatioFade)
+      );
+    }
+
+    --s_bRatioFade;
+    if (s_bRatioFade == 0)
     {
-      paletteDim(s_pPaletteLMC_ACE, s_pVp->pPalette, 32, bRatio); // 0 - czarno, 15 - pe?na paleta
-      viewUpdateCLUT(s_pView);
       stateChange(g_pStateMachineGame, &g_sStateWungiel);
+      isDrawnOnce = FALSE;
     }
     break;
   }

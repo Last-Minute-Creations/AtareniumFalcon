@@ -27,13 +27,20 @@ set(RES_DIR ${CMAKE_CURRENT_LIST_DIR}/res) # st�d bierzemy pliki do konwersji
 set(DATA_DIR ${CMAKE_CURRENT_BINARY_DIR}/data) # tu maj� l�dowa�
 file(MAKE_DIRECTORY ${DATA_DIR}) #za���my data
 
-set(LMC_PLT_PATH ${DATA_DIR}/lmcpalette.plt) #tak si� b�dzie nazywa� docelowa paleta
+set(LMC_PLT_PATH ${DATA_DIR}/lmcpalette.plt)
+set(ACE_GPL_PATH ${RES_DIR}/ace.gpl)
 convertPalette(falkon.elf ${RES_DIR}/lmcpalette.pal ${LMC_PLT_PATH})
 
 convertBitmaps(
 	TARGET falkon.elf PALETTE ${LMC_PLT_PATH}
-	INTERLEAVED SOURCES ${RES_DIR}/LMC.png ${RES_DIR}/ACE.png
-	DESTINATIONS ${DATA_DIR}/LMC.bm ${DATA_DIR}/ACE.bm
+	INTERLEAVED SOURCES ${RES_DIR}/LMC.png
+	DESTINATIONS ${DATA_DIR}/LMC.bm
+)
+
+convertBitmaps(
+	TARGET falkon.elf PALETTE ${ACE_GPL_PATH}
+	INTERLEAVED SOURCES ${RES_DIR}/ace_4col.png
+	DESTINATIONS ${DATA_DIR}/ace.bm
 )
 
 convertFont(
@@ -63,13 +70,13 @@ convertBitmaps(
 		${RES_DIR}/gej_ower.png ${RES_DIR}/HUD.png
 		${RES_DIR}/tlo1.png ${RES_DIR}/tlo2.png ${RES_DIR}/tlo3.png
 		${RES_DIR}/tlo4.png ${RES_DIR}/tlo5.png ${RES_DIR}/tlo6.png
-		${RES_DIR}/vampire.png ${RES_DIR}/falkon_robbo.png 
+		${RES_DIR}/vampire.png ${RES_DIR}/falkon_robbo.png
 	DESTINATIONS
 		${DATA_DIR}/menulogo.bm ${DATA_DIR}/menuoptions.bm  ${DATA_DIR}/menulmc.bm
 		${DATA_DIR}/gej_ower.bm ${DATA_DIR}/HUD.bm
 		${DATA_DIR}/tlo1.bm ${DATA_DIR}/tlo2.bm ${DATA_DIR}/tlo3.bm
 		${DATA_DIR}/tlo4.bm ${DATA_DIR}/tlo5.bm ${DATA_DIR}/tlo6.bm
-		${DATA_DIR}/vampire.bm ${DATA_DIR}/falkon_robbo.bm 
+		${DATA_DIR}/vampire.bm ${DATA_DIR}/falkon_robbo.bm
 )
 
 
@@ -83,13 +90,13 @@ convertBitmaps(
 )
 
 convertAudio(
-    TARGET falkon.elf 	SOURCE ${RES_DIR}/falkonEngine.wav  
-    DESTINATION ${DATA_DIR}/falkonEngine.sfx 
+    TARGET falkon.elf 	SOURCE ${RES_DIR}/falkonEngine.wav
+    DESTINATION ${DATA_DIR}/falkonEngine.sfx
 )
 
 convertAudio(
-    TARGET falkon.elf 	SOURCE ${RES_DIR}/Atari.wav  
-    DESTINATION ${DATA_DIR}/Atari.sfx 
+    TARGET falkon.elf 	SOURCE ${RES_DIR}/Atari.wav
+    DESTINATION ${DATA_DIR}/Atari.sfx
 )
 
 convertAudio(
@@ -98,33 +105,33 @@ convertAudio(
 )
 
 convertAudio(
-    TARGET falkon.elf 	SOURCE ${RES_DIR}/cap11025.wav  
-    DESTINATION ${DATA_DIR}/cap11025.sfx 
+    TARGET falkon.elf 	SOURCE ${RES_DIR}/cap11025.wav
+    DESTINATION ${DATA_DIR}/cap11025.sfx
 )
 
 convertAudio(
-    TARGET falkon.elf 	SOURCE ${RES_DIR}/LadujWegiel.wav  
-    DESTINATION ${DATA_DIR}/LadujWegiel.sfx 
+    TARGET falkon.elf 	SOURCE ${RES_DIR}/LadujWegiel.wav
+    DESTINATION ${DATA_DIR}/LadujWegiel.sfx
 )
 
 convertAudio(
-    TARGET falkon.elf 	SOURCE ${RES_DIR}/robbo8000.wav  
-    DESTINATION ${DATA_DIR}/robbo8000.sfx 
+    TARGET falkon.elf 	SOURCE ${RES_DIR}/robbo8000.wav
+    DESTINATION ${DATA_DIR}/robbo8000.sfx
 )
 
 convertAudio(
-    TARGET falkon.elf 	SOURCE ${RES_DIR}/Morse_LMC8000.wav  
-    DESTINATION ${DATA_DIR}/Morse_LMC8000.sfx 
+    TARGET falkon.elf 	SOURCE ${RES_DIR}/Morse_LMC8000.wav
+    DESTINATION ${DATA_DIR}/Morse_LMC8000.sfx
 )
 
 convertAudio(
-    TARGET falkon.elf 	SOURCE ${RES_DIR}/AceSample.wav  
-    DESTINATION ${DATA_DIR}/AceSample.sfx 
+    TARGET falkon.elf 	SOURCE ${RES_DIR}/AceSample.wav
+    DESTINATION ${DATA_DIR}/AceSample.sfx
 )
 
 convertAudio(
-    TARGET falkon.elf 	SOURCE ${RES_DIR}/wicherEngine.wav  
-    DESTINATION ${DATA_DIR}/wicherEngine.sfx 
+    TARGET falkon.elf 	SOURCE ${RES_DIR}/wicherEngine.wav
+    DESTINATION ${DATA_DIR}/wicherEngine.sfx
 )
 
 convertAudio(
