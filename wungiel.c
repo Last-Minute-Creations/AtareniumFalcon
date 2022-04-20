@@ -33,7 +33,7 @@ UBYTE typingRandomizer = 0;
 #define RUN 2
 
 char szWungiel[50];
-char *lineToPass[50];
+char lineToPass[50];
 
 const char *s1 = "if (system.hacked == TRUE){";
 const char *s2 = "atariMode = ON };";
