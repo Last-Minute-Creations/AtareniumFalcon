@@ -108,6 +108,7 @@ extern UBYTE cheatmodeEnablerWhenEqual3;
 extern UBYTE secondCheatEnablerWhenEqual3;
 extern UBYTE thirdCheatEnablerWhenEqual3;
 extern BOOL tutorialLevelsSkip;
+extern BOOL continueCheck;
 
 // HACKS
 BOOL gameOverWhenAnotherCollisionHack = FALSE;
@@ -703,6 +704,7 @@ void levelScore(void) // WITH PORTAL OPEN AND FALKON IN PORTAL ANIM !!!
     state.falkonIdleControl = TRUE;
 
     ++misc.level;
+    misc.holdLastLevelForContinue = misc.level;
     if (misc.level == LAST_LEVEL_NUMBER + 1)
     {
       ptplayerStop();
@@ -940,19 +942,19 @@ void robboSays(void)
       robbo1stLineExceptionModificator = TRUE;
       break;
     case 10:
-      sprintf(szRobboMsg, "Minister Renton is counting on you, Sir.");  
+      sprintf(szRobboMsg, "If you fail, try to C-ontinue in menu.");  // Minister Renton is counting on you, Sir.
       break;
     case 11:
-      sprintf(szRobboMsg, "Try new economic LSA 68090 engine in menu.");
+      sprintf(szRobboMsg, "Have you played Aminer yet?"); 
       break;
     case 12:
-      sprintf(szRobboMsg, "Have you played Aminer yet?");
+      sprintf(szRobboMsg, "Try new economic LSA 68090 engine in menu.");
       break;
     case 15:
-      sprintf(szRobboMsg, "Beware of VamPiRes, or you become one!");
+      sprintf(szRobboMsg, "Please clean up here, I found some GermZ."); 
       break;
     case 21:
-      sprintf(szRobboMsg, "Please clean up here, I found some GermZ.");
+      sprintf(szRobboMsg, "Beware of VamPiRes, or you become one!"); 
       break;
     case 22:
       sprintf(szRobboMsg, "You like Paula? I love Laura!");
@@ -1723,6 +1725,12 @@ void stateGameCreate(void)
     misc.level = 9;
     col.coal = 1;
   }
+  if (continueCheck == TRUE){
+    misc.level = misc.holdLastLevelForContinue;
+    if (misc.level > 1){
+    col.coal = 1;
+    }
+  }
   // Here goes your startup code
   //-------------------------------------------------------------- gdzie� w create
   s_pView = viewCreate(0,
@@ -2053,6 +2061,7 @@ if (col.coal > 0){
           ptplayerSfxPlay(s_pFalkonEngineSound, 3, 0, 50);
       }
       ++misc.level;
+      misc.holdLastLevelForContinue = misc.level;
       nextLevel();
       return;
     }

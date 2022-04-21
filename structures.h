@@ -97,6 +97,7 @@ struct misc { // other but important variables
   UBYTE robboMsgNr;
   UBYTE HUDfontColor; //23
   UBYTE HUDcollisionMsg;
+  UBYTE holdLastLevelForContinue;
 };
 
 struct db // handling double buffer, if true then will be drawn again in next frame

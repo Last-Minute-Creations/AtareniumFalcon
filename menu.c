@@ -36,6 +36,7 @@ UBYTE secondCheatEnablerWhenEqual3 = 0;
 UBYTE thirdCheatEnablerWhenEqual3 = 0;
 UBYTE cheatModeStarColor = 0;
 BOOL tutorialLevelsSkip = FALSE;
+BOOL continueCheck = FALSE;
 
 UBYTE pxColor[] = {1, 2, 3, 4, 5};
 UBYTE bgColor = 0;
@@ -199,6 +200,9 @@ void stateMenuLoop(void)
 	}
 	if (keyUse(KEY_X) && tutorialLevelsSkip == FALSE){
 		tutorialLevelsSkip = TRUE;
+	}
+	if (keyUse(KEY_C) && continueCheck == FALSE){
+		continueCheck = TRUE;
 	}
 
 
