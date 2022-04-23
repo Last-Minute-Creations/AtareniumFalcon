@@ -109,6 +109,7 @@ extern UBYTE secondCheatEnablerWhenEqual3;
 extern UBYTE thirdCheatEnablerWhenEqual3;
 extern BOOL tutorialLevelsSkip;
 extern BOOL continueCheck;
+extern UBYTE amigaModeForContinueCheck;
 
 // HACKS
 BOOL gameOverWhenAnotherCollisionHack = FALSE;
@@ -271,10 +272,10 @@ void printOnHUD(void)
   fontFillTextBitMap(s_pFont, s_pBmText, szMsg4);
   fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 250, 236, misc.HUDfontColor, FONT_COOKIE);
   // PRINTING LEVEL NUMBER TO BE DELETED !!!!
-  blitCopy(s_pHUD, 288, 0, s_pVpManager->pBack, 288, 224, 32, 32, MINTERM_COOKIE);
-  sprintf(szLvl, "%d", misc.level);
-  fontFillTextBitMap(s_pFont, s_pBmText, szLvl);
-  fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 290, 236, misc.HUDfontColor, FONT_COOKIE);
+  //blitCopy(s_pHUD, 288, 0, s_pVpManager->pBack, 288, 224, 32, 32, MINTERM_COOKIE);
+  //sprintf(szLvl, "%d", misc.level);
+  //fontFillTextBitMap(s_pFont, s_pBmText, szLvl);
+  //fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 290, 236, misc.HUDfontColor, FONT_COOKIE);
 }
 
 void gameOnResume(void)
@@ -396,7 +397,6 @@ void drawTiles(void)
     {
       kamyki[x][y] = SABERMANS_GUMBOOT_INT;
       blitCopyMask(s_pSabermanTribute, 0, 0, s_pBgWithTile, x * 32, y * 32, 32, 32, (UWORD *)s_pSabermanTributeMask->Planes[0]);
-
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pBack, x * 32, y * 32, 32, 32, MINTERM_COPY);
       blitCopy(s_pBgWithTile, x * 32, y * 32, s_pVpManager->pFront, x * 32, y * 32, 32, 32, MINTERM_COPY);
     }
@@ -1107,7 +1107,7 @@ void coalAndCollect(void)
       if (amigaMode == AMIGA_MODE_ON)
       {                               // jesli zebralem ami-kondka to wyswietlam ekran z plot twistem
         amigaMode = AMIGA_MODE_CHECK; // ustawiam dla sprawdzenia na koniec czy bedzie alternatywne zakonczenie
-
+        amigaModeForContinueCheck = amigaMode;
         statePush(g_pStateMachineGame, &g_sStateGuruMastah);
       }
 
@@ -1725,8 +1725,12 @@ void stateGameCreate(void)
     misc.level = 9;
     col.coal = 1;
   }
+  if (continueCheck == FALSE){
+    amigaModeForContinueCheck = AMIGA_MODE_OFF;
+  }
   if (continueCheck == TRUE){
     misc.level = misc.holdLastLevelForContinue;
+    continueCheck = FALSE;
     if (misc.level > 1){
     col.coal = 1;
     }
@@ -1796,15 +1800,16 @@ void stateGameCreate(void)
 
   //g_pCustom->color[0] = 0x0FFF; // zmie� kolor zero aktualnie u�ywanej palety na 15,15,15
 
-  if (thirdCheatEnablerWhenEqual3 != 3)
+  if ((thirdCheatEnablerWhenEqual3 != 3 && amigaModeForContinueCheck == AMIGA_MODE_OFF) || (amigaModeForContinueCheck != AMIGA_MODE_OFF && misc.level == 16))
   {
     s_pTiles = bitmapCreateFromFile("data/tileset.bm", 0);          // z pliku tileset.bm, nie lokuj bitmapy w pami�ci FAST
     s_pTilesMask = bitmapCreateFromFile("data/tileset_mask.bm", 0); // z pliku tileset_mask.bm, nie lokuj bitmapy w pami�ci FAST
     s_pHUD = bitmapCreateFromFile("data/HUD.bm", 0);
     copProcessBlocks();
   }
-  else if (thirdCheatEnablerWhenEqual3 == 3)
+  else if (thirdCheatEnablerWhenEqual3 == 3 || (amigaModeForContinueCheck != AMIGA_MODE_OFF && misc.level != 16))
   {
+    //amigaModeForContinueCheck = AMIGA_MODE_OFF;
     amigaMode = AMIGA_MODE_CHECK;
     misc.HUDfontColor = 5;
     s_pTiles = bitmapCreateFromFile("data/tileset2.bm", 0);

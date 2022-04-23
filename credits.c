@@ -28,7 +28,7 @@ static UWORD s_pPaletteAtariBasic[32];
 UBYTE printOnce = 0;
 
 const char *s_pCreditsLines[CREDITS_LINE_COUNT] = {
-    "ATARENIUM FALCON  v0.975 (RC)",
+    "ATARENIUM FALCON  v1.0 R4 Edition.",
     "First release at Decrunch 2020",
     "gamedev compo (2nd place).",
     "",

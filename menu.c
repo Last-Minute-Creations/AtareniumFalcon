@@ -37,6 +37,7 @@ UBYTE thirdCheatEnablerWhenEqual3 = 0;
 UBYTE cheatModeStarColor = 0;
 BOOL tutorialLevelsSkip = FALSE;
 BOOL continueCheck = FALSE;
+UBYTE amigaModeForContinueCheck = FALSE;
 
 UBYTE pxColor[] = {1, 2, 3, 4, 5};
 UBYTE bgColor = 0;
