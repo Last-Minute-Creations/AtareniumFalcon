@@ -10,6 +10,7 @@
 #include <ace/utils/font.h>
 #include <ace/managers/ptplayer.h>
 #include <ace/managers/rand.h>
+#include "enum.h"
 
 static tView *s_pView;
 static tVPort *s_pVp;
@@ -35,11 +36,14 @@ UBYTE typingRandomizer = 0;
 char szWungiel[50];
 char lineToPass[50];
 
-const char *s1 = "if (system.hacked == TRUE){";
-const char *s2 = "atariMode = ON; }";
-const char *s3 = "";
+static const char *lines[5] = {
+    "   ",
+    "if (system.hacked == TRUE){",
+    "atariMode = ON; }",
+    "   ",
+    "READY",
+};
 
-const char *w1 = "READY";
 const char load1[] = "LOAD ATARENIUM FALCON";
 const char *w2 = "ERROR - INSERT WINCY WUNGLA TO DF0:";
 const char dots[] = "...";
@@ -52,7 +56,7 @@ void blitBlueAtariScreen(void){
     blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 21);
 }
 
-void printLineOfAtariText(char *lineToPass, UBYTE textPositionY){
+void printLineOfAtariText(const char *lineToPass, UBYTE textPositionY){
         sprintf(szWungiel, lineToPass);
         fontFillTextBitMap(s_pFont, s_pBmText, szWungiel);
         fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 10, textPositionY, 23, FONT_COOKIE);
@@ -127,26 +131,12 @@ void stateWungielCreate(void)
     s_pAtari = ptplayerSfxCreateFromFile("data/Atari.sfx");
 
     s_pFont = fontCreate("data/topaz.fnt");
-    s_pBmText = fontCreateTextBitMap(300, s_pFont->uwHeight);
+    s_pBmText = fontCreateTextBitMap(TEXT_BITMAP_WIDTH, s_pFont->uwHeight);
 
     blitBlueAtariScreen();
 
-    for (UBYTE i = 1; i < 5; ++i){
-        switch (i){
-            case 1:
-                sprintf(lineToPass, s1);
-                break;
-            case 2:
-                sprintf(lineToPass, s2);
-                break;
-            case 3:
-                sprintf(lineToPass, s3);
-                break;
-            case 4:
-                sprintf(lineToPass, w1);
-                break;
-        }
-        printLineOfAtariText(lineToPass, i * 10);   
+    for(UBYTE i = 1; i < 5; ++i) {
+        printLineOfAtariText(lines[i], i * 10);
     }
     waitFrames(s_pVp, 50, 200);
 
@@ -172,16 +162,12 @@ void stateWungielCreate(void)
 
     printThreeDots(130);
 
-
 }
-
 
 void stateWungielLoop(void)
 {
-
     stateChange(g_pStateMachineGame, &g_sStateCredits);
     return;
-
 }
 
 void stateWungielDestroy(void)

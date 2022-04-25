@@ -290,8 +290,9 @@ void stateLmcAceLoop(void)
     --s_bRatioFade;
     if (s_bRatioFade == 0)
     {
-      stateChange(g_pStateMachineGame, &g_sStateWungiel);
       isDrawnOnce = FALSE;
+      stateChange(g_pStateMachineGame, &g_sStateWungiel);
+      return;
     }
     break;
   }

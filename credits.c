@@ -9,8 +9,9 @@
 #include <ace/managers/blit.h>
 #include <ace/utils/font.h>
 #include <ace/managers/ptplayer.h>
+#include "enum.h"
 
-#define CREDITS_LINE_COUNT 23
+#define CREDITS_LINE_COUNT 22
 
 static tView *s_pView;
 static tVPort *s_pVp;
@@ -19,7 +20,10 @@ static tSimpleBufferManager *s_pVpManager;
 extern tState g_sStateMenu;
 extern tStateManager *g_pStateMachineGame;
 
-void blitBlueAtariScreen();
+void blitCreditsBlueAtariScreen(void){
+    blitRect(s_pVpManager->pBack, 0, 0, 320, 128, 21);
+    blitRect(s_pVpManager->pBack, 0, 128, 320, 128, 21);
+}
 
 static tFont *s_pFont;
 static tTextBitMap *s_pBmText;
@@ -31,24 +35,24 @@ const char *s_pCreditsLines[CREDITS_LINE_COUNT] = {
     "ATARENIUM FALCON  v1.0 R4 Edition.",
     "First release at Decrunch 2020",
     "gamedev compo (2nd place).",
-    "",
+    "   ",
     "Luc3k: code & MSX",
     "Softiron: GFX",
     "KaiN, Proxy & PCH: AFK",
-    "",
+    "   ",
     "Special credit goes to Saberman - ",
     "The Great Atariman of the Galaxy.",
-    "",
+    "   ",
     "Navigate your ship using",
     "WSAD, arrows or Joy.",
     "M - toggle music/sfx/mute in play.",
-    "",
+    "   ",
     "Look for 3-letter cheatcodes here ",
     "and there and try typing them in menu.", 
     "There is one for unlimited coal,", 
     "one for great-looking ship, and one",
     "for skipping levels by N in play.",
-    "",
+    "   ",
     "(Fire or Return to continue)"};
 
 void stateCreditsCreate(void)
@@ -79,7 +83,7 @@ void stateCreditsCreate(void)
 
 
   s_pFont = fontCreate("data/topaz.fnt");
-  s_pBmText = fontCreateTextBitMap(300, s_pFont->uwHeight);
+  s_pBmText = fontCreateTextBitMap(TEXT_BITMAP_WIDTH, s_pFont->uwHeight);
   paletteLoad("data/falkon.plt", s_pPaletteAtariBasic, 32);
  
 }
@@ -92,7 +96,7 @@ void stateCreditsLoop(void)
     if (printOnce == 0)
     {
       ++printOnce;
-      blitBlueAtariScreen();
+      blitCreditsBlueAtariScreen();
       paletteDim(s_pPaletteAtariBasic, s_pVp->pPalette, 32, 15); // 0 - czarno, 15 - pe�na paleta
       viewUpdateCLUT(s_pView);
       

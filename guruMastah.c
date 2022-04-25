@@ -66,7 +66,7 @@ void stateGuruMastahCreate(void)
                                     TAG_END);
 
   s_pFont = fontCreate("data/topaz.fnt");
-  s_pBmText = fontCreateTextBitMap(300, s_pFont->uwHeight);
+  s_pBmText = fontCreateTextBitMap(TEXT_BITMAP_WIDTH, s_pFont->uwHeight);
 
   systemUnuse();
   // bitmapLoadFromFile(s_pVpManager->pBack, "data/jminersmall1.bm", 0, 0);

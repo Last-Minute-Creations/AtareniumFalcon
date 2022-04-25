@@ -64,7 +64,8 @@ typedef enum {
   AMIGA_HUD_TICK_TEMPO = 60,
   PORTAL_TICK_TEMPO = 4,
   LEVEL_SCORE_TEMPO = 8,
-  HUD_FONT_COLOR = 23
+  HUD_FONT_COLOR = 23,
+  TEXT_BITMAP_WIDTH = 320
 } tMiscSetupValues;
 
 typedef enum {

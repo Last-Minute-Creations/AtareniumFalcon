@@ -71,7 +71,7 @@ s_pVpManager = simpleBufferCreate(0,
 );
 
 s_pFont = fontCreate("data/topaz.fnt");
-s_pBmText = fontCreateTextBitMap(300, s_pFont->uwHeight);
+s_pBmText = fontCreateTextBitMap(TEXT_BITMAP_WIDTH, s_pFont->uwHeight);
 
 
 systemUnuse();

@@ -1833,7 +1833,7 @@ void stateGameCreate(void)
   s_pFont = fontCreate("data/topaz.fnt");
   s_pGotekFont = fontCreate("data/gotekFont.fnt");
 
-  s_pBmText = fontCreateTextBitMap(300, s_pFont->uwHeight); // bitmapa robocza długa na 200px, wysoka na jedną linię tekstu
+  s_pBmText = fontCreateTextBitMap(TEXT_BITMAP_WIDTH, s_pFont->uwHeight); // bitmapa robocza długa na 200px, wysoka na jedną linię tekstu
 
   // proste wy�wietlanie bitmapy na viewporcie
   s_pVpManager = simpleBufferCreate(0,

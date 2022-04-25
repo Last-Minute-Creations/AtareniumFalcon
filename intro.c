@@ -8,6 +8,7 @@
 #include <ace/managers/state.h>
 #include <ace/managers/blit.h>
 #include <ace/utils/font.h>
+#include "enum.h"
 
 #define INTRO_LINE_COUNT 35
 
@@ -137,7 +138,7 @@ void stateIntroCreate(void)
   s_eState = STATE_INTRO_PAGE1;
 
   s_pFont = fontCreate("data/topaz.fnt");
-  s_pBmText = fontCreateTextBitMap(300, s_pFont->uwHeight);
+  s_pBmText = fontCreateTextBitMap(TEXT_BITMAP_WIDTH, s_pFont->uwHeight);
 
   blitBlueAtariScreen2();
 }
