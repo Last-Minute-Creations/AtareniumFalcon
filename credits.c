@@ -4,12 +4,14 @@
 #include <ace/managers/system.h>
 #include <ace/managers/game.h>
 #include <ace/utils/palette.h>
+#include <ace/utils/string.h>
 #include <stdio.h>
 #include <ace/managers/state.h>
 #include <ace/managers/blit.h>
 #include <ace/utils/font.h>
 #include <ace/managers/ptplayer.h>
 #include "enum.h"
+
 
 #define CREDITS_LINE_COUNT 22
 
@@ -35,24 +37,24 @@ const char *s_pCreditsLines[CREDITS_LINE_COUNT] = {
     "ATARENIUM FALCON  v1.0 R4 Edition.",
     "First release at Decrunch 2020",
     "gamedev compo (2nd place).",
-    "   ",
+    "",
     "Luc3k: code & MSX",
     "Softiron: GFX",
     "KaiN, Proxy & PCH: AFK",
-    "   ",
+    "",
     "Special credit goes to Saberman - ",
     "The Great Atariman of the Galaxy.",
-    "   ",
+    "",
     "Navigate your ship using",
     "WSAD, arrows or Joy.",
     "M - toggle music/sfx/mute in play.",
-    "   ",
+    "",
     "Look for 3-letter cheatcodes here ",
     "and there and try typing them in menu.", 
     "There is one for unlimited coal,", 
     "one for great-looking ship, and one",
     "for skipping levels by N in play.",
-    "   ",
+    "",
     "(Fire or Return to continue)"};
 
 void stateCreditsCreate(void)
@@ -104,8 +106,10 @@ void stateCreditsLoop(void)
 
     for (BYTE i = 0; i < CREDITS_LINE_COUNT; ++i)
     {
-      fontFillTextBitMap(s_pFont, s_pBmText, s_pCreditsLines[i]);
-      fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 10, (i * 9) + 10, 23, FONT_COOKIE);
+      if (!stringIsEmpty(s_pCreditsLines[i])){
+        fontFillTextBitMap(s_pFont, s_pBmText, s_pCreditsLines[i]);
+        fontDrawTextBitMap(s_pVpManager->pBack, s_pBmText, 10, (i * 9) + 10, 23, FONT_COOKIE);
+      }
     }
     
     }

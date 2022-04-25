@@ -2220,6 +2220,7 @@ void stateGameDestroy(void)
   bitmapDestroy(s_pAnimBg);
   bitmapDestroy(s_pBgPortalGlow);
   bitmapDestroy(s_pRobbo);
+  bitmapDestroy(s_pRobboAnim);
   bitmapDestroy(s_pSabermanTribute);
   bitmapDestroy(s_pSabermanTributeMask);
 

@@ -4,6 +4,7 @@
 #include <ace/managers/system.h>
 #include <ace/managers/game.h>
 #include <ace/utils/palette.h>
+#include <ace/utils/string.h>
 #include <stdio.h>
 #include <ace/managers/state.h>
 #include <ace/managers/blit.h>
@@ -37,10 +38,10 @@ char szWungiel[50];
 char lineToPass[50];
 
 static const char *lines[5] = {
-    "   ",
+    "",
     "if (system.hacked == TRUE){",
     "atariMode = ON; }",
-    "   ",
+    "",
     "READY",
 };
 
@@ -136,7 +137,9 @@ void stateWungielCreate(void)
     blitBlueAtariScreen();
 
     for(UBYTE i = 1; i < 5; ++i) {
-        printLineOfAtariText(lines[i], i * 10);
+        if (!stringIsEmpty(lines[i])){
+            printLineOfAtariText(lines[i], i * 10);
+        }
     }
     waitFrames(s_pVp, 50, 200);
 
