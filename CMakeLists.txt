@@ -12,7 +12,7 @@ add_executable(
 target_compile_options(falkon.elf PRIVATE -Wall -Wextra)
 
 target_link_libraries(falkon.elf ace)
-target_compile_definitions(ace PUBLIC ACE_DEBUG ACE_DEBUG_UAE)
+#target_compile_definitions(ace PUBLIC ACE_DEBUG ACE_DEBUG_UAE)
 
 if(NOT (CMAKE_BUILD_TYPE STREQUAL "Debug") AND NOT (CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo"))
     set(ELF2HUNK_ARGS ${ELF2HUNK_ARGS} -s)
