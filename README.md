@@ -9,7 +9,7 @@
 
 2. REQUIREMENTS
 
-    Minimum: any Commodore Amiga. Best to play from HDD instead of DF0: or .adf, due to loading time comfort.
+    Minimum: any Commodore Amiga with 1Mb Chip Ram and KS2.05 up. Best to play from HDD instead of DF0: or .adf, due to loading time comfort.
     To install on HDD simply copy the content from floppy or .adf into chosen drawer. 
 
 3. GAMEPLAY AND CONTROLS
